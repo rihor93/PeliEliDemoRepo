@@ -1,24 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import { MainButton, useThemeParams } from '@vkruglikov/react-telegram-web-app';
+import { ConfigProvider, theme } from 'antd';
+import { Route, Routes } from 'react-router-dom';
+import UserInfo from './component/UserInfo/UserInfo';
+
+
 
 function App() {
+
+  const [colorScheme, themeParams] = useThemeParams();
+  console.log('app')
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <ConfigProvider
+        theme={
+          themeParams.text_color
+            ? {
+              algorithm:
+                colorScheme === 'dark'
+                  ? theme.darkAlgorithm
+                  : theme.defaultAlgorithm,
+              token: {
+                colorText: themeParams.text_color,
+                colorPrimary: themeParams.button_color,
+                colorBgBase: themeParams.bg_color,
+              },
+            }
+            : undefined
+        }
+      >
+        <Routes>
+          <Route index element={<UserInfo />} />
+        </Routes>
+      </ConfigProvider>
+
     </div>
   );
 }
