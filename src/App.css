@@ -57,6 +57,11 @@ code {
   box-sizing: border-box;
 }
 
+.cardBorder {
+  border-color: #207ae4;
+  border: solid;
+}
+
 .ant-input, .ant-select, .ant-select-item {
   background-color: unset !important;
 }
