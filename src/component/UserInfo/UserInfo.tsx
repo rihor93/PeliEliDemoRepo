@@ -1,10 +1,6 @@
-import { type } from "@testing-library/user-event/dist/type";
-import { Divider } from "antd";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { updateExpressionStatement } from "typescript";
 import { useTelegram } from "../../Hook/useTelegram";
-import TelegramButton from "../TelegramButton/TelegramButton";
 import ActionCard from "./ActionCard";
 import UserCard from "./UserCard";
 
