@@ -1,3 +1,5 @@
+import { useDebug } from "../constant/constant";
+
 // @ts-ignore
 const tg = window.Telegram.WebApp;
 
@@ -18,11 +20,11 @@ export function useTelegram() {
     return {
         onClose,
         tg,
-        user: tg.initDataUnsafe?.user?.username,
+        user: useDebug ? 'alex' : tg.initDataUnsafe?.user?.username,
         onToggleButton,
-        queryId: tg.initDataUnsafe?.query_id,
-        userID: tg.initDataUnsafe?.user?.id,
-        userTgName: tg.initDataUnsafe?.user?.username,
+        queryId: useDebug ? '0' : tg.initDataUnsafe?.query_id,
+        userID: useDebug ? '187151411' : tg.initDataUnsafe?.user?.id,
+        userTgName: useDebug ? 'alex' : tg.initDataUnsafe?.user?.username,
     }
 
 }

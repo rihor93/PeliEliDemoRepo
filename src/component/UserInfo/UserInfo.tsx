@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useTelegram } from "../../Hook/useTelegram";
 import ActionCard from "./ActionCard";
 import UserCard from "./UserCard";
+import { telegramBotUrl } from "../../constant/constant";
 
 interface Action {
     Name: string,
@@ -44,7 +45,7 @@ const UserInfo: React.FC = () => {
 
     const loadUserInfo = async () => {
         try {
-            const response = await fetch('https://elipelisr.lexcloud.ru/elipelibot/getUserInfo/' + userID, {
+            const response = await fetch(telegramBotUrl + '/api/v2/getUserInfo/' + userID, {
                 method: 'get',
             })
             //console.log({ FAQData: data });

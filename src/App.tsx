@@ -4,6 +4,8 @@ import { MainButton, useThemeParams } from '@vkruglikov/react-telegram-web-app';
 import { ConfigProvider, theme } from 'antd';
 import { Route, Routes } from 'react-router-dom';
 import UserInfo from './component/UserInfo/UserInfo';
+import Header from './component/Header/Header';
+import MenuList from './component/MenuList/MenuList';
 
 
 
@@ -13,6 +15,7 @@ function App() {
   console.log('app')
   return (
     <div className="App">
+      <Header></Header>
       <ConfigProvider
         theme={
           themeParams.text_color
@@ -31,7 +34,8 @@ function App() {
         }
       >
         <Routes>
-          <Route index element={<UserInfo />} />
+          <Route index element={<MenuList />} />
+          <Route path={'userInfo'} element={<UserInfo />} />
         </Routes>
       </ConfigProvider>
 
