@@ -5,7 +5,7 @@ import { ConfigProvider, theme } from 'antd';
 import { Route, Routes } from 'react-router-dom';
 import UserInfo from './component/UserInfo/UserInfo';
 import Header from './component/Header/Header';
-import MenuList from './component/MenuList/MenuList';
+import MenuCouseList from './component/MenuCouseList/MenuCouseList';
 
 
 
@@ -14,7 +14,7 @@ function App() {
   const [colorScheme, themeParams] = useThemeParams();
   console.log('app')
   return (
-    <div className="App">
+    <div className="container">
       <Header></Header>
       <ConfigProvider
         theme={
@@ -34,7 +34,7 @@ function App() {
         }
       >
         <Routes>
-          <Route index element={<MenuList />} />
+          <Route index element={<MenuCouseList />} />
           <Route path={'userInfo'} element={<UserInfo />} />
         </Routes>
       </ConfigProvider>

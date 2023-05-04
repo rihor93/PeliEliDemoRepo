@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTelegram } from "../../Hook/useTelegram";
 import { telegramBotUrl } from "../../constant/constant";
-import './MenuList.css'
+import './MenuCouseList.css'
 import MenuItem, { Course } from "../MenuItem/MenuItem";
 
 interface Action {
