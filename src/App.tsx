@@ -6,6 +6,8 @@ import { Route, Routes } from 'react-router-dom';
 import UserInfo from './component/UserInfo/UserInfo';
 import Header from './component/Header/Header';
 import MenuCouseList from './component/MenuCouseList/MenuCouseList';
+import { Provider } from 'react-redux';
+import store from './store';
 
 
 
@@ -15,30 +17,31 @@ function App() {
   console.log('app')
   return (
     <div className="container">
-      <Header></Header>
-      <ConfigProvider
-        theme={
-          themeParams.text_color
-            ? {
-              algorithm:
-                colorScheme === 'dark'
-                  ? theme.darkAlgorithm
-                  : theme.defaultAlgorithm,
-              token: {
-                colorText: themeParams.text_color,
-                colorPrimary: themeParams.button_color,
-                colorBgBase: themeParams.bg_color,
-              },
-            }
-            : undefined
-        }
-      >
-        <Routes>
-          <Route index element={<MenuCouseList />} />
-          <Route path={'userInfo'} element={<UserInfo />} />
-        </Routes>
-      </ConfigProvider>
-
+      <Provider store={store}>
+        <Header/>
+        <ConfigProvider
+          theme={
+            themeParams.text_color
+              ? {
+                algorithm:
+                  colorScheme === 'dark'
+                    ? theme.darkAlgorithm
+                    : theme.defaultAlgorithm,
+                token: {
+                  colorText: themeParams.text_color,
+                  colorPrimary: themeParams.button_color,
+                  colorBgBase: themeParams.bg_color,
+                },
+              }
+              : undefined
+          }
+        >
+          <Routes>
+            <Route index element={<MenuCouseList />} />
+            <Route path={'userInfo'} element={<UserInfo />} />
+          </Routes>
+        </ConfigProvider>
+      </Provider>
     </div>
   );
 }

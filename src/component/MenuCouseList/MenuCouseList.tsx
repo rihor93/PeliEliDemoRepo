@@ -3,7 +3,15 @@ import { useNavigate } from "react-router-dom";
 import { useTelegram } from "../../Hook/useTelegram";
 import { telegramBotUrl } from "../../constant/constant";
 import './MenuCouseList.css'
-import MenuItem, { Course } from "../MenuItem/MenuItem";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../reducers";
+import { setExample } from "../../reducers/example/exampleReducer";
+import { setCourseMenuStateCourse, setCourseMenuStateGroup } from "../../reducers/menu/menuStateReducer";
+import { setCourseMenuLoad, setCourseMenuLoading } from "../../reducers/menu/menuDataLoadReducer";
+import { CategoryCourse, CourseItem, MenuServerDataType } from "../../types/menuDataLoadTypes";
+import MenuCategory from "../MenuCategory/MenuCategory";
+import { MENU_GROUP_STATE } from "../../types/menuStateTypes";
+import MenuItem from "../MenuItem/MenuItem";
 
 interface Action {
     Name: string,
@@ -11,32 +19,28 @@ interface Action {
     VCode: number,
 }
 
-
-const products = [
-    { VCode: 1, Name: 'Джинсы', Price: 5000, description: 'Синего цвета, прямые' },
-    { VCode: 2, Name: 'Куртка', Price: 12000, description: 'Зеленого цвета, теплая' },
-    { VCode: 3, Name: 'Джинсы 2', Price: 5000, description: 'Синего цвета, прямые' },
-    { VCode: 4, Name: 'Куртка 8', Price: 122, description: 'Зеленого цвета, теплая' },
-    { VCode: 5, Name: 'Джинсы 3', Price: 5000, description: 'Синего цвета, прямые' },
-    { VCode: 6, Name: 'Куртка 7', Price: 600, description: 'Зеленого цвета, теплая' },
-    { VCode: 7, Name: 'Джинсы 4', Price: 5500, description: 'Синего цвета, прямые' },
-    { VCode: 8, Name: 'Куртка 5', Price: 12000, description: 'Зеленого цвета, теплая' },
-]
-
-const getTotalPrice = (items: Course[] = []) => {
+/*const getTotalPrice = (items: Course[] = []) => {
     return items.reduce((acc, item) => {
         return acc += item.Price
     }, 0)
-}
+}*/
 
 const MenuList: React.FC = () => {
     const { tg, userID } = useTelegram();
 
-    const [loading, setLoading] = useState(true)
+    /*const [loading, setLoading] = useState(true)
     const [error, setError] = useState(false)
-    const [userName, setUserName] = useState('');
+    const [userName, setUserName] = useState('');*/
 
-    const [addedItems, setAddedItems] = useState<Course[]>([]);
+
+    const dispatch = useDispatch();
+    const courseMenuState = useSelector((state: RootState) => state.courseMenu.courseMenuState);
+    const courseMenuCurCetegory = useSelector((state: RootState) => state.courseMenu.courseMenuCurrent);
+    const courseMenuLoading = useSelector((state: RootState) => state.courseLoad.loading);
+    const courseMenuError = useSelector((state: RootState) => state.courseLoad.error);
+    const courseMenuData = useSelector((state: RootState) => state.courseLoad.data);
+
+
 
     useEffect(() => {
         tg.ready();
@@ -52,7 +56,7 @@ const MenuList: React.FC = () => {
 
     useEffect(() => {
         console.log('загрузка данных с сервера')
-        //userMenuInfo();
+        loadUserMenu();
     }, [])
 
     const onClose = () => {
@@ -62,32 +66,33 @@ const MenuList: React.FC = () => {
 
 
     const loadUserMenu = async () => {
-        /* try {
-             const response = await fetch(telegramBotUrl + 'elipelibot/getUserInfo/' + userID, {
-                 method: 'get',
-             })
-             //console.log({ FAQData: data });
-             if (response.status === 200) {
- 
-                 let data = JSON.parse(await response.text()).recordsets;
-                 console.log(data);
-                 //const blob = await response.
-                 if (data[0].length > 0) {
-                     setUserAuthorized(true);
-                     setUserName(data[0][0].NAME)
-                     setUserBosuses(data[0][0].Bonuses.toFixed(2))
-                 }
-                 setUserActions(data[1])
-                 setLoading(false);
-             }
-         } catch (ex) {
-             console.error(ex);
-             setError(true);
-         }*/
+        if (courseMenuData === null) {
+            dispatch(setCourseMenuLoading());
+            try {
+                const response = await fetch(telegramBotUrl + '/api/v2/getUserMenu/', {
+                    method: 'get',
+                })
+                //console.log({ FAQData: data });
+                if (response.status === 200) {
+
+                    let data: MenuServerDataType = JSON.parse(await response.text());
+                    console.log(data);
+                    dispatch(setCourseMenuLoad(data));
+                    //const blob = await response.
+                    /*if (data[0].length > 0) {
+
+                    }*/
+
+                }
+            } catch (ex) {
+                console.error(ex);
+                dispatch(setCourseMenuLoad(null));
+            }
+        }
     }
 
-    const onAdd = (product: Course) => {
-        const alreadyAdded = addedItems.find(item => item.VCode === product.VCode);
+    const onAdd = (product: CourseItem) => {
+        /*const alreadyAdded = addedItems.find(item => item.VCode === product.VCode);
         let newItems = [];
 
         if (alreadyAdded) {
@@ -105,28 +110,52 @@ const MenuList: React.FC = () => {
             tg.MainButton.setParams({
                 text: `Купить ${getTotalPrice(newItems)}`
             })
-        }
+        }*/
+        console.log("onAdd")
+        dispatch(setCourseMenuStateGroup());
     }
+
+    const onClickCategory = (category: CategoryCourse) => {
+
+        console.log("onClickCategory")
+        dispatch(setCourseMenuStateCourse(category));
+        //console.log(courseMenuData !== null && typeof courseMenuData !== 'string' && typeof courseMenuData[courseMenuCategoryCodeState]?.CourseList !== 'string' ? courseMenuData[courseMenuCategoryCodeState]?.CourseList : null);
+    }
+
+    
 
     return (
 
 
         <div className={'list'}>
-            {/*<div className="contentWrapper">
-                {
-                    loading ?
-                        <div>Идёт загрузка, пожалуйста подождите</div> : <></>
-
-                }
-            
-            </div>*/}
-            {products.map(item => (
-                <MenuItem
-                    product={item}
-                    onAdd={onAdd}
-                    className={'item'}
-                />
-            ))}
+            {
+                courseMenuLoading ? <div>Идёт загрузка, пожалуйста подождите</div> :
+                    <>
+                        {courseMenuState === MENU_GROUP_STATE ?
+                            <>
+                                <div>{courseMenuState}</div>
+                                {typeof courseMenuData !== 'string' && courseMenuData !== null ? courseMenuData.map(item => (
+                                    <MenuCategory
+                                        key={item.VCode}
+                                        product={item}
+                                        onClick={onClickCategory}
+                                        className={'item'}
+                                    />
+                                )) : <div>Ошибка загрузки меню :(</div>}
+                            </> :
+                            <>
+                                {
+                                typeof courseMenuData !== 'string' && courseMenuData !== null && courseMenuCurCetegory !== null ? courseMenuCurCetegory.CourseList.map(item => (
+                                    <MenuItem
+                                        key={item.VCode}
+                                        product={item}
+                                        onAdd={onAdd}
+                                        className={'item'}
+                                    />
+                                )) : <div>Ошибка загрузки меню :(</div>}
+                            </>}
+                    </>
+            }
         </div>
 
 
