@@ -57,7 +57,7 @@ const MenuList: React.FC = () => {
         if (courseMenuData === null) {
             dispatch(setCourseMenuLoading());
             try {
-                const response = await fetch(telegramBotUrl + '/api/v2/getUserMenu/', {
+                const response = await fetch(telegramBotUrl + '/getUserMenu/', {
                     method: 'get',
                 })
                 //console.log({ FAQData: data });

@@ -45,7 +45,7 @@ const UserInfo: React.FC = () => {
 
     const loadUserInfo = async () => {
         try {
-            const response = await fetch(telegramBotUrl + '/api/v2/getUserInfo/' + userID, {
+            const response = await fetch(telegramBotUrl + '/getUserInfo/' + userID, {
                 method: 'get',
             })
             //console.log({ FAQData: data });
