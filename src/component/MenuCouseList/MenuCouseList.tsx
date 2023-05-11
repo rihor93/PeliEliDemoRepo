@@ -5,32 +5,20 @@ import { telegramBotUrl } from "../../constant/constant";
 import './MenuCouseList.css'
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../reducers";
-import { setExample } from "../../reducers/example/exampleReducer";
 import { setCourseMenuStateCourse, setCourseMenuStateGroup } from "../../reducers/menu/menuStateReducer";
 import { setCourseMenuLoad, setCourseMenuLoading } from "../../reducers/menu/menuDataLoadReducer";
 import { CategoryCourse, CourseItem, MenuServerDataType } from "../../types/menuDataLoadTypes";
 import MenuCategory from "../MenuCategory/MenuCategory";
 import { MENU_GROUP_STATE } from "../../types/menuStateTypes";
 import MenuItem from "../MenuItem/MenuItem";
+import { addCourseToCart } from "../../reducers/userState/userStateReducer";
 
-interface Action {
-    Name: string,
-    Description: string,
-    VCode: number,
-}
 
-/*const getTotalPrice = (items: Course[] = []) => {
-    return items.reduce((acc, item) => {
-        return acc += item.Price
-    }, 0)
-}*/
 
 const MenuList: React.FC = () => {
     const { tg, userID } = useTelegram();
 
-    /*const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(false)
-    const [userName, setUserName] = useState('');*/
+
 
 
     const dispatch = useDispatch();
@@ -92,27 +80,9 @@ const MenuList: React.FC = () => {
     }
 
     const onAdd = (product: CourseItem) => {
-        /*const alreadyAdded = addedItems.find(item => item.VCode === product.VCode);
-        let newItems = [];
-
-        if (alreadyAdded) {
-            newItems = addedItems.filter(item => item.VCode !== product.VCode);
-        } else {
-            newItems = [...addedItems, product];
-        }
-
-        setAddedItems(newItems)
-
-        if (newItems.length === 0) {
-            tg.MainButton.hide();
-        } else {
-            tg.MainButton.show();
-            tg.MainButton.setParams({
-                text: `Купить ${getTotalPrice(newItems)}`
-            })
-        }*/
         console.log("onAdd")
-        dispatch(setCourseMenuStateGroup());
+        dispatch(addCourseToCart(product));
+        //dispatch(setCourseMenuStateGroup());
     }
 
     const onClickCategory = (category: CategoryCourse) => {

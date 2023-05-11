@@ -21,7 +21,7 @@ const MenuItem: React.FC<ProductItemProps> = ({product, className, onAdd}) => {
             <div className={'img'}/>
             <div className={'title'}>{product.Name}</div>
             <div className={'price'}>
-                <span>Стоимость: <b>{product.Price}</b></span>
+                <span>Стоимость: <b>{product.Price.toFixed(2)}</b></span>
             </div>
             <Button className={'add-btn'} onClick={onAddHandler}>
                 Добавить в корзину
