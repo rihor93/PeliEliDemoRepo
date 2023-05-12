@@ -35,7 +35,7 @@ const UserInfo: React.FC = () => {
     })
 
     useEffect(() => {
-        console.log('загрузка данных с сервера')
+        //console.log('загрузка данных с сервера')
         loadUserInfo();
     }, [])
 
@@ -52,7 +52,7 @@ const UserInfo: React.FC = () => {
             if (response.status === 200) {
 
                 let data = JSON.parse(await response.text()).recordsets;
-                console.log(data);
+                //console.log(data);
                 //const blob = await response.
                 if (data[0].length > 0) {
                     setUserAuthorized(true);

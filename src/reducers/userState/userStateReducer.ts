@@ -32,16 +32,16 @@ export const userCourseCartReducer = (state = initialState, action: UserStateCou
                 if (course.quantity > 1) {
                     course.quantity--;
 
-                    return {
+                    return applyDicountsAndCoursePrivate({
                         ...state,
                         itemsInCart: state.itemsInCart.map(a => a.couse.VCode == action.payload.VCode ? (course as CourseInCart) : a),
-                    };
+                    });
                 }
                 else {
-                    return {
+                    return applyDicountsAndCoursePrivate({
                         ...state,
                         itemsInCart: state.itemsInCart.filter(a => a.couse.VCode != action.payload.VCode),
-                    };
+                    });
                 }
             }
             return state;
@@ -55,7 +55,11 @@ function applyDicountsAndCoursePrivate(state: UserCourseCartState): UserCourseCa
     let new_state = {...state}
     let summ: number;
     summ = 0;
-    state.itemsInCart.forEach(a => {summ += summ + a.couse.Price * a.quantity; a.priceWithDiscount = a.couse.Price * a.quantity});
+    new_state.itemsInCart.forEach(a => {a.priceWithDiscount = a.couse.Price * a.quantity;});
+    new_state.itemsInCart.forEach(a => {
+        
+        summ += a.priceWithDiscount; 
+    });
     new_state.allPriceInCart = summ;
     return new_state;
 }
