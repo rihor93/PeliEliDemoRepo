@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTelegram } from "../../Hook/useTelegram";
 import { telegramBotUrl } from "../../constant/constant";
-import './MenuCouseList.css'
+import '../OtherStyle/ListStyle.css'
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../reducers";
 import { setCourseMenuStateCourse, setCourseMenuStateGroup } from "../../reducers/menu/menuStateReducer";
@@ -103,7 +103,6 @@ const MenuList: React.FC = () => {
                     <>
                         {courseMenuState === MENU_GROUP_STATE ?
                             <>
-                                <div>{courseMenuState}</div>
                                 {typeof courseMenuData !== 'string' && courseMenuData !== null ? courseMenuData.map(item => (
                                     <MenuCategory
                                         key={item.VCode}

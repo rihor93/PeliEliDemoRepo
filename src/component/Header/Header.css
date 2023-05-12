@@ -3,6 +3,8 @@
     height: 50px;
     display: flex;
     align-items: center;
+    position: fixed;
+    margin-top: -50px;
 }
 
 .username {

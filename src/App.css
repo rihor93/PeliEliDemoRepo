@@ -1,15 +1,3 @@
-.header {
-  width: 100%;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  padding: 0 0px;
-}
-
-.username {
-  margin-left: auto;
-}
-
 body {
   background: var(--tg-theme-bg-color);
   margin: 0;
@@ -19,4 +7,8 @@ body {
 
 .container {
   max-width: 390px;
+}
+
+.contentContainer {
+  margin-top: 50px;
 }

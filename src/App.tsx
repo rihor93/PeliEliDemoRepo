@@ -8,6 +8,7 @@ import Header from './component/Header/Header';
 import MenuCouseList from './component/MenuCouseList/MenuCouseList';
 import { Provider } from 'react-redux';
 import store from './store';
+import CartCourseList from './component/CartCourseList/CartCourseList';
 
 
 
@@ -18,7 +19,7 @@ function App() {
   return (
     <div className="container">
       <Provider store={store}>
-        <Header/>
+        <Header />
         <ConfigProvider
           theme={
             themeParams.text_color
@@ -36,10 +37,13 @@ function App() {
               : undefined
           }
         >
-          <Routes>
-            <Route index element={<MenuCouseList />} />
-            <Route path={'userInfo'} element={<UserInfo />} />
-          </Routes>
+          <div className="contentContainer">
+            <Routes>
+              <Route index element={<MenuCouseList />} />
+              <Route path={'userInfo'} element={<UserInfo />} />
+              <Route path={'cart'} element={<CartCourseList />} />
+            </Routes>
+          </div>
         </ConfigProvider>
       </Provider>
     </div>

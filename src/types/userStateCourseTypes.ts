@@ -15,6 +15,7 @@ export interface UserCourseCartState {
 export type CourseInCart = {
     couse: CourseItem,
     quantity: number,
+    priceWithDiscount: number,
 }
 
 interface SetUserCourseAction {
