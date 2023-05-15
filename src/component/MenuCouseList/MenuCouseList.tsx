@@ -43,7 +43,7 @@ const MenuList: React.FC = () => {
     })
 
     useEffect(() => {
-        console.log('загрузка данных с сервера')
+        //console.log('загрузка данных с сервера')
         loadUserMenu();
     }, [])
 
@@ -64,7 +64,7 @@ const MenuList: React.FC = () => {
                 if (response.status === 200) {
 
                     let data: MenuServerDataType = JSON.parse(await response.text());
-                    console.log(data);
+                    //console.log(data);
                     dispatch(setCourseMenuLoad(data));
                     //const blob = await response.
                     /*if (data[0].length > 0) {
@@ -80,14 +80,14 @@ const MenuList: React.FC = () => {
     }
 
     const onAdd = (product: CourseItem) => {
-        console.log("onAdd")
+        //console.log("onAdd")
         dispatch(addCourseToCart(product));
         //dispatch(setCourseMenuStateGroup());
     }
 
     const onClickCategory = (category: CategoryCourse) => {
 
-        console.log("onClickCategory")
+        //console.log("onClickCategory")
         dispatch(setCourseMenuStateCourse(category));
         //console.log(courseMenuData !== null && typeof courseMenuData !== 'string' && typeof courseMenuData[courseMenuCategoryCodeState]?.CourseList !== 'string' ? courseMenuData[courseMenuCategoryCodeState]?.CourseList : null);
     }

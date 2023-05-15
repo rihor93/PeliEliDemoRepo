@@ -23,8 +23,8 @@ const Header = () => {
     const allPriceInCart = useSelector((state: RootState) => state.userCart.allPriceInCart);
 
     const onBack = () => {
-        //console.log(location);
-        if (location.pathname.indexOf('/cart') >= 0) {
+        console.log(location);
+        if (showBackButton()) {
             navigate('/');
         } else {
             dispatch(setCourseMenuStateGroup());
@@ -35,12 +35,20 @@ const Header = () => {
         navigate('/cart');
     }
 
+    function onUserClick() {
+        navigate('/userInfo');
+    }
+
+    function showBackButton() {
+        return (location.pathname.indexOf('/cart') >= 0) || (location.pathname.indexOf('/userInfo') >= 0);
+    }
+
     return (
         <div className="header container">
-            {courseMenuState !== MENU_GROUP_STATE || location.pathname.indexOf('/cart') >= 0 ? <Button onClick={onBack}>Назад</Button> : <></>}
+            {courseMenuState !== MENU_GROUP_STATE || showBackButton() ? <Button onClick={onBack}>Назад</Button> : <></>}
             <div onClick={onCartClick}>Элементов в конзине: {userCart.length}</div>
             <div>Цена: {allPriceInCart.toFixed(2)}</div>
-            <span className='username'>{user}</span>
+            <span className='username' onClick={onUserClick}>{user}</span>
         </div>
     )
 

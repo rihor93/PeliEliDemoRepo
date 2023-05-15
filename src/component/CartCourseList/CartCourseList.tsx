@@ -29,7 +29,7 @@ const CartCourseList: React.FC = () => {
 
     useEffect(() => {
         tg.ready();
-        tg.MainButton.text = "Закрыть";
+        tg.MainButton.text = "Заказать";
         tg.onEvent('mainButtonClicked', onClose);
         tg.MainButton.show();
 
@@ -49,13 +49,13 @@ const CartCourseList: React.FC = () => {
     
 
     const onAdd = (product: CourseItem) => {
-        console.log("onAdd")
+        //console.log("onAdd")
         dispatch(addCourseToCart(product));
         //dispatch(setCourseMenuStateGroup());
     }
 
     const onDel= (product: CourseItem) => {
-        console.log("onDel")
+        //console.log("onDel")
         dispatch(dropCourseFromCart(product));
         //dispatch(setCourseMenuStateGroup());
     }

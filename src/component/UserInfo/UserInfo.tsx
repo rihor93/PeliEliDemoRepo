@@ -51,15 +51,15 @@ const UserInfo: React.FC = () => {
             //console.log({ FAQData: data });
             if (response.status === 200) {
 
-                let data = JSON.parse(await response.text()).recordsets;
+                let data = JSON.parse(await response.text());
                 //console.log(data);
                 //const blob = await response.
-                if (data[0].length > 0) {
+                if (data !== null) {
                     setUserAuthorized(true);
-                    setUserName(data[0][0].NAME)
-                    setUserBosuses(data[0][0].Bonuses.toFixed(2))
+                    setUserName(data.UserInfo.NAME)
+                    setUserBosuses(data.UserInfo.Bonuses.toFixed(2))
                 }
-                setUserActions(data[1])
+                setUserActions(data.AllDiscounts)
                 setLoading(false);
             }
         } catch (ex) {
@@ -81,7 +81,7 @@ const UserInfo: React.FC = () => {
                                 <div><h1>Акции, специально для вас</h1></div>
                                 <div>
                                     {userActions?.map((act, i) => {
-                                        return <ActionCard name={act.Name} description={act.Description}></ActionCard>
+                                        return <ActionCard key={act.VCode} name={act.Name} description={act.Description}></ActionCard>
                                     })}
                                 </div>
                             </div>
