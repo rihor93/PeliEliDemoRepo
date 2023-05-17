@@ -15,6 +15,7 @@ import CartCourseList from './component/CartCourseList/CartCourseList';
 function App() {
 
   const [colorScheme, themeParams] = useThemeParams();
+  
   //console.log('app')
   return (
     <div className="container">

@@ -4,6 +4,8 @@ import { useTelegram } from "../../Hook/useTelegram";
 import ActionCard from "./ActionCard";
 import UserCard from "./UserCard";
 import { telegramBotUrl } from "../../constant/constant";
+import { useSelector } from "react-redux";
+import { RootState } from "../../reducers";
 
 interface Action {
     Name: string,
@@ -14,13 +16,13 @@ interface Action {
 const UserInfo: React.FC = () => {
     const { tg, userID } = useTelegram();
 
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState(false)
-    const [userName, setUserName] = useState('');
-    const [userBosuses, setUserBosuses] = useState('');
-    const [userAuthorized, setUserAuthorized] = useState(false);
-    const [userActions, setUserActions] = useState<Action[]>();
-
+    //const [userName, setUserName] = useState('');
+    //const [userBosuses, setUserBosuses] = useState('');
+    //const [userAuthorized, setUserAuthorized] = useState(false);
+    //const [userActions, setUserActions] = useState<Action[]>();
+    const userName = useSelector((state: RootState) => state.userCart.userInfo?.userName);
+    const userBosuses = useSelector((state: RootState) => state.userCart.userInfo?.userBonuses);
+    const userActions = useSelector((state: RootState) => state.userCart.userInfo?.allCampaign);
     const navigate = useNavigate()
     useEffect(() => {
         tg.ready();
@@ -34,16 +36,16 @@ const UserInfo: React.FC = () => {
         }
     })
 
-    useEffect(() => {
+    /*useEffect(() => {
         //console.log('загрузка данных с сервера')
         loadUserInfo();
-    }, [])
+    }, [])*/
 
     const onClose = () => {
         tg.close();
     }
 
-    const loadUserInfo = async () => {
+    /*const loadUserInfo = async () => {
         try {
             const response = await fetch(telegramBotUrl + '/getUserInfo/' + userID, {
                 method: 'get',
@@ -66,29 +68,24 @@ const UserInfo: React.FC = () => {
             console.error(ex);
             setError(true);
         }
-    }
+    }*/
 
     return (
 
         <div className="contentWrapper">
-            {
-                loading ?
-                    <div>Идёт загрузка, пожалуйста подождите</div> :
-                    (
-                        <div>
-                            {(userAuthorized ? <div>{<UserCard name={userName} bonuses={userBosuses} />}</div> : <div><h1>К сожалению, вы еще не завели карточку в нашей кулинарии</h1></div>)}
-                            <div>
-                                <div><h1>Акции, специально для вас</h1></div>
-                                <div>
-                                    {userActions?.map((act, i) => {
-                                        return <ActionCard key={act.VCode} name={act.Name} description={act.Description}></ActionCard>
-                                    })}
-                                </div>
-                            </div>
-                        </div>
-                    )
 
-            }
+            <div>
+                {(userName !== null && userName !== undefined && userBosuses !== undefined ? <div>{<UserCard name={userName} bonuses={userBosuses.toFixed(2)} />}</div> : <div><h1>К сожалению, вы еще не завели карточку в нашей кулинарии</h1></div>)}
+                <div>
+                    <div><h1>Акции, специально для вас</h1></div>
+                    <div>
+                        {userActions?.map((act, i) => {
+                            return <ActionCard key={act.VCode} name={act.Name} description={act.Description}></ActionCard>
+                        })}
+                    </div>
+                </div>
+            </div>
+
             {/*<TelegramButton value='FAQ' onClick={() => { navigate('/faq') }} />
             <TelegramButton value='Получить консультацию по продукту' onClick={() => { navigate('/consultation') }} />*/}
             {/*<TelegramButton value='Задать вопрос' onClick={botApi.onSendDataPresent} />*/}

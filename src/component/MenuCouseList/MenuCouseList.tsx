@@ -11,7 +11,8 @@ import { CategoryCourse, CourseItem, MenuServerDataType } from "../../types/menu
 import MenuCategory from "../MenuCategory/MenuCategory";
 import { MENU_GROUP_STATE } from "../../types/menuStateTypes";
 import MenuItem from "../MenuItem/MenuItem";
-import { addCourseToCart } from "../../reducers/userState/userStateReducer";
+import { addCourseToCart, setUserInfoData } from "../../reducers/userState/userStateReducer";
+import { AllCampaignUser, DishDiscount, DishSetDiscount, PercentDiscount, UserInfoDatas } from "../../types/userStateCourseTypes";
 
 
 
@@ -71,6 +72,29 @@ const MenuList: React.FC = () => {
 
                     }*/
 
+                }
+                const responseUserInfo = await fetch(telegramBotUrl + '/getUserInfo/' + userID, {
+                    method: 'get',
+                })
+                //console.log({ FAQData: data });
+                if (responseUserInfo.status === 200) {
+    
+                    let dataUserInfo = JSON.parse(await responseUserInfo.text());
+                    //console.log(data);
+                    //const blob = await response.
+                    if (dataUserInfo !== null) {
+                        let userData: UserInfoDatas = {
+                            userName: dataUserInfo.UserInfo.NAME, 
+                            userBonuses: dataUserInfo.UserInfo.Bonuses, 
+                            percentDiscounts: dataUserInfo.PercentDiscount as PercentDiscount[], 
+                            dishDiscounts: dataUserInfo.DishDiscount as DishDiscount[], 
+                            allCampaign: dataUserInfo.AllDiscounts as AllCampaignUser[],
+                            dishSet: dataUserInfo.SetDishDiscount as DishSetDiscount[],
+                        }
+                        //console.log(userData);
+                        dispatch(setUserInfoData(userData));
+                    }
+                    
                 }
             } catch (ex) {
                 console.error(ex);
