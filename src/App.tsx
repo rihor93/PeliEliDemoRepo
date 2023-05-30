@@ -2,20 +2,20 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import { MainButton, useThemeParams } from '@vkruglikov/react-telegram-web-app';
 import { ConfigProvider, theme } from 'antd';
-import { Route, Routes } from 'react-router-dom';
 import UserInfo from './component/UserInfo/UserInfo';
 import Header from './component/Header/Header';
 import MenuCouseList from './component/MenuCouseList/MenuCouseList';
 import { Provider } from 'react-redux';
 import store from './store';
 import CartCourseList from './component/CartCourseList/CartCourseList';
+import { Navigation } from './component/Navigation/Navigation';
 
 
 
 function App() {
 
   const [colorScheme, themeParams] = useThemeParams();
-  
+
   //console.log('app')
   return (
     <div className="container">
@@ -39,11 +39,13 @@ function App() {
           }
         >
           <div className="contentContainer">
-            <Routes>
+            {/*<Routes>
               <Route index element={<MenuCouseList />} />
               <Route path={'userInfo'} element={<UserInfo />} />
               <Route path={'cart'} element={<CartCourseList />} />
             </Routes>
+        </div>*/}
+            <Navigation />
           </div>
         </ConfigProvider>
       </Provider>

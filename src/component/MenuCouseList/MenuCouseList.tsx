@@ -17,7 +17,7 @@ import { AllCampaignUser, DishDiscount, DishSetDiscount, PercentDiscount, UserIn
 
 
 const MenuList: React.FC = () => {
-    const { tg, userID } = useTelegram();
+    const { tg } = useTelegram();
 
 
 
@@ -26,7 +26,6 @@ const MenuList: React.FC = () => {
     const courseMenuState = useSelector((state: RootState) => state.courseMenu.courseMenuState);
     const courseMenuCurCetegory = useSelector((state: RootState) => state.courseMenu.courseMenuCurrent);
     const courseMenuLoading = useSelector((state: RootState) => state.courseLoad.loading);
-    const courseMenuError = useSelector((state: RootState) => state.courseLoad.error);
     const courseMenuData = useSelector((state: RootState) => state.courseLoad.data);
 
 
@@ -43,10 +42,10 @@ const MenuList: React.FC = () => {
         }
     })
 
-    useEffect(() => {
+    /*useEffect(() => {
         //console.log('загрузка данных с сервера')
         loadUserMenu();
-    }, [])
+    }, [])*/
 
     const onClose = () => {
         tg.close();
@@ -54,7 +53,7 @@ const MenuList: React.FC = () => {
 
 
 
-    const loadUserMenu = async () => {
+    /*const loadUserMenu = async () => {
         if (courseMenuData === null) {
             dispatch(setCourseMenuLoading());
             try {
@@ -68,9 +67,7 @@ const MenuList: React.FC = () => {
                     //console.log(data);
                     dispatch(setCourseMenuLoad(data));
                     //const blob = await response.
-                    /*if (data[0].length > 0) {
-
-                    }*/
+                    
 
                 }
                 const responseUserInfo = await fetch(telegramBotUrl + '/getUserInfo/' + userID, {
@@ -101,7 +98,7 @@ const MenuList: React.FC = () => {
                 dispatch(setCourseMenuLoad(null));
             }
         }
-    }
+    }*/
 
     const onAdd = (product: CourseItem) => {
         //console.log("onAdd")
