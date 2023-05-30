@@ -25,6 +25,11 @@ export const Navigation: FC = () => {
         loadUserMenu();
     }, [])
 
+    useEffect(() => {
+        //console.log('загрузка данных с сервера')
+        loadUserData();
+    }, [])
+
 
     const loadUserMenu = async () => {
         if (courseMenuData === null) {
@@ -45,29 +50,7 @@ export const Navigation: FC = () => {
                     }*/
 
                 }
-                const responseUserInfo = await fetch(telegramBotUrl + '/getUserInfo/' + userID, {
-                    method: 'get',
-                })
-                //console.log({ FAQData: data });
-                if (responseUserInfo.status === 200) {
-    
-                    let dataUserInfo = JSON.parse(await responseUserInfo.text());
-                    //console.log(data);
-                    //const blob = await response.
-                    if (dataUserInfo !== null) {
-                        let userData: UserInfoDatas = {
-                            userName: dataUserInfo.UserInfo.NAME, 
-                            userBonuses: dataUserInfo.UserInfo.Bonuses, 
-                            percentDiscounts: dataUserInfo.PercentDiscount as PercentDiscount[], 
-                            dishDiscounts: dataUserInfo.DishDiscount as DishDiscount[], 
-                            allCampaign: dataUserInfo.AllDiscounts as AllCampaignUser[],
-                            dishSet: dataUserInfo.SetDishDiscount as DishSetDiscount[],
-                        }
-                        //console.log(userData);
-                        dispatch(setUserInfoData(userData));
-                    }
-                    
-                }
+
             } catch (ex) {
                 console.error(ex);
                 dispatch(setCourseMenuLoad(null));
@@ -75,14 +58,40 @@ export const Navigation: FC = () => {
         }
     }
 
+    const loadUserData = async () => {
+        const responseUserInfo = await fetch(telegramBotUrl + '/getUserInfo/' + userID, {
+            method: 'get',
+        })
+        //console.log({ FAQData: data });
+        if (responseUserInfo.status === 200) {
+
+            let dataUserInfo = JSON.parse(await responseUserInfo.text());
+            //console.log(data);
+            //const blob = await response.
+            if (dataUserInfo !== null) {
+                let userData: UserInfoDatas = {
+                    userName: dataUserInfo.UserInfo.NAME,
+                    userBonuses: dataUserInfo.UserInfo.Bonuses,
+                    percentDiscounts: dataUserInfo.PercentDiscount as PercentDiscount[],
+                    dishDiscounts: dataUserInfo.DishDiscount as DishDiscount[],
+                    allCampaign: dataUserInfo.AllDiscounts as AllCampaignUser[],
+                    dishSet: dataUserInfo.SetDishDiscount as DishSetDiscount[],
+                }
+                //console.log(userData);
+                dispatch(setUserInfoData(userData));
+            }
+
+        }
+    }
+
     return (
-        
-            <Routes>
-                <Route index element={<MenuCouseList />} />
-                <Route path={'userInfo'} element={<UserInfo />} />
-                <Route path={'cart'} element={<CartCourseList />} />
-            </Routes>
-        );
+
+        <Routes>
+            <Route index element={<MenuCouseList />} />
+            <Route path={'userInfo'} element={<UserInfo />} />
+            <Route path={'cart'} element={<CartCourseList />} />
+        </Routes>
+    );
 };
 
 function dispatch(arg0: any) {

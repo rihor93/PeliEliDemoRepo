@@ -76,7 +76,7 @@ export const userCourseCartReducer = (state = initialState, action: UserStateCou
 
 
 function applyDicountsAndCoursePrivate(state: UserCourseCartState): UserCourseCartState {
-    let promo = '';//пока заглушка, т.к. нет промо
+    let promo = null;//пока заглушка, т.к. нет промо
     let new_state = { ...state }//копируем текущий стейт, для его изменения
 
     let summ: number = 0;//сумма заказа
