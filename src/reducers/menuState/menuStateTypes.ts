@@ -1,4 +1,4 @@
-import { CategoryCourse } from "../reducers/menuData/menuDataLoadTypes";
+import { CategoryCourse } from "../menuData/menuDataLoadTypes";
 
 export const SET_MENU_STATE = 'SET_MENU_STATE';
 export const MENU_GROUP_STATE = 'MENU_GROUP_STATE'

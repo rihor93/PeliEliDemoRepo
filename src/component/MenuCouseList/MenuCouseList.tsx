@@ -6,13 +6,12 @@ import '../OtherStyle/ListStyle.css'
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../reducers";
 import { setCourseMenuStateCourse, setCourseMenuStateGroup } from "../../reducers/menuState/menuStateReducer";
-import { setCourseMenuLoad, setCourseMenuLoading } from "../../reducers/menuData/menuDataLoadReducer";
 import { CategoryCourse, CourseItem, MenuServerDataType } from "../../reducers/menuData/menuDataLoadTypes";
 import MenuCategory from "../MenuCategory/MenuCategory";
-import { MENU_GROUP_STATE } from "../../types/menuStateTypes";
+import { MENU_GROUP_STATE } from "../../reducers/menuState/menuStateTypes";
 import MenuItem from "../MenuItem/MenuItem";
-import { addCourseToCart, setUserInfoData } from "../../reducers/userState/userStateReducer";
-import { AllCampaignUser, DishDiscount, DishSetDiscount, PercentDiscount, UserInfoDatas } from "../../types/userStateCourseTypes";
+//import { AllCampaignUser, DishDiscount, DishSetDiscount, PercentDiscount, UserInfoDatas } from "../../reducers/userCart/userCartTypes";
+import { addCourseToCart } from "../../reducers/actions/userCartActions";
 
 
 
@@ -27,6 +26,7 @@ const MenuList: React.FC = () => {
     const courseMenuCurCetegory = useSelector((state: RootState) => state.courseMenu.courseMenuCurrent);
     const courseMenuLoading = useSelector((state: RootState) => state.courseLoad.loading);
     const courseMenuData = useSelector((state: RootState) => state.courseLoad.data);
+    const userInfo = useSelector((state: RootState)=>state.userInfo.data);
 
 
 
@@ -102,7 +102,7 @@ const MenuList: React.FC = () => {
 
     const onAdd = (product: CourseItem) => {
         //console.log("onAdd")
-        dispatch(addCourseToCart(product));
+        dispatch(addCourseToCart(product, userInfo));
         //dispatch(setCourseMenuStateGroup());
     }
 
@@ -120,7 +120,7 @@ const MenuList: React.FC = () => {
 
         <div className={'list'}>
             {
-                courseMenuLoading ? <div>Идёт загрузка, пожалуйста подождите</div> :
+                courseMenuLoading ? <div>Идёт загрузка, пожалуйста подождите</div> : 
                     <>
                         {courseMenuState === MENU_GROUP_STATE ?
                             <>
@@ -133,7 +133,7 @@ const MenuList: React.FC = () => {
                                     />
                                 )) : <div>Ошибка загрузки меню :(</div>}
                             </> :
-                            <>
+                            <>  {console.log('courseMenuData', courseMenuData)}
                                 {
                                 typeof courseMenuData !== 'string' && courseMenuData !== null && courseMenuCurCetegory !== null ? courseMenuCurCetegory.CourseList.map(item => (
                                     <MenuItem
@@ -143,7 +143,7 @@ const MenuList: React.FC = () => {
                                         className={'item'}
                                     />
                                 )) : <div>Ошибка загрузки меню :(</div>}
-                            </>}
+                                </>}
                     </>
             }
         </div>

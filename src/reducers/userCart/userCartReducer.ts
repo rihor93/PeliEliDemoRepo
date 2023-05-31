@@ -1,35 +1,22 @@
 import { CourseItem } from '../menuData/menuDataLoadTypes';
-import { ADD_COURSE, CourseInCart, DELETE_COURSE, UserCourseCartState, UserStateCourseActionTypes, UserInfoDatas, SET_USER_INFO, DishSetDiscountActive, PercentDiscount, APPLE_DISCOUNT } from '../../types/userStateCourseTypes';
+import { AllCampaignUser, DishDiscount, DishSetDiscount, DishSetDiscountActive, PercentDiscount } from '../userInfo/userInfoTypes';
+import { ADD_COURSE, CourseInCart, DELETE_COURSE, UserCourseCartState, SetUserCourseActionTypes, APPLE_DISCOUNT } from './userCartTypes';
 
 const initialState: UserCourseCartState = {
     cartEmpty: false,
     itemsInCart: [] as CourseInCart[],
     allPriceInCart: 0,
-    userInfo: undefined,
 };
 
-export const userCourseCartReducer = (state = initialState, action: UserStateCourseActionTypes): UserCourseCartState => {
-    let payloadCourseItem: CourseItem = { VCode: -1, Name: '', CatVCode: -1, Discount_Price: 0, Price: 0 };
-    let payloadUserInfoDatas: UserInfoDatas = { userName: '', userBonuses: 0, percentDiscounts: [], dishDiscounts: [], allCampaign: [], dishSet: [] };
-    switch (action.type) {
-        case ADD_COURSE:
-            payloadCourseItem = action.payload as CourseItem;
-            break;
-        case DELETE_COURSE:
-            payloadCourseItem = action.payload as CourseItem;
-            break;
-        case SET_USER_INFO:
-            payloadUserInfoDatas = action.payload as UserInfoDatas;
-            break;
-        default:
-            break;
-    }
+export const userCourseCartReducer = (state = initialState, action: SetUserCourseActionTypes): UserCourseCartState => {
+    
+    
 
-
+    
     switch (action.type) {
 
         case ADD_COURSE:
-
+            const payloadCourseItem: CourseItem = action.payload.couse;
             let course_add: CourseInCart | undefined;
             course_add = state.itemsInCart.find(a => a.couse.VCode === payloadCourseItem.VCode)
             if (course_add !== null && course_add !== undefined) {
@@ -37,40 +24,41 @@ export const userCourseCartReducer = (state = initialState, action: UserStateCou
                 return applyDicountsAndCoursePrivate({
                     ...state,
                     itemsInCart: state.itemsInCart.map(a => a.couse.VCode == payloadCourseItem.VCode ? (course_add as CourseInCart) : a),
-                });
+                }, action.payload.percentDiscounts, action.payload.dishDiscounts, action.payload.allCampaign, action.payload.dishSet);
 
             }
 
             return applyDicountsAndCoursePrivate({
                 ...state,
                 itemsInCart: [...state.itemsInCart, { couse: payloadCourseItem, quantity: 1, priceWithDiscount: payloadCourseItem.Price }],
-            });
+            }, action.payload.percentDiscounts, action.payload.dishDiscounts, action.payload.allCampaign, action.payload.dishSet);
         case DELETE_COURSE:
+            const payloadCourseItem2: CourseItem = action.payload.couse;
             let course: CourseInCart | undefined;
-            course = state.itemsInCart.find(a => a.couse.VCode === payloadCourseItem.VCode)
+            course = state.itemsInCart.find(a => a.couse.VCode === payloadCourseItem2.VCode)
             if (course !== null && course !== undefined) {
                 if (course.quantity > 1) {
                     course.quantity--;
 
                     return applyDicountsAndCoursePrivate({
                         ...state,
-                        itemsInCart: state.itemsInCart.map(a => a.couse.VCode == payloadCourseItem.VCode ? (course as CourseInCart) : a),
-                    });
+                        itemsInCart: state.itemsInCart.map(a => a.couse.VCode == payloadCourseItem2.VCode ? (course as CourseInCart) : a),
+                    }, action.payload.percentDiscounts, action.payload.dishDiscounts, action.payload.allCampaign, action.payload.dishSet);
                 }
                 else {
                     return applyDicountsAndCoursePrivate({
                         ...state,
-                        itemsInCart: state.itemsInCart.filter(a => a.couse.VCode != payloadCourseItem.VCode),
-                    });
+                        itemsInCart: state.itemsInCart.filter(a => a.couse.VCode != payloadCourseItem2.VCode),
+                    }, action.payload.percentDiscounts, action.payload.dishDiscounts, action.payload.allCampaign, action.payload.dishSet);
                 }
             }
             return state;
         case APPLE_DISCOUNT:
             return applyDicountsAndCoursePrivate({
                 ...state
-            });
-        case SET_USER_INFO:
-            return { ...state, userInfo: payloadUserInfoDatas }
+            }, action.payload.percentDiscounts, action.payload.dishDiscounts, action.payload.allCampaign, action.payload.dishSet);
+        /*case SET_USER_INFO:
+            return { ...state, userInfo: payloadUserInfoDatas }*/
         default:
             return state;
 
@@ -79,22 +67,22 @@ export const userCourseCartReducer = (state = initialState, action: UserStateCou
 };
 
 
-function applyDicountsAndCoursePrivate(state: UserCourseCartState): UserCourseCartState {
+function applyDicountsAndCoursePrivate(state: UserCourseCartState, percentDiscounts: PercentDiscount[], dishDiscounts: DishDiscount[], allCampaign: AllCampaignUser[], dishSet: DishSetDiscount[]): UserCourseCartState {
     let promo = null;//пока заглушка, т.к. нет промо
     let new_state = { ...state }//копируем текущий стейт, для его изменения
 
     let summ: number = 0;//сумма заказа
 
 
-    if (new_state.userInfo != undefined) {
+    if (true) {
         //let dishSetCopy = {...new_state.userInfo.dishSet}
-        let dishSets = new_state.userInfo.dishSet;
-        let dishsDiscounts = new_state.userInfo.dishDiscounts;
+        let dishSets = dishSet;
+        let dishsDiscounts = dishDiscounts;
         //массив сетов, из которых мы нашли данные
         let curDishSets: DishSetDiscountActive[] = [];
         //проверим все скидки, найдем наибольшую
         let maxPercentDiscount: PercentDiscount = { vcode: 0, MinSum: 0, MaxSum: 0, bonusRate: 0, discountPercent: 0 };
-        new_state.userInfo.percentDiscounts.forEach(a => {
+        percentDiscounts.forEach(a => {
             if (maxPercentDiscount.vcode == 0) {
                 maxPercentDiscount = a;
             } else if (maxPercentDiscount.discountPercent < a.discountPercent) {
@@ -125,11 +113,7 @@ function applyDicountsAndCoursePrivate(state: UserCourseCartState): UserCourseCa
                             curDishSets.push(curDishSetObj);
                         }
                         curDishSetObj.countInCart += courseItem.quantity;
-                        /*if (set.curDishCount !== undefined){
-                            set.curDishCount += courseItem.quantity;
-                        } else {
-                            set.curDishCount = courseItem.quantity;
-                        }*/
+                        
                     }
                 }
             }
@@ -178,30 +162,12 @@ function applyDicountsAndCoursePrivate(state: UserCourseCartState): UserCourseCa
     return new_state;
 }
 
-export function addCourseToCart(couse: CourseItem) {
-    return {
-        type: ADD_COURSE,
-        payload: couse,
-    };
-}
 
-export function dropCourseFromCart(couse: CourseItem) {
-    return {
-        type: DELETE_COURSE,
-        payload: couse,
-    };
-}
 
-export function setUserInfoData(userData: UserInfoDatas) {
+/*export function setUserInfoData(userData: UserInfoDatas) {
     return {
         type: SET_USER_INFO,
         payload: userData,
     };
-}
+}*/
 
-export function setUserOrg(org: number) {
-    return {
-        type: SET_USER_INFO,
-        payload: org,
-    };
-}

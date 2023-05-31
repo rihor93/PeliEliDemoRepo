@@ -4,42 +4,45 @@ import MenuCouseList from "../MenuCouseList/MenuCouseList";
 import UserInfo from "../UserInfo/UserInfo";
 import CartCourseList from "../CartCourseList/CartCourseList";
 import { telegramBotUrl } from "../../constant/constant";
-import { setCourseMenuLoad, setCourseMenuLoading } from "../../reducers/menuData/menuDataLoadReducer";
 import { MenuServerDataType } from "../../reducers/menuData/menuDataLoadTypes";
-import { AllCampaignUser, DishDiscount, DishSetDiscount, PercentDiscount, UserInfoDatas } from "../../types/userStateCourseTypes";
-import { setUserInfoData } from "../../reducers/userState/userStateReducer";
+//import { AllCampaignUser, DishDiscount, DishSetDiscount, PercentDiscount, UserInfoDatas } from "../../reducers/userCart/userCartTypes";
+//import { setUserInfoData } from "../../reducers/userCart/userCartReducer";
 import { useTelegram } from "../../Hook/useTelegram";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../reducers";
-import { currentOrgReducer, setCurOrg } from "../../reducers/currentOrg/currentOrgReducer";
-import {loadMenuServerData} from "../../reducers/menuData/menuDataLoadActions"
+import {loadMenuServerData} from "../../reducers/actions/menuDataLoadActions"
+import { loadUserServerData } from "../../reducers/actions/userInfoActions";
 
 
 
 
 export const Navigation: FC = () => {
     const dispatch = useDispatch();
-    const courseMenuData = useSelector((state: RootState) => state.courseLoad.data);
     const currentOrg = useSelector((state: RootState) => state.userOrg.curOrg);
-    const { userID } = useTelegram();
 
-    /*useEffect(() => {
+
+    useEffect(() => {
         // @ts-ignore
         dispatch(loadMenuServerData());
-      }, [dispatch]);*/
+      }, [dispatch]);
 
-    useEffect(() => {
+      useEffect(() => {
+        // @ts-ignore
+        dispatch(loadUserServerData(currentOrg));
+      }, [dispatch]);
+
+    /*useEffect(() => {
         //console.log('загрузка данных с сервера')
         loadUserMenu();
-    }, [currentOrg,])
+    }, [currentOrg,])*/
 
     useEffect(() => {
         //console.log('загрузка данных с сервера')
-        loadUserData();
+        //loadUserData();
     }, [currentOrg,])
 
 
-    const loadUserMenu = async () => {
+    /*const loadUserMenu = async () => {
         console.log('loadUserMenu')
         //if (courseMenuData === null && currentOrg !== undefined && currentOrg !== null && currentOrg !== 0) {
         dispatch(setCourseMenuLoading());
@@ -63,9 +66,9 @@ export const Navigation: FC = () => {
             dispatch(setCourseMenuLoad(null));
         }
         //}
-    }
+    }*/
 
-    const loadUserData = async () => {
+    /*const loadUserData = async () => {
         console.log('loadUserData')
         //if (currentOrg === null || currentOrg === undefined) {
         try {
@@ -98,7 +101,7 @@ export const Navigation: FC = () => {
             dispatch(setCourseMenuLoad(null));
         }
         //}
-    }
+    }*/
 
     return (
 
@@ -110,6 +113,3 @@ export const Navigation: FC = () => {
     );
 };
 
-function dispatch(arg0: any) {
-    throw new Error("Function not implemented.");
-}

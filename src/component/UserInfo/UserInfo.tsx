@@ -20,9 +20,10 @@ const UserInfo: React.FC = () => {
     //const [userBosuses, setUserBosuses] = useState('');
     //const [userAuthorized, setUserAuthorized] = useState(false);
     //const [userActions, setUserActions] = useState<Action[]>();
-    const userName = useSelector((state: RootState) => state.userCart.userInfo?.userName);
-    const userBosuses = useSelector((state: RootState) => state.userCart.userInfo?.userBonuses);
-    const userActions = useSelector((state: RootState) => state.userCart.userInfo?.allCampaign);
+    const userName = useSelector((state: RootState) => state.userInfo.data.userName);
+    const userLoading = useSelector((state: RootState) => state.userInfo.loading);
+    const userBosuses = useSelector((state: RootState) => state.userInfo.data.userBonuses);
+    const userActions = useSelector((state: RootState) => state.userInfo.data.allCampaign);
     const navigate = useNavigate()
     useEffect(() => {
         tg.ready();
@@ -75,15 +76,19 @@ const UserInfo: React.FC = () => {
         <div className="contentWrapper">
 
             <div>
-                {(userName !== null && userName !== undefined && userBosuses !== undefined ? <div>{<UserCard name={userName} bonuses={userBosuses.toFixed(2)} />}</div> : <div><h1>К сожалению, вы еще не завели карточку в нашей кулинарии</h1></div>)}
-                <div>
-                    <div><h1>Акции, специально для вас</h1></div>
+                {userLoading ? <div>Загрузка данных пользователя</div> :
                     <div>
-                        {userActions?.map((act, i) => {
-                            return <ActionCard key={act.VCode} name={act.Name} description={act.Description}></ActionCard>
-                        })}
+                        {(userName !== null && userName !== undefined && userBosuses !== undefined || userName === '' ? <div>{<UserCard name={userName} bonuses={userBosuses.toFixed(2)} />}</div> : <div><h1>К сожалению, вы еще не завели карточку в нашей кулинарии</h1></div>)}
+                        <div>
+                            <div><h1>Акции, специально для вас</h1></div>
+                            <div>
+                                {userActions?.map((act, i) => {
+                                    return <ActionCard key={act.VCode} name={act.Name} description={act.Description}></ActionCard>
+                                })}
+                            </div>
+                        </div>
                     </div>
-                </div>
+                }
             </div>
 
             {/*<TelegramButton value='FAQ' onClick={() => { navigate('/faq') }} />

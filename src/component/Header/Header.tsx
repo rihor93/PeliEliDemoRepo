@@ -4,10 +4,9 @@ import Button from "../Button/Button";
 import './Header.css';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../reducers";
-import { MENU_GROUP_STATE } from "../../types/menuStateTypes";
+import { MENU_GROUP_STATE } from "../../reducers/menuState/menuStateTypes";
 import { setCourseMenuStateGroup } from "../../reducers/menuState/menuStateReducer";
 import { useLocation, useNavigate } from "react-router-dom";
-import { setCurOrg } from "../../reducers/currentOrg/currentOrgReducer";
 
 
 

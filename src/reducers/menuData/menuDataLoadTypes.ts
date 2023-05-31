@@ -1,6 +1,6 @@
-export const FETCH_DATA_REQUEST = 'FETCH_DATA_REQUEST'
-export const FETCH_DATA_SUCCESS = 'FETCH_DATA_SUCCESS'
-export const FETCH_DATA_FAILURE = 'FETCH_DATA_FAILURE'
+export const FETCH_DATA_REQUEST = 'MENU_DATA_FETCH_DATA_REQUEST'
+export const FETCH_DATA_SUCCESS = 'MENU_DATA_FETCH_DATA_SUCCESS'
+export const FETCH_DATA_FAILURE = 'MENU_DATA_FETCH_DATA_FAILURE'
 
 export type FETCH_DATA = typeof FETCH_DATA_REQUEST | typeof FETCH_DATA_SUCCESS | typeof FETCH_DATA_FAILURE;
 
@@ -19,7 +19,7 @@ export type CategoryCourse = {
     CourseList: CourseItem[],
 }
 
-export type MenuServerDataType = CategoryCourse[] | null | string;
+export type MenuServerDataType = CategoryCourse[];
 
 export interface MenuDataLoadState {
     loading: boolean;
@@ -29,7 +29,7 @@ export interface MenuDataLoadState {
 
 interface SetMenuDataAction {
     type: FETCH_DATA;
-    payload: MenuServerDataType;
+    payload: MenuDataLoadState;
 }
 
 export type MenuDataLoadActionTypes = SetMenuDataAction;

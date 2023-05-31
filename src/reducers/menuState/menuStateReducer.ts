@@ -1,6 +1,6 @@
 import React from 'react';
 import { CategoryCourse } from '../menuData/menuDataLoadTypes';
-import { MENU_COURSE_STATE, MENU_GROUP_STATE, MenuStateActionTypes, MenuStateState, SET_MENU_STATE } from '../../types/menuStateTypes';
+import { MENU_COURSE_STATE, MENU_GROUP_STATE, MenuStateActionTypes, MenuStateState, SET_MENU_STATE } from './menuStateTypes';
 
 const initialState: MenuStateState = {
   courseMenuState: MENU_GROUP_STATE,

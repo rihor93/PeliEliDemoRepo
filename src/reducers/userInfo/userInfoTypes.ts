@@ -1,26 +1,8 @@
-import { CourseItem } from "../reducers/menuData/menuDataLoadTypes";
+export const FETCH_DATA_REQUEST = 'USER_INFO_FETCH_DATA_REQUEST'
+export const FETCH_DATA_SUCCESS = 'USER_INFO_FETCH_DATA_SUCCESS'
+export const FETCH_DATA_FAILURE = 'USER_INFO_FETCH_DATA_FAILURE'
 
-export const ADD_COURSE = 'ADD_COURSE'
-export const DELETE_COURSE = 'DELETE_COURSE'
-export const APPLE_DISCOUNT = 'APPLE_DISCOUNT'
-
-export const SET_USER_INFO = 'SET_USER_INFO'
-
-export type USER_ACTIONS_TYPE = typeof ADD_COURSE | typeof DELETE_COURSE | typeof APPLE_DISCOUNT | typeof SET_USER_INFO;
-
-export interface UserCourseCartState {
-    cartEmpty: boolean,
-    itemsInCart: CourseInCart[],
-    allPriceInCart: number,
-    userInfo?: UserInfoDatas,
-}
-
-export type CourseInCart = {
-    couse: CourseItem,
-    quantity: number,
-    priceWithDiscount: number,
-    campaign?: number,
-}
+export type FETCH_DATA = typeof FETCH_DATA_REQUEST | typeof FETCH_DATA_SUCCESS | typeof FETCH_DATA_FAILURE;
 
 export type PercentDiscount = {
     vcode: number,
@@ -59,7 +41,7 @@ export type AllCampaignUser = {
     promocode: string
 }
 
-export type UserInfoDatas = {
+export interface UserInfoState {
     userName: string,
     userBonuses: number,
     percentDiscounts: PercentDiscount[],
@@ -68,10 +50,16 @@ export type UserInfoDatas = {
     dishSet: DishSetDiscount[],
 }
 
-interface SetUserCourseAction {
-    type: USER_ACTIONS_TYPE;
-    payload: CourseItem | UserInfoDatas | number;
+export interface UserInfoLoadState {
+    loading: boolean,
+    data: UserInfoState,
+    error: string,
+}
+
+interface SetUserInfoAction {
+    type: FETCH_DATA,
+    payload: UserInfoLoadState,
 }
 
 
-export type UserStateCourseActionTypes = SetUserCourseAction;
+export type UserInfoActionTypes = SetUserInfoAction;

@@ -1,13 +1,9 @@
-import { FETCH_DATA_FAILURE, FETCH_DATA_REQUEST, FETCH_DATA_SUCCESS, MenuDataLoadActionTypes, MenuDataLoadState, MenuServerDataType } from './menuDataLoadTypes';
-import { MenuState, MenuStateActionTypes, MenuStateState, SET_MENU_STATE } from '../menuState/menuStateTypes';
+import { FETCH_DATA_FAILURE, FETCH_DATA_REQUEST, FETCH_DATA_SUCCESS, UserInfoActionTypes, UserInfoLoadState, UserInfoState } from "./userInfoTypes";
 
-const initialState: MenuDataLoadState = {
-  loading: true,
-  data: [],
-  error: '',
-};
 
-export const courseMenuDataLoadReducer = (state = initialState, action: MenuDataLoadActionTypes) : MenuDataLoadState => {
+const initialState: UserInfoLoadState = {loading: true, data: { userName: '', userBonuses: 0, percentDiscounts: [], dishDiscounts: [], allCampaign: [], dishSet: [] }, error: ''};
+
+export const userInfoReducer = (state = initialState, action: UserInfoActionTypes) : UserInfoLoadState => {
   switch (action.type) {
     case FETCH_DATA_REQUEST:
       return {
@@ -23,7 +19,7 @@ export const courseMenuDataLoadReducer = (state = initialState, action: MenuData
     case FETCH_DATA_FAILURE:
       return {
         loading: false,
-        data: [],
+        data: { userName: '', userBonuses: 0, percentDiscounts: [], dishDiscounts: [], allCampaign: [], dishSet: [] },
         error: action.payload.error,
       };
     default:
@@ -35,7 +31,6 @@ export const courseMenuDataLoadReducer = (state = initialState, action: MenuData
 /*export function setCourseMenuLoading() {
   return {
     type: FETCH_DATA_REQUEST,
-    payload: null,
   };
 }
 

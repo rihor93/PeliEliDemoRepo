@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../reducers";
 import { CourseItem } from "../../reducers/menuData/menuDataLoadTypes";
 import MenuItem from "../MenuItem/MenuItem";
-import { addCourseToCart, dropCourseFromCart } from "../../reducers/userState/userStateReducer";
+import { addCourseToCart, dropCourseFromCart } from "../../reducers/actions/userCartActions";
 
 
 
@@ -20,6 +20,7 @@ const CartCourseList: React.FC = () => {
     const dispatch = useDispatch();
     const courseMenuState = useSelector((state: RootState) => state.courseMenu.courseMenuState);
     const itemsInCart = useSelector((state: RootState) => state.userCart.itemsInCart);
+    const userInfo = useSelector((state: RootState)=>state.userInfo.data);
 
 
 
@@ -46,13 +47,13 @@ const CartCourseList: React.FC = () => {
 
     const onAdd = (product: CourseItem) => {
         //console.log("onAdd")
-        dispatch(addCourseToCart(product));
+        dispatch(addCourseToCart(product,userInfo));
         //dispatch(setCourseMenuStateGroup());
     }
 
     const onDel= (product: CourseItem) => {
         //console.log("onDel")
-        dispatch(dropCourseFromCart(product));
+        dispatch(dropCourseFromCart(product,userInfo));
         //dispatch(setCourseMenuStateGroup());
     }
     return (
