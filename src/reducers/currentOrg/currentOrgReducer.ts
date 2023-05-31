@@ -1,5 +1,4 @@
-import { CurrentOrgActionTypes, CurruntOrgState, SET_CURRENT_ORG } from '../../types/currentOrgTypes';
-import { ExampleActionTypes, ExampleState, SET_EXAMPLE } from '../../types/exampleTypes';
+import { CurrentOrgActionTypes, CurruntOrgState, SET_CURRENT_ORG } from './currentOrgTypes';
 
 const initialState: CurruntOrgState = {
   curOrg: 0,
@@ -24,9 +23,3 @@ export function currentOrgReducer(state = initialState, action: CurrentOrgAction
   }
 }
 
-export function setCurOrg(org: number) {
-  return {
-    type: SET_CURRENT_ORG,
-    payload: org,
-  };
-}
