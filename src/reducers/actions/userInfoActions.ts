@@ -5,12 +5,13 @@ import { AllCampaignUser, DishDiscount, DishSetDiscount, FETCH_DATA_FAILURE, FET
 import { useTelegram } from '../../Hook/useTelegram';
 import { SET_CURRENT_ORG } from '../currentOrg/currentOrgTypes';
 import { setCurOrg } from './currentOrgActions';
+import { applyDiscountForCart } from './userCartActions';
 
 
 const { userID } = useTelegram();
 
 export const loadUserServerData = (orgId: number) => {
-    console.log('loadUserServerData')
+    //console.log('loadUserServerData')
     //const currentOrg = useSelector((state: RootState) => state.userOrg.curOrg);
     
     return (dispatch: Dispatch) => {
@@ -31,8 +32,9 @@ export const loadUserServerData = (orgId: number) => {
                     payload: {loading: false, error: 'userInfo', data: userData},
                 })
                 
-                setCurOrg(dataUserInfo.UserInfo.COrg);
-                console.log('loadUserServerData',response.data);
+                dispatch(setCurOrg(dataUserInfo.UserInfo.COrg as number));
+                dispatch(applyDiscountForCart(userData));
+                //console.log('loadUserServerData',response.data);
             })
             .catch(error => {
                 dispatch({ type: FETCH_DATA_FAILURE, payload: {loading: false, error: error.message} });

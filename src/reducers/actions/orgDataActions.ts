@@ -1,23 +1,23 @@
 import { Dispatch } from 'redux';
-import { FETCH_DATA_REQUEST, FETCH_DATA_SUCCESS, FETCH_DATA_FAILURE, MenuServerDataType } from '../menuData/menuDataLoadTypes';
 import axios from 'axios';
 import { telegramBotUrl } from '../../constant/constant';
+import { FETCH_DATA_REQUEST, FETCH_DATA_SUCCESS, FETCH_DATA_FAILURE, OrgDatas } from '../organization/organizationTypes';
 
 
-export const loadMenuServerData = () => {
+export const orgServerData = () => {
     //const currentOrg = useSelector((state: RootState) => state.userOrg.curOrg);
-    //console.log('loadMenuServerData')
+    //console.log('orgServerData')
     return (dispatch: Dispatch) => {
         dispatch({ type: FETCH_DATA_REQUEST, });
-        axios.get(telegramBotUrl + '/getUserMenu/')
+        axios.get(telegramBotUrl + '/GetOrgForWeb/')
             .then(response => {
-                const data: MenuServerDataType = response.data;
+                const data: OrgDatas = response.data;
                 dispatch({
                     type: FETCH_DATA_SUCCESS,
-                    payload: {loading: false, error: 'menuData', data: data},
+                    payload: {loading: false, error: 'orgData', data: data},
                 })
                 //console.log(response.data);
-                //console.log('loadMenuServerData', response.data)
+                //console.log('orgServerData', response.data)
             })
             .catch(error => {
                 dispatch({ type: FETCH_DATA_FAILURE, payload: {loading: false, error: error.message} });

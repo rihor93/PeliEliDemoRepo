@@ -4,6 +4,7 @@ import { courseMenuDataLoadReducer } from './reducers/menuData/menuDataLoadReduc
 import { userCourseCartReducer } from './reducers/userCart/userCartReducer';
 import { currentOrgReducer } from './reducers/currentOrg/currentOrgReducer';
 import { userInfoReducer } from './reducers/userInfo/userInfoReducer';
+import { orgDataLoadReducer } from './reducers/organization/organizationReducer';
 
 export const rootReducer = combineReducers({
   courseMenu: courseMenuReducer,
@@ -11,6 +12,7 @@ export const rootReducer = combineReducers({
   userCart: userCourseCartReducer,
   userOrg: currentOrgReducer,
   userInfo: userInfoReducer,
+  orgDatas: orgDataLoadReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

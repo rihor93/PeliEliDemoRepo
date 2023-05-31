@@ -9,10 +9,7 @@ const initialState: UserCourseCartState = {
 };
 
 export const userCourseCartReducer = (state = initialState, action: SetUserCourseActionTypes): UserCourseCartState => {
-    
-    
 
-    
     switch (action.type) {
 
         case ADD_COURSE:

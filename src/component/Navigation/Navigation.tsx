@@ -10,8 +10,9 @@ import { MenuServerDataType } from "../../reducers/menuData/menuDataLoadTypes";
 import { useTelegram } from "../../Hook/useTelegram";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../reducers";
-import {loadMenuServerData} from "../../reducers/actions/menuDataLoadActions"
+import { loadMenuServerData } from "../../reducers/actions/menuDataLoadActions"
 import { loadUserServerData } from "../../reducers/actions/userInfoActions";
+import { orgServerData } from "../../reducers/actions/orgDataActions";
 
 
 
@@ -24,12 +25,17 @@ export const Navigation: FC = () => {
     useEffect(() => {
         // @ts-ignore
         dispatch(loadMenuServerData());
-      }, [dispatch]);
+    }, [dispatch]);
 
-      useEffect(() => {
+    useEffect(() => {
+        // @ts-ignore
+        dispatch(orgServerData());
+    }, [dispatch]);
+
+    useEffect(() => {
         // @ts-ignore
         dispatch(loadUserServerData(currentOrg));
-      }, [dispatch]);
+    }, [dispatch]);
 
     /*useEffect(() => {
         //console.log('загрузка данных с сервера')

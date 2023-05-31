@@ -7,7 +7,7 @@ const initialState: CurruntOrgState = {
 export function currentOrgReducer(state = initialState, action: CurrentOrgActionTypes): CurruntOrgState {
   switch (action.type) {
     case SET_CURRENT_ORG:
-      console.log({action: action.payload, state: state.curOrg});
+      console.log('SET_CURRENT_ORG',{action: action.payload, state: state.curOrg});
       if (state.curOrg != action.payload) {
         //console.log('123')
         return {
