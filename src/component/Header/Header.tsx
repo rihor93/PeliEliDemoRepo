@@ -33,7 +33,7 @@ const Header = () => {
     }
 
     function onCartClick() {
-        dispatch(setCurOrg(145));
+        //dispatch(setCurOrg(145));
         navigate('/cart');
     }
 
