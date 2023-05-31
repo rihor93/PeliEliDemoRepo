@@ -5,15 +5,16 @@ import './Header.css';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../reducers";
 import { MENU_GROUP_STATE } from "../../types/menuStateTypes";
-import { setCourseMenuStateGroup } from "../../reducers/menu/menuStateReducer";
+import { setCourseMenuStateGroup } from "../../reducers/menuState/menuStateReducer";
 import { useLocation, useNavigate } from "react-router-dom";
+import { setCurOrg } from "../../reducers/currentOrg/currentOrgReducer";
 
 
 
 
 const Header = () => {
-    
-    const {onClose, user, tg} = useTelegram();
+
+    const { onClose, user, tg } = useTelegram();
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const location = useLocation();
@@ -32,6 +33,7 @@ const Header = () => {
     }
 
     function onCartClick() {
+        dispatch(setCurOrg(145));
         navigate('/cart');
     }
 
@@ -52,7 +54,7 @@ const Header = () => {
         </div>
     )
 
-    
+
 }
 
 export default Header;

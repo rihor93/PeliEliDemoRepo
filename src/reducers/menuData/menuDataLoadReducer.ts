@@ -1,4 +1,4 @@
-import { FETCH_DATA_FAILURE, FETCH_DATA_REQUEST, FETCH_DATA_SUCCESS, MenuDataLoadActionTypes, MenuDataLoadState, MenuServerDataType } from '../../types/menuDataLoadTypes';
+import { FETCH_DATA_FAILURE, FETCH_DATA_REQUEST, FETCH_DATA_SUCCESS, MenuDataLoadActionTypes, MenuDataLoadState, MenuServerDataType } from './menuDataLoadTypes';
 import { MenuState, MenuStateActionTypes, MenuStateState, SET_MENU_STATE } from '../../types/menuStateTypes';
 
 const initialState: MenuDataLoadState = {

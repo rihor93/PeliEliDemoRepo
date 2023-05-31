@@ -20,7 +20,7 @@ function App() {
   return (
     <div className="container">
       <Provider store={store}>
-        <Header />
+        
         <ConfigProvider
           theme={
             themeParams.text_color
@@ -38,6 +38,7 @@ function App() {
               : undefined
           }
         >
+          <Header />
           <div className="contentContainer">
             {/*<Routes>
               <Route index element={<MenuCouseList />} />

@@ -1,5 +1,5 @@
-import { CourseItem } from '../../types/menuDataLoadTypes';
-import { ADD_COURSE, CourseInCart, DELETE_COURSE, UserCourseCartState, UserStateCourseActionTypes, UserInfoDatas, SET_USER_INFO, DishSetDiscount, DishSetDiscountActive, PercentDiscount } from '../../types/userStateCourseTypes';
+import { CourseItem } from '../menuData/menuDataLoadTypes';
+import { ADD_COURSE, CourseInCart, DELETE_COURSE, UserCourseCartState, UserStateCourseActionTypes, UserInfoDatas, SET_USER_INFO, DishSetDiscountActive, PercentDiscount, APPLE_DISCOUNT } from '../../types/userStateCourseTypes';
 
 const initialState: UserCourseCartState = {
     cartEmpty: false,
@@ -65,6 +65,10 @@ export const userCourseCartReducer = (state = initialState, action: UserStateCou
                 }
             }
             return state;
+        case APPLE_DISCOUNT:
+            return applyDicountsAndCoursePrivate({
+                ...state
+            });
         case SET_USER_INFO:
             return { ...state, userInfo: payloadUserInfoDatas }
         default:
@@ -80,7 +84,7 @@ function applyDicountsAndCoursePrivate(state: UserCourseCartState): UserCourseCa
     let new_state = { ...state }//копируем текущий стейт, для его изменения
 
     let summ: number = 0;//сумма заказа
-    
+
 
     if (new_state.userInfo != undefined) {
         //let dishSetCopy = {...new_state.userInfo.dishSet}
@@ -195,3 +199,9 @@ export function setUserInfoData(userData: UserInfoDatas) {
     };
 }
 
+export function setUserOrg(org: number) {
+    return {
+        type: SET_USER_INFO,
+        payload: org,
+    };
+}

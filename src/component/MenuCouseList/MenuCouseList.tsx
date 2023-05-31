@@ -5,9 +5,9 @@ import { telegramBotUrl } from "../../constant/constant";
 import '../OtherStyle/ListStyle.css'
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../reducers";
-import { setCourseMenuStateCourse, setCourseMenuStateGroup } from "../../reducers/menu/menuStateReducer";
-import { setCourseMenuLoad, setCourseMenuLoading } from "../../reducers/menu/menuDataLoadReducer";
-import { CategoryCourse, CourseItem, MenuServerDataType } from "../../types/menuDataLoadTypes";
+import { setCourseMenuStateCourse, setCourseMenuStateGroup } from "../../reducers/menuState/menuStateReducer";
+import { setCourseMenuLoad, setCourseMenuLoading } from "../../reducers/menuData/menuDataLoadReducer";
+import { CategoryCourse, CourseItem, MenuServerDataType } from "../../reducers/menuData/menuDataLoadTypes";
 import MenuCategory from "../MenuCategory/MenuCategory";
 import { MENU_GROUP_STATE } from "../../types/menuStateTypes";
 import MenuItem from "../MenuItem/MenuItem";

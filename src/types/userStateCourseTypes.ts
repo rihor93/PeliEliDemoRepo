@@ -1,4 +1,4 @@
-import { CourseItem } from "./menuDataLoadTypes";
+import { CourseItem } from "../reducers/menuData/menuDataLoadTypes";
 
 export const ADD_COURSE = 'ADD_COURSE'
 export const DELETE_COURSE = 'DELETE_COURSE'
@@ -70,7 +70,7 @@ export type UserInfoDatas = {
 
 interface SetUserCourseAction {
     type: USER_ACTIONS_TYPE;
-    payload: CourseItem | UserInfoDatas;
+    payload: CourseItem | UserInfoDatas | number;
 }
 
 

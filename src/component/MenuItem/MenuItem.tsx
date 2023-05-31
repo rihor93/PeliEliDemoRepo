@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from "../Button/Button";
 import './MenuItem.css';
-import { CourseItem } from '../../types/menuDataLoadTypes';
+import { CourseItem } from '../../reducers/menuData/menuDataLoadTypes';
 
 
 type ProductItemProps = {

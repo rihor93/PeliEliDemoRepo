@@ -1,5 +1,5 @@
 import React from 'react';
-import { CategoryCourse } from '../../types/menuDataLoadTypes';
+import { CategoryCourse } from '../menuData/menuDataLoadTypes';
 import { MENU_COURSE_STATE, MENU_GROUP_STATE, MenuStateActionTypes, MenuStateState, SET_MENU_STATE } from '../../types/menuStateTypes';
 
 const initialState: MenuStateState = {
