@@ -35,5 +35,11 @@ interface SetUserCourseAction {
     payload: UserCoursePayload;
 }
 
+export interface UserCartToServer {
+    itemsInCart: CourseInCart[],
+    userId: string,
+    currentOrg: number,
+}
+
 
 export type SetUserCourseActionTypes = SetUserCourseAction;

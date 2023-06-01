@@ -133,8 +133,7 @@ const MenuList: React.FC = () => {
                                     />
                                 )) : <div>Ошибка загрузки меню :(</div>}
                             </> :
-                            <>  {console.log('courseMenuData', courseMenuData)}
-                                {
+                            <>  {
                                 typeof courseMenuData !== 'string' && courseMenuData !== null && courseMenuCurCetegory !== null ? courseMenuCurCetegory.CourseList.map(item => (
                                     <MenuItem
                                         key={item.VCode}

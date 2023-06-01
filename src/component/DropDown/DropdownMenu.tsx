@@ -45,7 +45,7 @@ const DropdownMenu: React.FC = (): JSX.Element => {
     };
 
     const getCurrentOrg = (): string => {
-        console.log('getCurrentOrg', orgDatas);
+        //console.log('getCurrentOrg', orgDatas);
         const resOrg = orgDatas.find(a => a.Id == currentOrg)?.Name;
         return resOrg !== undefined ? resOrg : "Организация не выбрана";
     }

@@ -8,6 +8,8 @@ import { RootState } from "../../reducers";
 import { CourseItem } from "../../reducers/menuData/menuDataLoadTypes";
 import MenuItem from "../MenuItem/MenuItem";
 import { addCourseToCart, dropCourseFromCart } from "../../reducers/actions/userCartActions";
+import Button from "../Button/Button";
+import { UserCartToServer } from "../../reducers/userCart/userCartTypes";
 
 
 
@@ -18,9 +20,10 @@ const CartCourseList: React.FC = () => {
 
 
     const dispatch = useDispatch();
-    const courseMenuState = useSelector((state: RootState) => state.courseMenu.courseMenuState);
+    //const courseMenuState = useSelector((state: RootState) => state.courseMenu.courseMenuState);
     const itemsInCart = useSelector((state: RootState) => state.userCart.itemsInCart);
     const userInfo = useSelector((state: RootState)=>state.userInfo.data);
+    const currentOrg = useSelector((state: RootState) => state.userOrg.curOrg);
 
 
 
@@ -32,6 +35,7 @@ const CartCourseList: React.FC = () => {
 
         return () => {
             tg.offEvent('mainButtonClicked', onClose);
+            //console.log(itemsInCart);
             //tg.MainButton.hide();
         }
     })
@@ -43,7 +47,10 @@ const CartCourseList: React.FC = () => {
 
 
 
-    
+    const onOrder = () => {
+        let orderToSend: UserCartToServer = { itemsInCart: itemsInCart, userId: userID, currentOrg: currentOrg};
+        console.log(JSON.stringify(orderToSend));
+    }
 
     const onAdd = (product: CourseItem) => {
         //console.log("onAdd")
@@ -58,7 +65,7 @@ const CartCourseList: React.FC = () => {
     }
     return (
 
-
+        <div>
         <div className={'list'}>
             {itemsInCart?.length > 0 ?
             itemsInCart.map(item => (
@@ -73,6 +80,8 @@ const CartCourseList: React.FC = () => {
 
             />)) : <div>Пока корзина пуста</div>}
             
+        </div>
+        <Button onClick={onOrder}>Заказать</Button>
         </div>
 
 
