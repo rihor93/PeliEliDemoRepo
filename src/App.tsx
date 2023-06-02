@@ -1,56 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './App.css';
-import { MainButton, useThemeParams } from '@vkruglikov/react-telegram-web-app';
-import { ConfigProvider, theme } from 'antd';
-import UserInfo from './component/UserInfo/UserInfo';
 import Header from './component/Header/Header';
-import MenuCouseList from './component/MenuCouseList/MenuCouseList';
 import { Provider } from 'react-redux';
 import store from './store';
-import CartCourseList from './component/CartCourseList/CartCourseList';
 import { Navigation } from './component/Navigation/Navigation';
 
 
 
 function App() {
-
-  const [colorScheme, themeParams] = useThemeParams();
-
-  //console.log('app')
   return (
     <div className="container">
       <Provider store={store}>
-        
-        <ConfigProvider
-          theme={
-            themeParams.text_color
-              ? {
-                algorithm:
-                  colorScheme === 'dark'
-                    ? theme.darkAlgorithm
-                    : theme.defaultAlgorithm,
-                token: {
-                  colorText: themeParams.text_color,
-                  colorPrimary: themeParams.button_color,
-                  colorBgBase: themeParams.bg_color,
-                },
-              }
-              : undefined
-          }
-        >
-          <Header />
-          <div className="contentContainer">
-            {/*<Routes>
-              <Route index element={<MenuCouseList />} />
-              <Route path={'userInfo'} element={<UserInfo />} />
-              <Route path={'cart'} element={<CartCourseList />} />
-            </Routes>
-        </div>*/}
-            <Navigation />
-          </div>
-        </ConfigProvider>
-      </Provider>
-    </div>
+        <Header />
+        <div className="contentContainer">
+          <Navigation />
+        </div>
+      </Provider >
+    </div >
   );
 }
 
