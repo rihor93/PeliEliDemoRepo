@@ -1,9 +1,12 @@
 import React from 'react';
 import './App.css';
+import { StoreProvider } from './common/providers';
+import { Store } from './store';
 
 function App() {
   return (
-    <div>app</div>
+    <StoreProvider store={new Store()}>
+    </StoreProvider>
   );
 }
 
