@@ -3,7 +3,14 @@ import { makeAutoObservable, reaction } from "mobx";
 import { AuthStore } from "./stores";
 
 export class Store {
-  auth: AuthStore = new AuthStore(this);
+  auth = new AuthStore(this); // todo auth
+  // courseMenu = new CourseMenu(this);
+  // courseMenuDataLoad = new CourseMenuDataLoad(this);
+  // userCourseCart = new UserCourseCart(this);
+  // currentOrg = new CurrentOrg(this);
+  // userInfo = new UserInfo(this);
+  // orgDataLoad = new OrgDataLoad(this);
+
   subscriptions: (() => void)[] = [];
 
   constructor() { 
