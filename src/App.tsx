@@ -8,7 +8,7 @@ import { Store } from './store';
 
 function App() {
   const { queryId } = useTelegram();
-  if (config.useInlyOnTg) {
+  if (config.useOnlyOnTg) {
     if (!queryId) {
       const errText = `
         Данные аккаунта Telegram не были получены. 
