@@ -1,4 +1,6 @@
 export const config = {
   /** Использовать только внутри тг */
-  useInlyOnTg: false,
+  useOnlyOnTg: false,
+  /** bot api */
+  apiURL: 'https://elipelisr.lexcloud.ru/elipelibot', // apiURL: 'http://localhost:8080/api/v2';
 }
