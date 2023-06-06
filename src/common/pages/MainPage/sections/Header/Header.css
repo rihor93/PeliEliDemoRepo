@@ -1,0 +1,35 @@
+.header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 25px;
+}
+
+.header > div {
+  margin-left: 25px;
+}
+
+.header_logo {
+  width: 100px;
+  height: auto;
+}
+
+.header_contacts {
+  display: flex;
+}
+.header_contacts > div {
+  margin-left: 25px;
+}
+
+.slogan_quote {
+  color: #010400;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 28px;
+}
+
+.header_cart {
+  margin-left: 25px;
+  height: 30px;
+}
