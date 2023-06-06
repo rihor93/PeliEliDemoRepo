@@ -1,0 +1,20 @@
+.page_filter {
+  margin: 20px 0;
+  width: 100%;
+}
+
+.filter_list {
+  display: flex;
+  flex-wrap: wrap;
+  /* todo wrap or scroll */
+}
+
+.filter_item {
+  padding: 5px 15px;
+  border-radius: 100px;
+  border: 1px solid black;
+  transition: all 0.3s ease 0s;
+  margin: 10px 5px;
+  font-size: 18px;
+  font-weight: 300;
+}

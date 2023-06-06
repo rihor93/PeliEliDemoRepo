@@ -1,5 +1,4 @@
 import { observer } from 'mobx-react-lite';
-import React from 'react';
 import { Navigate } from 'react-router-dom';
 import { useStore } from '../hooks';
 
@@ -36,9 +35,6 @@ export const Checker = observer(({
     <Navigate
       replace
       to="/login" // todo вопрос создавать ли логин страницу?
-      state={{
-        from: location
-      }}
     />
   );
 })
