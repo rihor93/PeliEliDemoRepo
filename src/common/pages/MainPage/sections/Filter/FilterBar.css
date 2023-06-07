@@ -1,6 +1,13 @@
 .page_filter {
-  margin: 20px 0;
   width: 100%;
+  background-color: white; 
+  /* todo bg color */
+}
+.overlayed {
+  position: fixed;
+  top: 0;
+  animation-name: fadeIn;
+  animation-duration: 0.5s;
 }
 
 .filter_list {
@@ -17,4 +24,21 @@
   margin: 10px 5px;
   font-size: 18px;
   font-weight: 300;
+}
+
+.filter_list > .active {
+  background: #ffe494;
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    top: -50px;
+  }
+  
+  to {
+    opacity: 1;
+    top: 0;
+  }
 }
