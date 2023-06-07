@@ -1,15 +1,10 @@
 import React from "react";
 import { makeAutoObservable, reaction } from "mobx";
-import { AuthStore } from "./stores";
+import { AuthStore, MainPageStore } from "./stores";
 
 export class Store {
   auth = new AuthStore(this); // todo auth
-  // courseMenu = new CourseMenu(this);
-  // courseMenuDataLoad = new CourseMenuDataLoad(this);
-  // userCourseCart = new UserCourseCart(this);
-  // currentOrg = new CurrentOrg(this);
-  // userInfo = new UserInfo(this);
-  // orgDataLoad = new OrgDataLoad(this);
+  mainPage = new MainPageStore(this);   
 
   subscriptions: (() => void)[] = [];
 
