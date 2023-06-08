@@ -5,6 +5,12 @@
   padding: 25px;
 }
 
+@media screen and (max-width: 768px) {
+  .header {
+    display: none;
+  }
+}
+
 .header > div {
   margin-left: 25px;
 }
