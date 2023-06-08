@@ -6,27 +6,33 @@ import { observer } from 'mobx-react-lite';
 
 export const Categories: React.FC = observer(() => {
   const { mainPage } = useStore();
-  const { category_courses: categories } = mainPage;
+  const { categories } = mainPage;
+
+  React.useEffect(() => {
+    mainPage.loadMenu()
+  }, [])
 
   return (
     <section className='categories'>
 
-      {categories.map((category) => 
-        <div key={category.id} id={category.id}>
-          <h1>{category.category}</h1>
+      {categories.map((category, index) => 
+        <div key={category.VCode + '-' + index} id={String(category.VCode)}>
+          <h1>{category.Name}</h1>
           <div className="courses_list">
 
-            {category.courses.map((course, index) => 
+            {category.CourseList.map((course, index) => 
               <div 
                 className="course_item" 
-                key={`${category.id}-${index}`}
+                key={`${category.Name}-${course.Name}-${index}`}
               >
-                <img src={course.img} />
-                <h5>{course.title}</h5>
-                <p>{course.subtitle}</p>
+                {/* todo image src */}
+                <img src={'./gurmag.png'} /> 
+                <h5>{course.Name}</h5>
+                {/* todo subtitle course */}
+                <p>{course.Name}</p>
                 <div>
                   <img src="./cart.svg" />
-                  <span>{course.price}</span>
+                  <span>{course.Discount_Price}</span>
                 </div>
               </div>
             )}

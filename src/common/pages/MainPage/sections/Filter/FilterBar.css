@@ -12,9 +12,34 @@
 
 .filter_list {
   display: flex;
-  flex-wrap: wrap;
-  /* todo wrap or scroll */
+  position: relative;
+  white-space: nowrap;
+  overflow-x: overlay;
 }
+
+/* size */
+.filter_list::-webkit-scrollbar {
+  height: 5px;
+  width: 7px;
+}
+
+/* Track */
+.filter_list::-webkit-scrollbar-track {
+  background: 'none';
+}
+ 
+/* Handle */
+.filter_list::-webkit-scrollbar-thumb {
+  background: #949fff; 
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+.filter_list::-webkit-scrollbar-thumb:hover {
+  background: #5364fb; 
+}
+
+
 
 .filter_item {
   padding: 5px 15px;
@@ -26,7 +51,7 @@
   font-weight: 300;
 }
 
-.filter_list > .active {
+.filter_list .active {
   background: #ffe494;
 }
 

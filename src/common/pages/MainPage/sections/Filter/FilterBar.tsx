@@ -3,10 +3,12 @@ import { useStore } from '../../../../hooks';
 import React from 'react';
 import './FilterBar.css';
 
+type e = React.MouseEvent<HTMLDivElement, MouseEvent>
+
 export const Filter: React.FC = observer(() => {
   const { mainPage } = useStore();
   const {
-    category_courses: categories,
+    categories,
     visibleCategory
   } = mainPage;
 
@@ -21,15 +23,15 @@ export const Filter: React.FC = observer(() => {
       // чтобы найти ту, которая сейчас видна на 
       // экране
       categories.forEach((category) => {
-        const el = document.getElementById(category.id);
+        const el = document.getElementById(String(category.VCode));
         const cordinates = el?.getBoundingClientRect();
 
         if (cordinates) {
           // Если категория находится в видимой области
           if (cordinates.top < 300 && Math.abs(cordinates.top) + 300 < Number(el?.offsetHeight)) {
             // делаем ее активной
-            if (visibleCategory !== category.id) {
-              mainPage.setVisibleCategory(category.id)
+            if (visibleCategory !== String(category.VCode)) {
+              mainPage.setVisibleCategory(String(category.VCode))
             }
           }
         }
@@ -45,21 +47,32 @@ export const Filter: React.FC = observer(() => {
 
     window.addEventListener('scroll', listener)
     return () => window.removeEventListener('scroll', listener)
-  }, [visibleCategory])
+  }, [visibleCategory, categories.length])
 
-  const classes = `filter page_filter ${isScrolled ? 'overlayed' : ''}`;
+  const classes = [
+    'filter',
+    'page_filter',
+    isScrolled
+      ? 'overlayed'
+      : ''
+  ]
+
+
+
   return (
-    <section className={classes}>
+    <section className={classes.join(' ')}>
       <ul className="filter_list">
+
         {categories.map((category, index) => {
-          const isActive = mainPage.visibleCategory == category.id
+          const isActive = mainPage.visibleCategory == String(category.VCode);
+
           return (
             <li
               className={`filter_item ${isActive ? 'active' : ''}`}
               key={`filter_item_${index}`}
-              onClick={() => NavigateTo(category.id)}
+              onClick={() => NavigateTo(String(category.VCode))}
             >
-              {category.category}
+              {category.Name}
             </li>
           )
         })}
