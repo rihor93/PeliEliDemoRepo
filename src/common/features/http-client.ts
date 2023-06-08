@@ -35,7 +35,7 @@ class HttpClient {
           ...config,
         }
       )
-      .then(this.handleResponse);
+      .then(this.handleResponse<T>);
   }
 
   async post<B, R>(
@@ -51,7 +51,7 @@ class HttpClient {
           ...(config?.headers ?? {}),
         },
       })
-      .then(this.handleResponse);
+      .then(this.handleResponse<R>);
   }
 
   async put<B, R>(url: string, body: B) {
@@ -63,13 +63,13 @@ class HttpClient {
   async patch<B, R>(url: string, body: B) {
     return this.client
       .patch<B, AxiosResponse<R | RequestError>>(url, body)
-      .then(this.handleResponse);
+      .then(this.handleResponse<R>);
   }
 
   async delete<T>(url: string) {
     return this.client
       .delete<T | RequestError>(url)
-      .then(this.handleResponse);
+      .then(this.handleResponse<T>);
   }
 
   handleResponse<B>(res: AxiosResponse<B | RequestError>) {
