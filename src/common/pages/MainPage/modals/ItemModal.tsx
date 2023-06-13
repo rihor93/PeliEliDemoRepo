@@ -34,11 +34,11 @@ export const ItemModal: React.FC<{
         <div className="available_types">
           {/* todo src img here */}
           {/* todo as select option */}
-          <img className="selected" src="./gurmag.png" alt="" />
-          <img src="./gurmag.png" alt="" />
-          <img src="./gurmag.png" alt="" />
-          <img src="./gurmag.png" alt="" />
-          <img src="./gurmag.png" alt="" />
+          <img className="selected" src="./gurmag.png" />
+          <img src="./gurmag.png" />
+          <img src="./gurmag.png" />
+          <img src="./gurmag.png" />
+          <img src="./gurmag.png" />
         </div>
         <span>Количество:</span>
         <div className="select_count">
@@ -46,12 +46,9 @@ export const ItemModal: React.FC<{
           <span className="count">0</span>
           <button className="plus">+</button>
         </div>
-        <div className="add_to_cart">
-          <div className="add_to_cart_button">
-            <img src="./cart.svg" alt="Добавить в корзину" />
-            <span>Добавить в корзину</span>
-          </div>
-          
+        <div className="add_to_cart_button">
+          <img src="./cart.svg" alt="Добавить в корзину" />
+          <span>Добавить в корзину</span>
         </div>
       </div>
     </Modal>

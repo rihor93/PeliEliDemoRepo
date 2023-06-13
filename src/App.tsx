@@ -6,6 +6,8 @@ import { useTelegram } from './common/hooks';
 import { StoreProvider } from './common/providers';
 import { Store } from './store';
 
+const store = new Store();
+
 function App() {
   const { queryId } = useTelegram();
   if (config.useOnlyOnTg) {
@@ -19,7 +21,7 @@ function App() {
   }
 
   return (
-    <StoreProvider store={new Store()}>
+    <StoreProvider store={store}>
       <Router />
     </StoreProvider>
   );

@@ -43,7 +43,7 @@ export class MainPageStore {
   /** выбранное блюдо, которое откроется в отдельном окошке */
   selectedCourse: Optional<CourseItem> = null;
   watchCourse(course: Optional<CourseItem>) {
-    logger.log('Просматриваем блюдо', MainPageStore.name)
+    logger.log('Просматриваем блюдо ' + course?.Name, MainPageStore.name)
     this.selectedCourse = course;
     this.itemModal.open();
   }

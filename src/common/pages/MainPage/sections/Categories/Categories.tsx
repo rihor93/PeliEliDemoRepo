@@ -8,10 +8,6 @@ export const Categories: React.FC = observer(() => {
   const { mainPage } = useStore();
   const { categories, watchCourse } = mainPage;
 
-  React.useEffect(() => {
-    mainPage.loadMenu()
-  }, [])
-
   return (
     <section className='categories'>
 

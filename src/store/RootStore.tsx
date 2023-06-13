@@ -1,10 +1,11 @@
 import React from "react";
 import { makeAutoObservable, reaction } from "mobx";
-import { AuthStore, MainPageStore } from "./stores";
+import { AuthStore, CartStore, MainPageStore } from "./stores";
 
 export class Store {
   auth = new AuthStore(this); // todo auth
-  mainPage = new MainPageStore(this);   
+  mainPage = new MainPageStore(this);
+  cartStore = new CartStore(this);
 
   subscriptions: (() => void)[] = [];
 
@@ -20,6 +21,7 @@ export class Store {
     );
     
     this.subscriptions.push(dispose);
+    this.afterLoaded()
   }
   // Загружаются данные связаные с учеткой
   afterAuthorized() {
@@ -29,6 +31,7 @@ export class Store {
   // Загружаются общие данные, главные страницы и т.д.
   afterLoaded() {
     console.log('after loaded')
+    this.mainPage.loadMenu()
   }
 
   onDestroy() {
@@ -37,5 +40,5 @@ export class Store {
     }
   }
 }
-
-export const StoreContext = React.createContext(new Store());
+const empty = null as unknown as Store
+export const StoreContext = React.createContext<Store>(empty);
