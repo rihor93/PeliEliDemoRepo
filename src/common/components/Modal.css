@@ -1,0 +1,71 @@
+.modal_background {
+  width: 100%;
+  min-height: 100%;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.50);
+  z-index: 100;
+}
+
+.modal {
+  border-radius: 20px;
+  padding: 1rem;
+  /* todo bg color */
+  background: white;
+  max-width: 80vw;
+  animation-name: Jump;
+  animation-duration: 0.3s;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes Jump {
+  from {
+    margin-top: -300px;
+    opacity: 0;
+  }
+
+  to {
+    margin-top: 0;
+    opacity: 1;
+  }
+}
+
+@media screen and (min-width: 300px) {
+  .modal {
+    max-width: 96vw;
+  }
+}
+
+@media screen and (min-width: 576px) {
+  .modal {
+    max-width: 92vw;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .modal {
+    max-width: 88vw;
+    flex-direction: row;
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .modal {
+    max-width: 84vw;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .modal {
+    max-width: 80vw;
+  }
+}
+
+@media screen and (min-width: 1400px) {
+  .modal {
+    max-width: 80vw;
+  }
+}
