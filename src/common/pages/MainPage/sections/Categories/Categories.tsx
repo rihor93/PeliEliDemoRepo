@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite';
 
 export const Categories: React.FC = observer(() => {
   const { mainPage } = useStore();
-  const { categories } = mainPage;
+  const { categories, watchCourse } = mainPage;
 
   React.useEffect(() => {
     mainPage.loadMenu()
@@ -26,12 +26,18 @@ export const Categories: React.FC = observer(() => {
                 key={`${category.Name}-${course.Name}-${index}`}
               >
                 {/* todo image src */}
-                <img src={'./gurmag.png'} /> 
-                <h5>{course.Name}</h5>
+                <img 
+                  src={'./gurmag.png'} 
+                  onClick={() => watchCourse(course)}
+                /> 
+                <h5 onClick={() => watchCourse(course)}>{course.Name}</h5>
                 {/* todo subtitle course */}
                 <p>{course.Name}</p>
                 <div>
-                  <img src="./cart.svg" />
+                  <img 
+                    src="./cart.svg"
+                    onClick={() => watchCourse(course)}
+                  />
                   <span>{course.Discount_Price}</span>
                 </div>
               </div>
