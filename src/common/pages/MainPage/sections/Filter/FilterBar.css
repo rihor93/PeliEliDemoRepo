@@ -1,6 +1,7 @@
 .page_filter {
   width: 100%;
   background-color: white; 
+  position: relative;
   /* todo bg color */
 }
 .overlayed {
@@ -9,10 +10,13 @@
   animation-name: fadeIn;
   animation-duration: 0.5s;
 }
+.overlayed > .filter_list {
+  flex-wrap: nowrap;
+}
 
 .filter_list {
   display: flex;
-  position: relative;
+  flex-wrap: wrap;
   white-space: nowrap;
   overflow-x: overlay;
   padding-bottom: 5px;

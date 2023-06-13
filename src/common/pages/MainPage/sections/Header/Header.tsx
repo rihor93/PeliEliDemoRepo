@@ -1,7 +1,7 @@
 import './Header.css';
 export const Header: React.FC = () => {
   return (
-    <header className='header page_header'>
+    <header className='header'>
       <img
         className="header_logo"
         src="./gurmag.png"
@@ -21,10 +21,6 @@ export const Header: React.FC = () => {
           <p>Проще позвонить чем у кого-то занимать</p>
         </div>
       </div>
-      <img 
-        className='header_cart'
-        src="./cart.svg" 
-      />
     </header>
   )
 }
