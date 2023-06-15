@@ -1,6 +1,6 @@
 .page_filter {
   width: 100%;
-  background-color: white; 
+  background-color: var(--tg-theme-bg-color); 
   position: relative;
   /* todo bg color */
 }
@@ -35,13 +35,15 @@
  
 /* Handle */
 .filter_list::-webkit-scrollbar-thumb {
-  background: #949fff; 
+  background: var(--tg-theme-button-color); 
+  /* background: #949fff;  */
   border-radius: 5px;
 }
 
 /* Handle on hover */
 .filter_list::-webkit-scrollbar-thumb:hover {
-  background: #5364fb; 
+  background: var(--tg-theme-button-color); 
+  /* background: #5364fb;  */
 }
 
 
@@ -49,7 +51,7 @@
 .filter_item {
   padding: 5px 15px;
   border-radius: 100px;
-  border: 1px solid black;
+  border: 1px solid var(--tg-theme-text-color);
   transition: all 0.3s ease 0s;
   margin: 10px 5px;
   font-size: 18px;

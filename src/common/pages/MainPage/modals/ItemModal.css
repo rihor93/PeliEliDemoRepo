@@ -18,7 +18,7 @@
 }
 
 .item_modal_body>h1 {
-  color: rgba(30, 27, 38, .8);
+  color: var(--tg-theme-text-color);
   font-size: 30px;
   font-style: normal;
   font-weight: 500;
@@ -40,8 +40,8 @@
   width:fit-content;
   padding: 5px 15px;
   border-radius: 100px;
-  border: 1px solid black;
-  color: black;
+  border: 1px solid var(--tg-theme-text-color);
+  color: var(--tg-theme-text-color);
   background: #ffe494;
   cursor: pointer;
 }
@@ -69,7 +69,7 @@
 }
 
 .total_price {
-  color: #1e1b26;
+  color: var(--tg-theme-hint-color);
   font-size: 26px;
   font-style: normal;
   font-weight: 500;

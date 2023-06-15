@@ -13,7 +13,7 @@
   border-radius: 20px;
   padding: 1rem;
   /* todo bg color */
-  background: white;
+  background: var(--tg-theme-secondary-bg-color);
   max-width: 80vw;
   animation-name: Jump;
   animation-duration: 0.3s;

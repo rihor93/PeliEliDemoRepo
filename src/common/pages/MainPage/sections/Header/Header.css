@@ -28,7 +28,7 @@
 }
 
 .slogan_quote {
-  color: #010400;
+  color: var(--tg-theme-text-color);
   font-size: 12px;
   font-style: normal;
   font-weight: 400;
