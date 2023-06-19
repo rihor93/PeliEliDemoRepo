@@ -74,7 +74,11 @@ body {
   font-style: normal;
   font-weight: 400;
   line-height: 28px;
-  background: var(--tg-theme-secondary-bg-color);
+  background: var(--tg-theme-bg-color);
+}
+
+a {
+  color: var(--tg-theme-link-color);
 }
 
 .page {

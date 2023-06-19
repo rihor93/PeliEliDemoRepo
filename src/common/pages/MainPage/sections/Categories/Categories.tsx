@@ -26,9 +26,9 @@ export const Categories: React.FC = observer(() => {
                   src={'./gurmag.png'} 
                   onClick={() => watchCourse(course)}
                 /> 
-                <h5 onClick={() => watchCourse(course)}>{course.Name}</h5>
+                <h5 className='title' onClick={() => watchCourse(course)}>{course.Name}</h5>
                 {/* todo subtitle course */}
-                <p>{course.Name}</p>
+                <p className='description'>{course.Name}</p>
                 <div>
                   <img 
                     src="./cart.svg"
