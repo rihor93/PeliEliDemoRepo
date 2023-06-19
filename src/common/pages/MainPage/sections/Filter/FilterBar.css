@@ -1,9 +1,10 @@
 .page_filter {
   width: 100%;
-  background: var(--tg-theme-bg-color); 
+  background: var(--tg-theme-secondary-bg-color); 
   position: relative;
 }
 .overlayed {
+  background: var(--tg-theme-bg-color) !important; 
   position: fixed;
   top: 0;
   animation-name: fadeIn;

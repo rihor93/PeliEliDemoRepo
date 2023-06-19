@@ -42,6 +42,7 @@
 .course_item>div>img {
   padding: 10px;
   border-radius: 100px;
+  background-color: var(--tg-theme-button-color);
   border: 1px solid var(--tg-theme-hint-color);
 }
 

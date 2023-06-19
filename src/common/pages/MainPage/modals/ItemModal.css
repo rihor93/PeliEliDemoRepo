@@ -57,6 +57,31 @@
   overflow-x: scroll;
 }
 
+/* size */
+.available_types::-webkit-scrollbar {
+  height: 5px;
+  width: 7px;
+}
+
+/* Track */
+.available_types::-webkit-scrollbar-track {
+  background: 'none';
+}
+ 
+/* Handle */
+.available_types::-webkit-scrollbar-thumb {
+  background: var(--tg-theme-button-color); 
+  /* background: #949fff;  */
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+.available_types::-webkit-scrollbar-thumb:hover {
+  background: var(--tg-theme-button-color); 
+  /* background: #5364fb;  */
+}
+
+
 .available_types > img {
   height: 60px;
   width: 60px;
