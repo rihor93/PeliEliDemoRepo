@@ -2,7 +2,7 @@
 @media screen and (max-width: 768px) {
   .item_modal_img {
     width: 100% !important;
-    height: 60vh !important;
+    height: 40vh !important;
   }
 }
 
