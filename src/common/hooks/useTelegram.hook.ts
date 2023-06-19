@@ -15,12 +15,15 @@ export function useTelegram() {
     button_text_color: tg.themeParams.button_text_color as string,
     secondary_bg_color: tg.themeParams.secondary_bg_color as string,
   }
+  const isInTelegram = () => Boolean(tg?.initDataUnsafe?.user?.id)
   return {
     tg, 
     colors,
-    user: tg.initDataUnsafe?.user, 
-    userId: tg.initDataUnsafe?.user?.id, 
-    queryId: tg.initDataUnsafe?.query_id, 
+    user: tg?.initDataUnsafe?.user, 
+    userId: tg?.initDataUnsafe?.user?.id, 
+    queryId: tg?.initDataUnsafe?.query_id, 
+    isInTelegram, 
+    colorScheme: tg?.colorScheme,
   }
 }
 // tg.initDataUnsafe?.user?.id
