@@ -3,8 +3,6 @@ import { useStore } from '../../../../hooks';
 import React from 'react';
 import './FilterBar.css';
 
-type e = React.MouseEvent<HTMLDivElement, MouseEvent>
-
 export const Filter: React.FC = observer(() => {
   const { mainPage } = useStore();
   const {
@@ -82,14 +80,35 @@ export const Filter: React.FC = observer(() => {
 })
 
 function NavigateTo(categoryID: string) {
+  // находим относительные кординаты  
+  // от видимой области экрана 
+  // для нужного div 
   const el = document
     .getElementById(categoryID)
     ?.getBoundingClientRect(),
     body = document.body.getBoundingClientRect()
 
+  // высчитываем абсолютные кординаты 
+  // и скроллим окно до 
+  // нужного места
+  // по этим кординатам
   if (el && body) {
+    // смещение по высоте, которое надо добавить 
+    // из-за фиксированного меню
+    let FILTERBAR_OFFSET = 90
+
+    // если высота фиксированного меню > 100px 
+    // значит мы находимся вначале 
+    // и меню развернуто, 
+    // это нужно учесть в том месте куда будем пролистывать,
+    // где меню будет автоматически свернуто 
+    const height = document.body.getElementsByClassName('filter_list')[0]?.clientHeight
+
+    if(height > 100) {
+      FILTERBAR_OFFSET = FILTERBAR_OFFSET + height
+    }
     window.scrollTo({
-      top: el.top - body.top - 90,
+      top: (el.top - body.top) - FILTERBAR_OFFSET,
       behavior: 'smooth'
     })
   }
