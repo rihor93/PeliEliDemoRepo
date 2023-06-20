@@ -46,6 +46,10 @@ type DishSetDiscount = {
   dishCount: number,
 }
 
+interface DishSetDiscountActive extends DishSetDiscount {
+  countInCart: number,
+}
+
 type AllCampaignUser = {
   Name: string,
   Description: string,
@@ -55,3 +59,28 @@ type AllCampaignUser = {
   quantity: number,
   promocode: string
 }
+
+/** Организация */
+type Organization = {
+  Id: number,
+  Name: string,
+  isCK: number,
+}
+
+type UserInfoState = {
+  userName: string,
+  userBonuses: number,
+  percentDiscounts: PercentDiscount[],
+  dishDiscounts: DishDiscount[],
+  allCampaign: AllCampaignUser[],
+  dishSet: DishSetDiscount[],
+}
+
+type UserCoursePayload = {
+  couse: CourseItem,
+  percentDiscounts: PercentDiscount[],
+  dishDiscounts: DishDiscount[],
+  allCampaign: AllCampaignUser[],
+  dishSet: DishSetDiscount[],
+}
+

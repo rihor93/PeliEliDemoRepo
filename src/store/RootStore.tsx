@@ -1,16 +1,20 @@
 import React from "react";
 import { makeAutoObservable, reaction } from "mobx";
 import { AuthStore, CartStore, MainPageStore } from "./stores";
+import { UserInfoStore } from "./stores/UserInfoStore";
+import { logger } from "../common/features";
 
 export class Store {
   auth = new AuthStore(this); // todo auth
   mainPage = new MainPageStore(this);
   cartStore = new CartStore(this);
+  userStore = new UserInfoStore(this);
 
   subscriptions: (() => void)[] = [];
 
   constructor() { 
     makeAutoObservable(this);
+    /** подписка на авторизацию  */
     const dispose = reaction(
       () => this.auth.isAuthorized,
       (value, prevValue) => {
@@ -25,13 +29,15 @@ export class Store {
   }
   // Загружаются данные связаные с учеткой
   afterAuthorized() {
-    console.log('after authorized')
+    logger.log('мы авторизовались', Store.name);
+    //this.userStore.loadUserInfo() stoped here
   }
 
   // Загружаются общие данные, главные страницы и т.д.
   afterLoaded() {
-    console.log('after loaded')
-    this.mainPage.loadMenu()
+    logger.log('страница загружена', Store.name)
+    this.mainPage.loadMenu();
+    this.userStore.loadOrganizations();
   }
 
   onDestroy() {
