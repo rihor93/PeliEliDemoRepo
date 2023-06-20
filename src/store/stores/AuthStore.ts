@@ -1,4 +1,6 @@
 import { makeAutoObservable } from "mobx";
+import { useTelegram } from "../../common/hooks";
+import { Optional } from "../../common/types";
 import { Store } from "../RootStore";
 
 export const AuthStates = {
@@ -12,7 +14,7 @@ export type AuthStateType = typeof AuthStates[keyof typeof AuthStates];
 export class AuthStore {
   rootStore: Store;
   state: AuthStateType = AuthStates.CHECKING_AUTH;
-  user: unknown; // todo
+  tg_user_ID: Optional<number> = null;
 
   constructor(rootStore: Store) {
     this.rootStore = rootStore; 
@@ -38,5 +40,17 @@ export class AuthStore {
 
   setState(state: AuthStateType) {
     this.state = state;
+  }
+
+  /** todo auth */
+  getCurrentUser() {
+    this.setState('AUTHORIZING')
+    const { userId } = useTelegram();
+    if(!userId) {
+      this.setState('NOT_AUTHORIZED')
+    } else {
+      this.setState('AUTHORIZED')
+      this.tg_user_ID = userId
+    }
   }
 }
