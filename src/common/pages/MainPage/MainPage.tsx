@@ -1,17 +1,16 @@
 import { observer } from 'mobx-react-lite';
-import { useStore, useTheme } from '../../hooks';
+import { LoaderFullscreen } from '../../components';
+import { useStore } from '../../hooks';
 import './MainPage.css';
 import { Modals } from './modals';
 import { Sections } from './sections';
 
 export const MainPage: React.FC = observer(() => {
   const { mainPage } = useStore();
-  const { switchTheme } = useTheme();
   const { selectedCourse, isLoading } = mainPage;
   return(
     <main className='page main_page'>
-      {/* <button onClick={() => switchTheme('dark')}>to dark</button>
-      <button onClick={() => switchTheme('light')}>to light</button> */}
+      <LoaderFullscreen isLoad={isLoading} />
       {selectedCourse && 
         <Modals.course course={selectedCourse} />
       }
