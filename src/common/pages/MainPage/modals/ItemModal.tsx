@@ -7,8 +7,20 @@ import './ItemModal.css'
 export const ItemModal: React.FC<{
   course: CourseItem
 }> = observer(({ course }) => {
-  const { mainPage } = useStore();
+  const { mainPage, cartStore } = useStore();
   const { itemModal } = mainPage;
+
+  const [count, setCount] = React.useState(1);
+
+  const addToCart = () => {
+    if (count > 0) {
+      for (let i = 0; i < count; i++) {
+        cartStore.addCourseToCart(course)
+      }
+      setCount(1)
+      mainPage.itemModal.close()
+    }
+  }
   return (
     <Modal
       show={itemModal.show}
@@ -42,11 +54,25 @@ export const ItemModal: React.FC<{
         </div>
         <span>Количество:</span>
         <div className="select_count">
-          <button className="minus">-</button>
-          <span className="count">0</span>
-          <button className="plus">+</button>
+          <button
+            className="minus"
+            onClick={() => setCount((prev) => (prev - 1) >= 0 ? prev - 1 : 0)}
+          >
+            -
+          </button>
+          <span className="count">{count}</span>
+          <button
+            className="plus"
+            onClick={() => setCount((prev) => prev + 1)}
+          >
+            +
+          </button>
         </div>
-        <div className="add_to_cart_button">
+        <div
+          className="add_to_cart_button"
+          onClick={addToCart}
+          style={{cursor: count > 0 ? 'pointer' : 'not-allowed'}}
+        >
           <img src="./cart.svg" alt="Добавить в корзину" />
           <span>Добавить в корзину</span>
         </div>

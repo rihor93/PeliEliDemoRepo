@@ -6,7 +6,7 @@ import { Modals } from './modals';
 import { Sections } from './sections';
 
 export const MainPage: React.FC = observer(() => {
-  const { mainPage } = useStore();
+  const { mainPage, cartStore } = useStore();
   const { selectedCourse, isLoading } = mainPage;
   return (
     <main className='page main_page'>
@@ -19,7 +19,7 @@ export const MainPage: React.FC = observer(() => {
       <Sections.filter />
       <Sections.categories />
       <Sections.footer />
-      <CartOverlay/>
+      <CartOverlay count={cartStore.items.length}/>
     </main>
   )
 })

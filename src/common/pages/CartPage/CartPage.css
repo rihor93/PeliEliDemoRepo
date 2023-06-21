@@ -2,6 +2,9 @@
   min-height: 100%;
 }
 .cartHeader {
+  position: fixed;
+  top: 0;
+  width: 100%;
   background: var(--tg-theme-bg-color);
 }
 .cartHeader > h3 {
@@ -38,14 +41,22 @@
   background: var(--tg-theme-bg-color);
 }
 .cart {
+  padding-top: 62px;
+  padding-bottom: 62px;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  justify-content: center;
+  justify-content:left;
 }
 .cartItem {
   padding: 1rem;
+  width: 50%;
   display: flex;
+}
+@media screen and (max-width: 768px) {
+  .cartItem {
+    width: 100% !important;
+  }
 }
 .cartItemBody {
   padding-left: 1rem;
