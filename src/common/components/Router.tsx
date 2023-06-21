@@ -19,12 +19,12 @@ const routes: Array<{
     },
     {
       path: '/cart',
-      private: true,
+      private: false, // true, todo
       element: <CartPage />
     },
     {
       path: '/profile',
-      private: true,
+      private: false, // true, todo
       element: <ProfilePage />
     }
   ]

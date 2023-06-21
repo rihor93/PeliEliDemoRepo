@@ -38,6 +38,7 @@ export class Store {
     logger.log('страница загружена', Store.name)
     this.mainPage.loadMenu();
     this.userStore.loadOrganizations();
+    this.auth.getCurrentUser();
   }
 
   onDestroy() {
