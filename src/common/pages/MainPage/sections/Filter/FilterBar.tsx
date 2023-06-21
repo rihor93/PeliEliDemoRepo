@@ -38,7 +38,12 @@ export const Filter: React.FC = observer(() => {
       // по достижении какой-то кординаты
       // навбар становится фиксированным 
       // и всегда находится вверху окна
-      window.scrollY > 360 // сделать по другому todo
+      const target = document.body.getElementsByClassName('filter_list')[0];
+      const height = target?.clientHeight;
+      const targetRelTop = target?.getBoundingClientRect().top;
+      const bodyRelTop = document.body.getBoundingClientRect().top;
+      
+      window.scrollY > targetRelTop - bodyRelTop + height
         ? setIsScrolled(true)
         : setIsScrolled(false)
     }
@@ -47,35 +52,51 @@ export const Filter: React.FC = observer(() => {
     return () => window.removeEventListener('scroll', listener)
   }, [visibleCategory, categories.length])
 
-  const classes = [
-    'filter',
-    'page_filter',
-    isScrolled
-      ? 'overlayed'
-      : ''
-  ]
-
-
 
   return (
-    <section className={classes.join(' ')}>
-      <ul className="filter_list">
+    <>
+      <section className='filter page_filter'>
+        <ul className="filter_list">
 
-        {categories.map((category, index) => {
-          const isActive = mainPage.visibleCategory == String(category.VCode);
+          {categories.map((category, index) => {
+            const isActive = mainPage.visibleCategory == String(category.VCode);
 
-          return (
-            <li
-              className={`filter_item ${isActive ? 'active' : ''}`}
-              key={`filter_item_${index}`}
-              onClick={() => NavigateTo(String(category.VCode))}
-            >
-              {category.Name}
-            </li>
-          )
-        })}
-      </ul>
-    </section>
+            return (
+              <li
+                className={`filter_item ${isActive ? 'active' : ''}`}
+                key={`filter_item_${index}`}
+                onClick={() => NavigateTo(String(category.VCode))}
+              >
+                {category.Name}
+              </li>
+            )
+          })}
+        </ul>
+      </section>
+      {!isScrolled
+        ? null
+        : (
+          <section className='filter page_filter overlayed'>
+            <ul className="filter_list">
+
+              {categories.map((category, index) => {
+                const isActive = mainPage.visibleCategory == String(category.VCode);
+
+                return (
+                  <li
+                    className={`filter_item ${isActive ? 'active' : ''}`}
+                    key={`fixed_filter_item_${index}`}
+                    onClick={() => NavigateTo(String(category.VCode))}
+                  >
+                    {category.Name}
+                  </li>
+                )
+              })}
+            </ul>
+          </section>
+        )
+      }
+    </>
   )
 })
 
@@ -97,16 +118,6 @@ function NavigateTo(categoryID: string) {
     // из-за фиксированного меню
     let FILTERBAR_OFFSET = 90
 
-    // если высота фиксированного меню > 100px 
-    // значит мы находимся вначале 
-    // и меню развернуто, 
-    // это нужно учесть в том месте куда будем пролистывать,
-    // где меню будет автоматически свернуто 
-    const height = document.body.getElementsByClassName('filter_list')[0]?.clientHeight
-
-    if(height > 100) {
-      FILTERBAR_OFFSET = FILTERBAR_OFFSET + height
-    }
     window.scrollTo({
       top: (el.top - body.top) - FILTERBAR_OFFSET,
       behavior: 'smooth'
