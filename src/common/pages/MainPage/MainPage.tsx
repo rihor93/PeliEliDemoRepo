@@ -1,5 +1,5 @@
 import { observer } from 'mobx-react-lite';
-import { LoaderFullscreen } from '../../components';
+import { CartOverlay, LoaderFullscreen } from '../../components';
 import { useStore } from '../../hooks';
 import './MainPage.css';
 import { Modals } from './modals';
@@ -8,10 +8,10 @@ import { Sections } from './sections';
 export const MainPage: React.FC = observer(() => {
   const { mainPage } = useStore();
   const { selectedCourse, isLoading } = mainPage;
-  return(
+  return (
     <main className='page main_page'>
       <LoaderFullscreen isLoad={isLoading} />
-      {selectedCourse && 
+      {selectedCourse &&
         <Modals.course course={selectedCourse} />
       }
       <Sections.header />
@@ -19,6 +19,8 @@ export const MainPage: React.FC = observer(() => {
       <Sections.filter />
       <Sections.categories />
       <Sections.footer />
+      <CartOverlay/>
     </main>
   )
 })
+

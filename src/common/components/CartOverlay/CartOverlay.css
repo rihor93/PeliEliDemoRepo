@@ -1,0 +1,23 @@
+.cartOverlay {
+  padding: 10px;
+  border-radius: 100px;
+  background-color: #C92A2A;
+  bottom: 3rem;
+  right: 3rem;
+  border: 1px solid var(--tg-theme-hint-color);
+  position: absolute;
+  cursor: pointer;
+}
+.cartOverlay > img {
+  margin: auto;
+  height: 40px;
+  width: 40px;
+}
+.cartOverlay > span {
+  color: white;
+  top: 0;
+  padding: 0 7px;
+  border-radius: 100px;
+  background-color: #FF7F50;
+  position: absolute;
+}

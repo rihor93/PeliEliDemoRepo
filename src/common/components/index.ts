@@ -4,3 +4,4 @@ export * from './ErrorScreen';
 export * from './Carusel/Carusel';
 export * from './Modal/Modal';
 export * from './Loader/Loader';
+export * from './CartOverlay/CartOverlay';
