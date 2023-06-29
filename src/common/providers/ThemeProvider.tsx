@@ -28,9 +28,14 @@ export const ThemeProvider = ({ children }: WithChildren) => {
   // если нет телеграм 
   // назначить переменные тг руками
   const switchTheme = (theme: ThemeType) => {
+    // сетаем свои переменные темы
+    for (const Var of myVariables) {
+      document.documentElement.style.setProperty(Var.cssVar, Var[theme])
+    }
     if (!isInTelegram()) {
       setTheme(theme);
-      for (const Var of variables) {
+      // сетаем оставшиеся переменные если нет тг
+      for (const Var of tgVariables) {
         document.documentElement.style.setProperty(Var.cssVar, Var[theme])
       }
       localStorage.setItem('theme', theme)
@@ -53,7 +58,7 @@ const getThemeFromLocalstorage = () =>
     ? Themes.light
     : window.localStorage.getItem("theme") as ThemeType
 
-const variables = [
+const tgVariables = [
   { cssVar: '--tg-color-scheme', dark: 'dark', light: 'light' },
   { cssVar: '--tg-theme-hint-color', dark: '#708499', light: '#999999' },
   { cssVar: '--tg-theme-link-color', dark: '#168ACD', light: '#73B9F5' },
@@ -61,7 +66,10 @@ const variables = [
   { cssVar: '--tg-theme-button-text-color', dark: '#FFFFFF', light: '#FFFFFF' },
   { cssVar: '--tg-theme-bg-color', dark: '#17212B', light: '#FFFFFF' },
   { cssVar: '--tg-theme-secondary-bg-color', dark: '#232E3C', light: '#F1F1F1' },
-  { cssVar: '--tg-theme-text-color', dark: '#F5F5F5', light: '#222222' },
+  { cssVar: '--tg-theme-text-color', dark: '#F5F5F5', light: '#222222' }
+]
+
+const myVariables = [
   { cssVar: '--gurmag-accent-color', dark: '#FF8804', light: '#FF8804' },
   { cssVar: '--theme-shadow-color', dark: 'black', light: 'grey' },
 ]
