@@ -36,7 +36,10 @@ export const Carousel: React.FC<{
         {
           currentIndex > 0 &&
           <button onClick={prev} className="left-arrow">
-            &lt;
+            <img
+              src='./Vector 6.png' 
+              alt='next'
+            />
           </button>
         }
         <div className="carousel-content-wrapper">
@@ -50,7 +53,10 @@ export const Carousel: React.FC<{
         {
           currentIndex < (length - 1) &&
           <button onClick={next} className="right-arrow">
-            &gt;
+            <img
+              src='./Vector 7.png' 
+              alt='next'
+            />
           </button>
         }
       </div>
