@@ -62,4 +62,6 @@ const variables = [
   { cssVar: '--tg-theme-bg-color', dark: '#17212B', light: '#FFFFFF' },
   { cssVar: '--tg-theme-secondary-bg-color', dark: '#232E3C', light: '#F1F1F1' },
   { cssVar: '--tg-theme-text-color', dark: '#F5F5F5', light: '#222222' },
+  { cssVar: '--gurmag-accent-color', dark: 'rgba(255, 136, 4, 1)', light: 'rgba(255, 136, 4, 1)' },
+  { cssVar: '--theme-shadow-color', dark: 'black', light: 'grey' },
 ]

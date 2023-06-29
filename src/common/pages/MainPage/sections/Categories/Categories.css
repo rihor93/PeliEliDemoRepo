@@ -18,71 +18,134 @@
 }
 
 .course_item {
-  padding: 10px;
   display: flex;
+  overflow: hidden;
   flex-direction: column;
+  background: var(--tg-theme-bg-color);
+  border: 1px solid var(--tg-theme-hint-color);
+  border-radius: 8px;
+  margin: 0px 6px 12px;
+  height: calc(166px + 114px);
 }
-.course_item>h5 {
+
+.title {
   margin-top: 10px;
 }
+
+/* 
 .course_item>p {
   margin-left: 10px;
-}
-.course_item>div {
+} */
+
+/* .course_item>div {
   margin-top: 10px;
   display: flex;
   align-items: center;
-}
+} */
+/* 
 .course_item>div>span {
   margin-left: 15px;
-}
-.course_item>h5 {
-  margin-left: 15px;
+} */
+
+.course_item .title {
+  margin-top: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 21.8px;
 }
 
-.course_item>div>img {
+/* .course_item>div>img {
   padding: 10px;
   border-radius: 100px;
   background-color: var(--tg-theme-button-color);
   border: 1px solid var(--tg-theme-hint-color);
-}
+} */
 
 .course_item>img {
-  height: 200px;
+  height: 114px;
   width: auto;
-  border-radius: 20px;
-  object-fit:cover;
+  object-fit: cover;
 }
 
 .title {
   color: var(--tg-theme-text-color);
 }
+
 .description {
   color: var(--tg-theme-hint-color);
+}
+
+.item_bady {
+  padding: 0 12px;
+  position: relative;
+  height: 166px;
+}
+
+.item_bady .title {
+  text-overflow: ellipsis;
+  white-space: break-spaces;
 }
 
 
 @media screen and (min-width: 300px) {
   .course_item {
-    width: 50%;
+    width: calc(50% - 12px);
+  }
+
+  .course_item>img {
+    height: 114px;
   }
 }
 
 @media screen and (min-width: 768px) {
   .course_item {
-    width: 33%;
+    width: calc(33% - 12px);
+  }
+
+  .course_item>img {
+    height: 140px;
   }
 }
 
 
 @media screen and (min-width: 1200px) {
   .course_item {
-    width: 25%;
+    width: calc(25% - 12px);
+  }
+
+  .course_item>img {
+    height: 165px;
   }
 }
 
 @media screen and (min-width: 1400px) {
   .course_item {
-    width: 20%;
+    width: calc(20% - 12px);
   }
+
+  .course_item>img {
+    height: 180px;
+  }
+}
+
+.price_cart {
+  bottom: 12px;
+  width: calc(100% - 24px);
+  display: flex;
+  position: absolute;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.price_cart span {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32.7px;
+}
+
+.price_cart img {
+  padding: 12px;
+  cursor: pointer;
+  border-radius: 50%;
+  background: var(--tg-theme-button-color);
 }

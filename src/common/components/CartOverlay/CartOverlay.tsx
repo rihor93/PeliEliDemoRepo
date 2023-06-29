@@ -8,7 +8,7 @@ export const CartOverlay: React.FC<{
   return (
     <div className='cartOverlay' onClick={() => navigate('/cart')}>
       <img
-        src="./cart.svg"
+        src="./OverlayCart.png"
       />
       <span>{count}</span>
     </div>

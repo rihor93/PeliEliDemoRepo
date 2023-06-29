@@ -11,30 +11,30 @@ export const Categories: React.FC = observer(() => {
   return (
     <section className='categories'>
 
-      {categories.map((category, index) => 
+      {categories.map((category, index) =>
         <div key={category.VCode + '-' + index} id={String(category.VCode)}>
           <h1>{category.Name}</h1>
           <div className="courses_list">
 
-            {category.CourseList.map((course, index) => 
-              <div 
-                className="course_item" 
+            {category.CourseList.map((course, index) =>
+              <div
+                className="course_item"
                 key={`${category.Name}-${course.Name}-${index}`}
               >
                 {/* todo image src */}
-                <img 
-                  src={'./gurmag.png'} 
+                <img
+                  src={'./gurmag.png'}
                   onClick={() => watchCourse(course)}
-                /> 
-                <h5 className='title' onClick={() => watchCourse(course)}>{course.Name}</h5>
-                {/* todo subtitle course */}
-                <p className='description'>{course.Name}</p>
-                <div>
-                  <img 
-                    src="./cart.svg"
-                    onClick={() => watchCourse(course)}
-                  />
-                  <span>{course.Discount_Price}</span>
+                />
+                <div className='item_bady'>
+                  <h5 className='title' onClick={() => watchCourse(course)}>{course.Name}</h5>
+                  <div className='price_cart'>
+                    <span>{course.Discount_Price}</span>
+                    <img
+                      src="./Cart.png"
+                      onClick={() => watchCourse(course)}
+                    />
+                  </div>
                 </div>
               </div>
             )}

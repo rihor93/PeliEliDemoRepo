@@ -2,16 +2,22 @@
   width: 100%;
   background: var(--tg-theme-secondary-bg-color); 
   position: relative;
+  padding: 0 10px;
 }
 .overlayed {
-  background: var(--tg-theme-bg-color) !important; 
-  position: fixed;
   top: 0;
+  z-index: 1;
+  position: fixed;
   animation-name: fadeIn;
   animation-duration: 0.5s;
+  box-shadow: 5px 0px 5px var(--theme-shadow-color);
+  background: var(--tg-theme-bg-color) !important; 
 }
 .overlayed > .filter_list {
   flex-wrap: nowrap;
+}
+.overlayed .filter_item {
+  margin-top: 8px;
 }
 
 .filter_list {
@@ -61,7 +67,7 @@
 }
 
 .filter_list .active {
-  background: var(--tg-theme-button-color);
+  background: var(--gurmag-accent-color);
   border: var(--tg-theme-button-color);
   color: var(--tg-theme-button-text-color);
 }

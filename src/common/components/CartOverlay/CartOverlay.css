@@ -1,23 +1,26 @@
 .cartOverlay {
-  padding: 10px;
+  padding: 15px;
   border-radius: 100px;
-  background-color: #C92A2A;
-  bottom: 3rem;
-  right: 3rem;
+  background-color: var(--gurmag-accent-color);
+  bottom: 22px;
+  right: 17px;
   border: 1px solid var(--tg-theme-hint-color);
   position: fixed;
   cursor: pointer;
 }
 .cartOverlay > img {
   margin: auto;
-  height: 40px;
-  width: 40px;
+  height: 24px;
+  width: 24px;
 }
 .cartOverlay > span {
   color: white;
   top: 0;
-  padding: 0 7px;
+  padding: 5px 12px;
   border-radius: 100px;
-  background-color: #FF7F50;
+  background-color: var(--tg-theme-button-color);
   position: absolute;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 19.07px;
 }
