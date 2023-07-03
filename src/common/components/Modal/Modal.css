@@ -10,10 +10,8 @@
 }
 
 .modal {
-  border-radius: 20px;
-  padding: 1rem;
+  padding: 10px;
   position: absolute;
-  /* todo bg color */
   background: var(--tg-theme-secondary-bg-color);
   max-width: 80vw;
   animation-name: Jump;
@@ -36,7 +34,7 @@
 
 @media screen and (min-width: 300px) {
   .modal {
-    max-width: 96vw;
+    max-width: 93vw;
   }
 }
 

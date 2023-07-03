@@ -72,4 +72,5 @@ const tgVariables = [
 const myVariables = [
   { cssVar: '--gurmag-accent-color', dark: '#FF8804', light: '#FF8804' },
   { cssVar: '--theme-shadow-color', dark: 'black', light: 'grey' },
+  { cssVar: '--designed-span-color', dark: '#708499', light: '#29363D' },
 ]
