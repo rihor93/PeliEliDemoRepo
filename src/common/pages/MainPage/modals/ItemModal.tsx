@@ -69,7 +69,7 @@ export const ItemModal: React.FC<{
           </div>
         </div>
         <div
-          className="add_to_cart_button"
+          className="add_to_cart_button page_button"
           onClick={addToCart}
           style={{ cursor: count > 0 ? 'pointer' : 'not-allowed' }}
         >

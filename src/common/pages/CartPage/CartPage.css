@@ -1,68 +1,91 @@
 .cartPage {
   min-height: 100%;
 }
+
 .cartHeader {
   position: fixed;
   top: 0;
   width: 100%;
   background: var(--tg-theme-bg-color);
+  display: flex;
+  align-items: center;
 }
-.cartHeader > h3 {
-  text-align: center;
+
+.cartHeader>img {
+  width: 23px;
+  height: 18px;
 }
-.cartButton > button, .cartHeader > button {
-  padding: 3px 10px;
-  border-radius: 100px;
-  font-size: 20px;
-  border: 1px solid var(--tg-theme-hint-color);
-  color: var(--tg-theme-button-text-color);
-  background: var(--tg-theme-button-color);
-  cursor: pointer;  
-}
-.cartHeader > button {
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-}
-.cartHeader {
-  padding: 1rem;
-}
-.cartHeader > span {
-  margin-left: 1rem;
+
+.cartHeader>h3 {
+  margin: 0 auto;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 33px;
+  letter-spacing: 0em;
 }
 
 .cartButton {
   position: fixed;
   bottom: 0;
+  background: var(--tg-theme-bg-color);
   width: 100%;
-  padding: 1rem;
   display: flex;
   justify-content: center;
-  background: var(--tg-theme-bg-color);
 }
+
+.cartButton>.buy_button {
+  margin: 1rem auto 1rem auto !important;
+}
+
+.cartHeader {
+  padding: 1rem;
+}
+
+.buy_button {
+  background: var(--gurmag-accent-color);
+}
+
 .cart {
   padding-top: 62px;
   padding-bottom: 62px;
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
-  justify-content:left;
+  justify-content: left;
 }
+
 .cartItem {
-  padding: 1rem;
-  width: 50%;
+  width: calc(50% - 1rem);
   display: flex;
+  background: var(--tg-theme-bg-color);
+  margin: 1rem 1rem 0 0;
+  overflow: hidden;
+  border-radius: 8px;
 }
+
 @media screen and (max-width: 768px) {
   .cartItem {
     width: 100% !important;
   }
 }
-.cartItemBody {
-  padding-left: 1rem;
+
+.cartItemBody>div>span {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 19px;
+  letter-spacing: 0em;
 }
-.cartItem > img {
+
+.cartItemBody {
+  padding: 0 1rem 1rem;
+  width: 100%; 
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.cartItem>img {
   object-fit: cover;
-  width: 100px;
   height: 100px;
+  width: 80px;
 }

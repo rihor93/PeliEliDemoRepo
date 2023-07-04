@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useStore } from '../../hooks';
+import { useStore, useTheme } from '../../hooks';
 import './CartPage.css';
 
 export const CartPage: React.FC = observer(
@@ -11,10 +11,18 @@ export const CartPage: React.FC = observer(
 
     const goBack = () => navigate(-1);
 
+    const { theme } = useTheme();
+
+    const isDarkMode = theme === 'dark'
+
     return (
       <main className='cartPage'>
         <section className='cartHeader'>
-          <button onClick={goBack}>{'<'}</button>
+          <img
+            src={isDarkMode ? './BackLight.png' : './BackDark.png'}
+            alt="Назад"
+            onClick={goBack}
+          />
           <h3>Корзина</h3>
         </section>
         <section className='cart page'>
@@ -31,9 +39,17 @@ export const CartPage: React.FC = observer(
           )}
         </section>
         <section className='cartButton'>
-          <button disabled={cartStore.isEmpty} style={{ cursor: cartStore.isEmpty ? 'not-allowed' : 'pointer' }}>
-            {`Оформить заказ за ${cartStore.totalPrice}`}
-          </button>
+          <div
+            className="buy_button page_button"
+            style={{
+              cursor: cartStore.isEmpty
+                ? 'not-allowed'
+                : 'pointer'
+            }}
+          >
+            <img src="./cart.svg" />
+            <span>{`Оформить заказ за ${cartStore.totalPrice}`}</span>
+          </div>
         </section>
       </main>
     )
@@ -45,18 +61,32 @@ const CartItem: React.FC<{
   add: () => void,
   remove: () => void,
 }> = ({ courseInCart, add, remove }) => {
+  const { theme } = useTheme();
+  const isDarkMode = theme === 'dark'
   return (
     <div className='cartItem'>
       <img src="./gurmag.png" />
       <div className='cartItemBody'>
         <div>
           <span>{courseInCart.couse.Name}</span>
-          <p>{`ценв - ${courseInCart.priceWithDiscount} руб.`}</p>
         </div>
-        <div>
-          <button onClick={remove} className="minus">-</button>
-          <span className="count">{courseInCart.quantity}</span>
-          <button onClick={add} className="plus">+</button>
+        <div className="row">
+          <div className="cout">
+            <img
+              alt="Убавить"
+              className="minus"
+              src={isDarkMode ? 'LightMinus.png' : 'DarkMinus.png'}
+              onClick={remove}
+            />
+            <span className="count">{courseInCart.quantity}</span>
+            <img
+              alt="Добавить"
+              className="plus"
+              src={isDarkMode ? './LightPlus.png' : './DarkPlus.png'}
+              onClick={add}
+            />
+          </div>
+          <h5>{`${courseInCart.priceWithDiscount} ₽`}</h5>
         </div>
       </div>
     </div>
