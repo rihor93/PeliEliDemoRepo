@@ -155,7 +155,7 @@ a {
   border-radius: 100px;
   color: var(--tg-theme-button-text-color);
   cursor: pointer;
-  margin: 1rem auto 1rem auto;
+  margin: 1rem auto 5px auto;
   display: flex;
   align-items: center;
 }
