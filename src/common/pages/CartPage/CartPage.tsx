@@ -62,9 +62,22 @@ const CartItem: React.FC<{
   remove: () => void,
 }> = ({ courseInCart, add, remove }) => {
   const { theme } = useTheme();
-  const isDarkMode = theme === 'dark'
+  const isDarkMode = theme === 'dark';
+  const onClose = () => {
+    for (let i = 0; i < courseInCart.quantity; i++) {
+      remove()
+    }
+  }
   return (
     <div className='cartItem'>
+      <img 
+        onClick={onClose}
+        className='closeButton' 
+        src={isDarkMode 
+          ? './CrossLight.png' 
+          : './CrossDark.png'
+        }
+      />
       <img src="./gurmag.png" />
       <div className='cartItemBody'>
         <div>

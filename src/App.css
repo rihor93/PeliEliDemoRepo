@@ -155,7 +155,7 @@ a {
   border-radius: 100px;
   color: var(--tg-theme-button-text-color);
   cursor: pointer;
-  margin: 50px auto 37px auto;
+  margin: 1rem auto 1rem auto;
   display: flex;
   align-items: center;
 }
@@ -165,4 +165,13 @@ a {
   text-transform: uppercase;
   font-weight: 700;
   line-height: 16.34px;
+}
+
+.closeButton {
+  cursor: pointer;
+  position: absolute;
+  top: 0 !important;
+  right: 0 !important;
+  width: 28px !important;
+  height: 28px !important;
 }

@@ -1,5 +1,6 @@
 export const Footer: React.FC = () => {
+  // todo footer
   return(
-    <footer className='footer'>Footer</footer>
+    <footer className='footer'></footer>
   )
 }
