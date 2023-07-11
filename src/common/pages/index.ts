@@ -1,3 +1,7 @@
 export * from './CartPage/CartPage';
-export * from './MainPage/MainPage';
+export * from './MenuPage/MenuPage';
 export * from './ProfilePage/ProfilePage';
+
+export * from './ActionsPage/ActionsPage';
+export * from './MainPage/MainPage';
+export * from './MorePage/MorePage';

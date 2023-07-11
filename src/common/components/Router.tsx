@@ -5,7 +5,15 @@ import {
 } from 'react-router-dom';
 import React from "react";
 import { Checker } from './AuthChecker';
-import { CartPage, MainPage, ProfilePage } from '../pages';
+import { 
+  ActionsPage, 
+  CartPage, 
+  MainPage, 
+  MenuPage, 
+  MorePage, 
+  ProfilePage 
+} from '../pages';
+import { Toolbar } from '../pages/MenuPage/overlays/Toolbar';
 
 const routes: Array<{
   path: string,
@@ -18,6 +26,11 @@ const routes: Array<{
       element: <MainPage />
     },
     {
+      path: '/menu',
+      private: false,
+      element: <MenuPage />
+    },
+    {
       path: '/cart',
       private: false, // true, todo
       element: <CartPage />
@@ -26,7 +39,17 @@ const routes: Array<{
       path: '/profile',
       private: false, // true, todo
       element: <ProfilePage />
-    }
+    },
+    {
+      path: '/more',
+      private: false, // true, todo
+      element: <MorePage />
+    },
+    {
+      path: '/actions',
+      private: false, // true, todo
+      element: <ActionsPage />
+    },
   ]
 
 export const Router: React.FC = () => (
@@ -43,5 +66,7 @@ export const Router: React.FC = () => (
         />
       )}
     </Routes>
+    
+    <Toolbar />
   </BrowserRouter>
 )

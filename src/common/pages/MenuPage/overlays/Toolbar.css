@@ -1,0 +1,39 @@
+.toolbar {
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  position: fixed;
+  font-size: 12px;
+  padding: 10px 10px 0;
+  justify-content: space-around;
+  background: var(--tg-theme-bg-color);
+  box-shadow: -5px 0px 5px var(--theme-shadow-color);
+}
+.toolbar_item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.toolbar_item img {
+  height: 30px;
+  width: 30px;
+}
+
+.cartBtn {
+  position: relative;
+}
+.lobel {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  color: white;
+  padding: 5px 12px;
+  border-radius: 100px;
+  background-color: var(--tg-theme-button-color);
+  position: absolute;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 19.07px;
+}
