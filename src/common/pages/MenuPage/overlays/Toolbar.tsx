@@ -28,7 +28,7 @@ export const Toolbar: React.FC = observer(() => {
           src={
             isDarkMode 
             ? './MenuLight.png' 
-            : 'MenuDark.png'
+            : './MenuDark.png'
           } 
           alt="Меню" 
         />
