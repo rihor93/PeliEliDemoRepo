@@ -12,8 +12,8 @@ import {
   MenuPage, 
   MorePage, 
   ProfilePage 
-} from '../pages';
-import { Toolbar } from '../pages/MenuPage/overlays/Toolbar';
+} from '../../pages';
+import { Toolbar } from '../../pages/MenuPage/overlays/Toolbar';
 
 const routes: Array<{
   path: string,

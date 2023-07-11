@@ -1,6 +1,11 @@
 import './MorePage.css';
+import Страничка from '../../components/layout/Page';
 export const MorePage: React.FC = () => {
   return(
-    <div>MorePage</div>
+    <Страничка>
+      <Страничка.Заголовочек fixed backButton>
+        Ещё
+      </Страничка.Заголовочек>
+    </Страничка>
   )
 }

@@ -9,6 +9,10 @@ export const Toolbar: React.FC = observer(() => {
   const isDarkMode = theme === 'dark';
   const navigate = useNavigate();
   const { cartStore } = useStore();
+
+  const path = window.location.pathname;
+  if(path === '/cart' || path === '/more') return null 
+
   return(
     <section className='toolbar'>
       <div className='toolbar_item' onClick={() => navigate('/')}>
@@ -56,7 +60,10 @@ export const Toolbar: React.FC = observer(() => {
         />
         <span>Еще</span>
       </div>
-      <div className='toolbar_item cartBtn' onClick={() => navigate('/cart')}>
+      <div 
+        className={'toolbar_item cartBtn'}
+        onClick={() => navigate('/cart')}
+      >
         <img 
           src={
             isDarkMode 

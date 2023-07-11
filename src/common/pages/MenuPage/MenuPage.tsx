@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import { LoaderFullscreen } from '../../components';
+import Страничка from '../../components/layout/Page';
 import { useStore } from '../../hooks';
 import './MenuPage.css';
 import { Modals } from './modals';
@@ -9,7 +10,7 @@ export const MenuPage: React.FC = observer(() => {
   const { mainPage } = useStore();
   const { selectedCourse, isLoading } = mainPage;
   return (
-    <main className='page main_page'>
+    <Страничка>
       <LoaderFullscreen isLoad={isLoading} />
       {selectedCourse &&
         <Modals.course course={selectedCourse} />
@@ -19,8 +20,8 @@ export const MenuPage: React.FC = observer(() => {
       <Sections.filter />
       <Sections.categories />
       <Sections.footer />
-      {/* <CartOverlay count={cartStore.items.length}/> todo */}
-    </main>
+      {/* <CartOverlay count={cartStore.items.length}/> old */}
+    </Страничка>
   )
 })
 

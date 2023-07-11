@@ -1,57 +1,39 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import Страничка from '../../components/layout/Page';
 import { useStore, useTheme } from '../../hooks';
 import './CartPage.css';
 
 export const CartPage: React.FC = observer(
   () => {
-    const { cartStore } = useStore();
-    const navigate = useNavigate();
-
-    const goBack = () => navigate(-1);
-
-    const { theme } = useTheme();
-
-    const isDarkMode = theme === 'dark'
-
+    const { cartStore: cart } = useStore();
     return (
-      <main className='cartPage'>
-        <section className='cartHeader'>
-          <img
-            src={isDarkMode ? './BackLight.png' : './BackDark.png'}
-            alt="Назад"
-            onClick={goBack}
-          />
-          <h3>Корзина</h3>
-        </section>
-        <section className='cart page'>
-          {cartStore.isEmpty &&
-            <span>Корзина пуста</span>
+      <Страничка>
+        <Страничка.Заголовочек fixed backButton>
+          Корзина
+        </Страничка.Заголовочек>
+        <Страничка.Тело>
+          {!cart.isEmpty 
+            ? null
+            : <span>Корзина пуста</span>
           }
-          {cartStore.items.map((item, index) =>
+          {cart.items.map((item, index) =>
             <CartItem
               key={`cart_item_${index}`}
               courseInCart={item}
-              add={() => cartStore.addCourseToCart(item.couse)}
-              remove={() => cartStore.removeFromCart(item.couse.VCode)}
+              add={() => cart.addCourseToCart(item.couse)}
+              remove={() => cart.removeFromCart(item.couse.VCode)}
             />
           )}
-        </section>
-        <section className='cartButton'>
-          <div
-            className="buy_button page_button"
-            style={{
-              cursor: cartStore.isEmpty
-                ? 'not-allowed'
-                : 'pointer'
-            }}
-          >
-            <img src="./cart.svg" />
-            <span>{`Оформить заказ за ${cartStore.totalPrice}`}</span>
-          </div>
-        </section>
-      </main>
+        </Страничка.Тело>
+
+        <Страничка.Кнопочка
+          disabled={cart.isEmpty}
+          onClick={() => console.log('todo - оформление заказа')}
+        >
+          {`Оформить заказ за ${cart.totalPrice}`}
+        </Страничка.Кнопочка>
+      </Страничка>
     )
   }
 )
@@ -70,11 +52,11 @@ const CartItem: React.FC<{
   }
   return (
     <div className='cartItem'>
-      <img 
+      <img
         onClick={onClose}
-        className='closeButton' 
-        src={isDarkMode 
-          ? './CrossLight.png' 
+        className='closeButton'
+        src={isDarkMode
+          ? './CrossLight.png'
           : './CrossDark.png'
         }
       />
