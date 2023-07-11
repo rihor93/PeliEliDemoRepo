@@ -16,6 +16,10 @@
   align-items: center;
 }
 
+.toolbar_item:hover {
+  cursor: pointer;
+}
+
 .toolbar_item img {
   height: 30px;
   width: 30px;

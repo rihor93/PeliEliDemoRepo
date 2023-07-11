@@ -11,7 +11,7 @@ export const Toolbar: React.FC = observer(() => {
   const { cartStore } = useStore();
   return(
     <section className='toolbar'>
-      <div className='toolbar_item'>
+      <div className='toolbar_item' onClick={() => navigate('/')}>
         <img 
           src={
             isDarkMode 
@@ -23,7 +23,7 @@ export const Toolbar: React.FC = observer(() => {
         <span>Главная</span>
       </div>
       
-      <div className='toolbar_item'>
+      <div className='toolbar_item' onClick={() => navigate('/menu')}>
         <img 
           src={
             isDarkMode 
@@ -34,7 +34,7 @@ export const Toolbar: React.FC = observer(() => {
         />
         <span>Меню</span>
       </div>
-      <div className='toolbar_item'>
+      <div className='toolbar_item' onClick={() => navigate('/actions')}>
         <img 
           src={
             isDarkMode 
@@ -45,7 +45,7 @@ export const Toolbar: React.FC = observer(() => {
         />
         <span>Акции</span>
       </div>
-      <div className='toolbar_item'>
+      <div className='toolbar_item' onClick={() => navigate('/more')}>
         <img 
           src={
             isDarkMode 
@@ -56,7 +56,7 @@ export const Toolbar: React.FC = observer(() => {
         />
         <span>Еще</span>
       </div>
-      <div className='toolbar_item cartBtn'>
+      <div className='toolbar_item cartBtn' onClick={() => navigate('/cart')}>
         <img 
           src={
             isDarkMode 
@@ -64,7 +64,6 @@ export const Toolbar: React.FC = observer(() => {
               : './CartDark.png'
           } 
           alt="Корзина" 
-          onClick={() => navigate('/cart')}
         />
         <span>Корзина</span>
         <span className='lobel'>{cartStore.items.length}</span>
