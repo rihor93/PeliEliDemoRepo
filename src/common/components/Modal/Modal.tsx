@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTheme } from '../../hooks';
 import './Modal.css';
 
 type E = React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -16,6 +17,7 @@ export const Modal: React.FC<{
     return (
       <div className='modal_background' onClick={close}>
         <div className='modal' onClick={e => e.stopPropagation()}>
+          <CloseButton onClick={close} />
           {props.children}
         </div>
       </div>
@@ -23,4 +25,13 @@ export const Modal: React.FC<{
   } else {
     return null
   }
+}
+
+const CloseButton = (props: { onClick: (event: E) => void }) => {
+  const { theme } = useTheme();
+  return (
+    <div className='modal_close_button' onClick={props.onClick}>
+      <img src={theme === 'dark' ? './CrossLight.png' : './CrossDark.png'} alt="Close" />
+    </div>
+  )
 }

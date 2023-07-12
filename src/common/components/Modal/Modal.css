@@ -4,6 +4,7 @@
   position: fixed;
   display: flex;
   justify-content: center;
+  align-items: flex-end;
   background: rgba(0, 0, 0, 0.50);
   z-index: 100;
   overflow-y: auto;
@@ -17,6 +18,7 @@
   animation-name: Jump;
   animation-duration: 0.3s;
   display: flex;
+  border-radius: 8px 8px 0 0;
   flex-direction: column;
 }
 
@@ -49,6 +51,9 @@
     max-width: 88vw;
     flex-direction: row;
   }
+  .modal_background {
+    align-items: center;
+  }
 }
 
 @media screen and (min-width: 992px) {
@@ -67,4 +72,20 @@
   .modal {
     max-width: 80vw;
   }
+}
+
+.modal_close_button {
+  position: absolute;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  background: var(--tg-theme-bg-color);
+}
+
+.modal_close_button:hover {
+  cursor: pointer;
 }
