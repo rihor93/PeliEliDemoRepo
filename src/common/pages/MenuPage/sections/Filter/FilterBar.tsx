@@ -26,7 +26,7 @@ export const Filter: React.FC = observer(() => {
 
         if (cordinates) {
           // Если категория находится в видимой области
-          if (cordinates.top < 300 && Math.abs(cordinates.top) + 200 < Number(el?.offsetHeight)) {
+          if (cordinates.top < 200 && Math.abs(cordinates.top) + 200 < Number(el?.offsetHeight)) {
             // делаем ее активной
             if (visibleCategory !== String(category.VCode)) {
               mainPage.setVisibleCategory(String(category.VCode))
