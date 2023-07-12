@@ -56,7 +56,9 @@ export const ThemeProvider = ({ children }: WithChildren) => {
 const getThemeFromLocalstorage = () =>
   window.localStorage.getItem("theme") == null
     ? Themes.light
-    : window.localStorage.getItem("theme") as ThemeType
+    : window.localStorage.getItem("theme") === 'dark'
+      ? 'dark' as ThemeType
+      : 'light' as ThemeType
 
 const tgVariables = [
   { cssVar: '--tg-color-scheme', dark: 'dark', light: 'light' },
@@ -73,4 +75,12 @@ const myVariables = [
   { cssVar: '--gurmag-accent-color', dark: '#FF8804', light: '#FF8804' },
   { cssVar: '--theme-shadow-color', dark: 'black', light: 'grey' },
   { cssVar: '--designed-span-color', dark: '#708499', light: '#29363D' },
+
+  { cssVar: '--обводка-карточек', dark: '#11171B', light: '#D6D6D6' }, 
+  { cssVar: '--обводка-кнопок', dark: '#D8DDE3', light: '#D8DDE3' }, 
+  { cssVar: '--громкий-текст', dark: '#FFFFFF', light: '#000000' }, 
+  { cssVar: '--тихий-текст', dark: '#DEDEDE', light: '#29363D' }, 
+
+  { cssVar: '--фон-элемента', dark: '#232E3C', light: '#FFFFFF' }, 
+  { cssVar: '--фон-страницы', dark: '#17212B', light: '#F9F9F9' }, 
 ]

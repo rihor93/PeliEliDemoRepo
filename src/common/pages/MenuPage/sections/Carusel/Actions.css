@@ -1,3 +1,4 @@
 .page_carusel {
-  margin: 10px;
+  padding: 10px;
+  background: var(--фон-элемента);
 }

@@ -7,9 +7,11 @@
   font-size: 24px;
   font-weight: 400;
   line-height: 32.7px;
-  margin-top: 28px;
-  margin-bottom: 28px;
-  margin-left: 10px;
+  padding-top: 18px;
+  padding-bottom: 18px;
+  margin-bottom: 10px;
+  padding-left: 10px;
+  background: var(--фон-элемента);
 }
 
 .courses_list {
@@ -21,8 +23,8 @@
   display: flex;
   overflow: hidden;
   flex-direction: column;
-  background: var(--tg-theme-bg-color);
-  border: 1px solid var(--tg-theme-hint-color);
+  background: var(--фон-элемента);
+  border: 1px solid var(--обводка-карточек);
   border-radius: 8px;
   margin: 0px 6px 12px;
   height: calc(166px + 114px);
@@ -30,22 +32,8 @@
 
 .title {
   margin-top: 10px;
+  color: var(--тихий-текст);
 }
-
-/* 
-.course_item>p {
-  margin-left: 10px;
-} */
-
-/* .course_item>div {
-  margin-top: 10px;
-  display: flex;
-  align-items: center;
-} */
-/* 
-.course_item>div>span {
-  margin-left: 15px;
-} */
 
 .course_item .title {
   margin-top: 12px;
@@ -54,22 +42,12 @@
   line-height: 21.8px;
 }
 
-/* .course_item>div>img {
-  padding: 10px;
-  border-radius: 100px;
-  background-color: var(--tg-theme-button-color);
-  border: 1px solid var(--tg-theme-hint-color);
-} */
-
 .course_item>img {
   height: 114px;
   width: auto;
   object-fit: cover;
 }
 
-.title {
-  color: var(--tg-theme-text-color);
-}
 
 .description {
   color: var(--tg-theme-hint-color);
@@ -135,6 +113,7 @@
   position: absolute;
   align-items: center;
   justify-content: space-between;
+  color: var(--громкий-текст);
 }
 
 .price_cart span {
