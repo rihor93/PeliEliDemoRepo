@@ -1,4 +1,5 @@
 import React from 'react';
+import { CrossDark, CrossLight } from '../../../assets';
 import { useTheme } from '../../hooks';
 import './Modal.css';
 
@@ -31,7 +32,7 @@ const CloseButton = (props: { onClick: (event: E) => void }) => {
   const { theme } = useTheme();
   return (
     <div className='modal_close_button' onClick={props.onClick}>
-      <img src={theme === 'dark' ? './CrossLight.png' : './CrossDark.png'} alt="Close" />
+      <img src={theme === 'dark' ? CrossLight : CrossDark} alt="Close" />
     </div>
   )
 }

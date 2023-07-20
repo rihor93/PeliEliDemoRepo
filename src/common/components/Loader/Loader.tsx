@@ -1,3 +1,4 @@
+import { Loader as asaasasas } from '../../../assets';
 import './Loader.css';
 interface LoaderProps {
   isLoad: boolean
@@ -14,7 +15,7 @@ export const Loader: React.FC<LoaderProps> = ({ isLoad }) =>
   !isLoad
     ? null
     : <img
-      src="./Loader.png"
+      src={asaasasas}
       alt="Loading..."
       className="rotating"
     />

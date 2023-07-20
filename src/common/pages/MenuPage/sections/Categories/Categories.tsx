@@ -2,6 +2,7 @@ import { useStore } from '../../../../hooks';
 import React from 'react';
 import './Categories.css';
 import { observer } from 'mobx-react-lite';
+import { Cart, GurmagLogo } from '../../../../../assets';
 
 
 export const Categories: React.FC = observer(() => {
@@ -23,7 +24,7 @@ export const Categories: React.FC = observer(() => {
               >
                 {/* todo image src */}
                 <img
-                  src={'./gurmag.png'}
+                  src={GurmagLogo}
                   onClick={() => watchCourse(course)}
                 />
                 <div className='item_bady'>
@@ -31,7 +32,7 @@ export const Categories: React.FC = observer(() => {
                   <div className='price_cart'>
                     <span>{course.Discount_Price}</span>
                     <img
-                      src="./Cart.png"
+                      src={Cart}
                       onClick={() => watchCourse(course)}
                     />
                   </div>

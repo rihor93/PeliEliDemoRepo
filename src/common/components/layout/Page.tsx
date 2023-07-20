@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import { BackDark, BackLight, cart } from "../../../assets";
 import { useTheme } from "../../hooks";
 // z heccrbq!!!
 const Страничка = ({ children }: WithChildren) => {
@@ -10,10 +11,11 @@ const Страничка = ({ children }: WithChildren) => {
 }
 
 
-const Заголовочек = ({ children, fixed, backButton }: {
+const Заголовочек = ({ children, fixed, backButton, Icon }: {
   children: React.ReactNode & string,
   fixed?: boolean,
   backButton?: boolean,
+  Icon?: React.ReactNode
 }) => {
   const navigate = useNavigate();
 
@@ -32,10 +34,15 @@ const Заголовочек = ({ children, fixed, backButton }: {
         !backButton
           ? null
           : <img
-            src={isDarkMode ? './BackLight.png' : './BackDark.png'}
+            src={isDarkMode ? BackLight : BackDark}
             alt="Назад"
             onClick={goBack}
           />
+      }
+      {
+        !Icon
+          ? null
+          : Icon
       }
       <h3>{children}</h3>
     </section>
@@ -67,7 +74,7 @@ const Кнопочка = (props: {
             : 'pointer'
         }}
       >
-        <img src="./cart.svg" />
+        <img src={cart} />
         <span>{props.children}</span>
       </div>
     </section>

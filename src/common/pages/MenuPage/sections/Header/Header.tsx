@@ -1,10 +1,11 @@
+import { GurmagLogo, telephone } from '../../../../../assets';
 import './Header.css';
 export const Header: React.FC = () => {
   return (
     <header className='header'>
       <img
         className="header_logo"
-        src="./gurmag.png"
+        src={GurmagLogo}
       />
       <div className="header_slogan">
         <h4>Гурмаг</h4>
@@ -15,7 +16,7 @@ export const Header: React.FC = () => {
         <p>Работаем круглосуточно 24/7</p>
       </div>
       <div className="header_contacts">
-        <img src="./telephone.svg" />
+        <img src={telephone} />
         <div>
           <h5>8-800-535-35-35</h5>
           <p>Проще позвонить чем у кого-то занимать</p>

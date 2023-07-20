@@ -1,5 +1,6 @@
 import './Carusel.css';
 import React from 'react';
+import { Vector6, Vector7 } from '../../../assets';
 
 export const Carousel: React.FC<{
   children: Array<React.ReactNode>
@@ -37,7 +38,7 @@ export const Carousel: React.FC<{
           currentIndex > 0 &&
           <button onClick={prev} className="left-arrow">
             <img
-              src='./Vector 6.png' 
+              src={Vector6} 
               alt='next'
             />
           </button>
@@ -54,7 +55,7 @@ export const Carousel: React.FC<{
           currentIndex < (length - 1) &&
           <button onClick={next} className="right-arrow">
             <img
-              src='./Vector 7.png' 
+              src={Vector7} 
               alt='next'
             />
           </button>

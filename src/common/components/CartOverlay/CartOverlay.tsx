@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom';
+import { OverlayCart } from '../../../assets';
 import './CartOverlay.css';
 
 export const CartOverlay: React.FC<{
@@ -8,7 +9,7 @@ export const CartOverlay: React.FC<{
   return (
     <div className='cartOverlay' onClick={() => navigate('/cart')}>
       <img
-        src="./OverlayCart.png"
+        src={OverlayCart}
       />
       <span>{count}</span>
     </div>

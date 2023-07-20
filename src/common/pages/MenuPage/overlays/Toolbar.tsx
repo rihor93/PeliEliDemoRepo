@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ActionsDark, ActionsLight, CartDark, CartLight, MainDark, MainLight, MenuDark, MenuLight, MoreDark, MoreLight } from '../../../../assets';
 import { useStore, useTheme } from '../../../hooks';
 import './Toolbar.css';
 
@@ -11,66 +12,66 @@ export const Toolbar: React.FC = observer(() => {
   const { cartStore } = useStore();
 
   const path = window.location.pathname;
-  if(path === '/cart' || path === '/more') return null 
+  if (path === '/cart' || path === '/more') return null
 
-  return(
+  return (
     <section className='toolbar'>
       <div className='toolbar_item' onClick={() => navigate('/')}>
-        <img 
+        <img
           src={
-            isDarkMode 
-            ? './MainLight.png' 
-            : './MainDark.png'
-          } 
-          alt="Главная" 
+            isDarkMode
+              ? MainLight
+              : MainDark
+          }
+          alt="Главная"
         />
         <span>Главная</span>
       </div>
-      
+
       <div className='toolbar_item' onClick={() => navigate('/menu')}>
-        <img 
+        <img
           src={
-            isDarkMode 
-            ? './MenuLight.png' 
-            : './MenuDark.png'
-          } 
-          alt="Меню" 
+            isDarkMode
+              ? MenuLight
+              : MenuDark
+          }
+          alt="Меню"
         />
         <span>Меню</span>
       </div>
       <div className='toolbar_item' onClick={() => navigate('/actions')}>
-        <img 
+        <img
           src={
-            isDarkMode 
-            ? './ActionsLight.png' 
-            : './ActionsDark.png'
-          } 
-          alt="Акции" 
+            isDarkMode
+              ? ActionsLight
+              : ActionsDark
+          }
+          alt="Акции"
         />
         <span>Акции</span>
       </div>
       <div className='toolbar_item' onClick={() => navigate('/more')}>
-        <img 
+        <img
           src={
-            isDarkMode 
-              ? './MoreLight.png' 
-              : './MoreDark.png'
-          } 
-          alt="Еще" 
+            isDarkMode
+              ? MoreLight
+              : MoreDark
+          }
+          alt="Еще"
         />
         <span>Еще</span>
       </div>
-      <div 
+      <div
         className={'toolbar_item cartBtn'}
         onClick={() => navigate('/cart')}
       >
-        <img 
+        <img
           src={
-            isDarkMode 
-              ? './CartLight.png' 
-              : './CartDark.png'
-          } 
-          alt="Корзина" 
+            isDarkMode
+              ? CartLight
+              : CartDark
+          }
+          alt="Корзина"
         />
         <span>Корзина</span>
         <span className='lobel'>{cartStore.items.length}</span>

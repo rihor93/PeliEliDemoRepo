@@ -1,5 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
+import { CrossDark, CrossLight, DarkMinus, DarkPlus, GurmagLogo, LightMinus, LightPlus } from '../../../assets';
 import Страничка from '../../components/layout/Page';
 import { useStore, useTheme } from '../../hooks';
 import './CartPage.css';
@@ -56,11 +57,11 @@ const CartItem: React.FC<{
         onClick={onClose}
         className='closeButton'
         src={isDarkMode
-          ? './CrossLight.png'
-          : './CrossDark.png'
+          ? CrossLight
+          : CrossDark
         }
       />
-      <img src="./gurmag.png" />
+      <img src={GurmagLogo} />
       <div className='cartItemBody'>
         <div>
           <span>{courseInCart.couse.Name}</span>
@@ -70,14 +71,14 @@ const CartItem: React.FC<{
             <img
               alt="Убавить"
               className="minus"
-              src={isDarkMode ? 'LightMinus.png' : 'DarkMinus.png'}
+              src={isDarkMode ? LightMinus : DarkMinus}
               onClick={remove}
             />
             <span className="count">{courseInCart.quantity}</span>
             <img
               alt="Добавить"
               className="plus"
-              src={isDarkMode ? './LightPlus.png' : './DarkPlus.png'}
+              src={isDarkMode ? LightPlus : DarkPlus}
               onClick={add}
             />
           </div>

@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite"
 import React from "react"
+import { cart, DarkMinus, DarkPlus, GurmagLogo, LightMinus, LightPlus } from "../../../../assets"
 import { Modal } from "../../../components"
 import { useStore, useTheme } from "../../../hooks"
 import './ItemModal.css'
@@ -29,7 +30,7 @@ export const ItemModal: React.FC<{
       onHide={() => itemModal.close()}
     >
       <img
-        src="./gurmag.png" // todo there 
+        src={GurmagLogo} // todo there 
         className="item_modal_img"
       />
       <div className="item_modal_body">
@@ -38,11 +39,11 @@ export const ItemModal: React.FC<{
         <div className="available_types">
           {/* todo src img here */}
           {/* todo as select option */}
-          <img className="selected" src="./gurmag.png" />
-          <img src="./gurmag.png" />
-          <img src="./gurmag.png" />
-          <img src="./gurmag.png" />
-          <img src="./gurmag.png" />
+          <img className="selected" src={GurmagLogo} />
+          <img src={GurmagLogo} />
+          <img src={GurmagLogo} />
+          <img src={GurmagLogo} />
+          <img src={GurmagLogo} />
         </div>
         <div className="count_and_price">
           <div className="row">
@@ -54,14 +55,14 @@ export const ItemModal: React.FC<{
               <img 
                 alt="Убавить" 
                 className="minus" 
-                src={isDarkMode ? 'LightMinus.png' : 'DarkMinus.png'} 
+                src={isDarkMode ? LightMinus : DarkMinus} 
                 onClick={() => setCount((prev) => (prev - 1) >= 0 ? prev - 1 : 0)} 
               />
               <span className="count">{count}</span>
               <img 
                 alt="Добавить"
                 className="plus" 
-                src={isDarkMode ? './LightPlus.png' : './DarkPlus.png'}
+                src={isDarkMode ? LightPlus : DarkPlus}
                 onClick={() => setCount((prev) => prev + 1)}
               />
             </div>
@@ -73,7 +74,7 @@ export const ItemModal: React.FC<{
           onClick={addToCart}
           style={{ cursor: count > 0 ? 'pointer' : 'not-allowed' }}
         >
-          <img src="./cart.svg" alt="Добавить в корзину" />
+          <img src={cart} alt="Добавить в корзину" />
           <span>Добавить в корзину</span>
         </div>
       </div>
