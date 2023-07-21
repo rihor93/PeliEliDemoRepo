@@ -98,7 +98,7 @@ export const ActionsPage: React.FC = observer(() => {
       {!isScrolled
         ? null
         : (
-          <section className='page_action_types overlayed'>
+          <section className='page_action_types overlayed2'>
             <ul className="action_types_list">
 
               {categories.map((category, index) => {
