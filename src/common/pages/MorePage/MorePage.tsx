@@ -15,7 +15,7 @@ export const MorePage: React.FC = () => {
           <img src={isdarkMode ? LocationLight : LocationDark} alt="Города" />
           <select name="" id="">
             {['Уфа', 'Агидель', 'Стерлитамак', 'Белебей', 'Набережные Челны'].map((city) =>
-              <option value={city}>{city}</option>
+              <option key={city} value={city}>{city}</option>
             )}
           </select>
         </li>
