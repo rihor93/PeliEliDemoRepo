@@ -59,6 +59,27 @@ import telegram from './telegram.svg';
 // @ts-ignore
 import telephone from './telephone.svg';
 
+// @ts-ignore
+import ChatDark from './ChatDark.png';
+// @ts-ignore
+import ChatLight from './ChatLight.png';
+// @ts-ignore
+import HistoryDark from './HistoryDark.png';
+// @ts-ignore
+import HistoryLight from './HistoryLight.png';
+// @ts-ignore
+import LocationDark from './LocationDark.png';
+// @ts-ignore
+import LocationLight from './LocationLight.png';
+// @ts-ignore
+import MapPointsDark from './MapPointsDark.png';
+// @ts-ignore
+import MapPointsLight from './MapPointsLight.png';
+// @ts-ignore
+import ProfileDark from './ProfileDark.png';
+// @ts-ignore
+import ProfileLight from './ProfileLight.png';
+
 
 export {
   GurmagLogo,
@@ -91,4 +112,14 @@ export {
   OverlayCart,
   telegram,
   telephone,
+  ChatDark,
+  ChatLight,
+  HistoryDark,
+  HistoryLight,
+  LocationDark,
+  LocationLight,
+  MapPointsDark,
+  MapPointsLight,
+  ProfileDark,
+  ProfileLight,
 }

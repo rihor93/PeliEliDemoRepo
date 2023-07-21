@@ -1,0 +1,37 @@
+.moreList {
+  margin-top: 72px;
+  width: 100%;
+  font-size: 16px;
+}
+
+.moreList li {
+  display: flex;
+  align-items: center;
+  margin: 10px 10px;
+}
+
+.moreList li > img {
+  margin-right: 10px;
+}
+
+.chatBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 100px;
+  background: var(--tg-theme-button-color);
+  color: var(--tg-theme-button-text-color);
+}
+
+.chatBtn_img {
+  margin-right: 10px;
+}
+
+.me-1 {
+  margin-right: 1.5rem !important;
+}
+
+.mt-1 {
+  margin-top: 1.5rem !important;
+}
