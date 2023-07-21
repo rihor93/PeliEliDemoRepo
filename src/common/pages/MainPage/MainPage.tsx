@@ -44,6 +44,8 @@ export const MainPage: React.FC = observer(() => {
             )}
           </div>
         </div>
+        
+      <div style={{ height: '70px' }} />
       </section>
     </Страничка>
   )

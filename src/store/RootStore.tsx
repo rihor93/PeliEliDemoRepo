@@ -3,12 +3,14 @@ import { makeAutoObservable, reaction } from "mobx";
 import { AuthStore, CartStore, MainPageStore } from "./stores";
 import { UserInfoStore } from "./stores/UserInfoStore";
 import { logger } from "../common/features";
+import { ActionsPageStore } from "./stores/ActionsStore";
 
 export class Store {
   auth = new AuthStore(this); // todo auth
   mainPage = new MainPageStore(this);
   cartStore = new CartStore(this);
   userStore = new UserInfoStore(this);
+  actionsPage = new ActionsPageStore(this)
 
   subscriptions: (() => void)[] = [];
 
@@ -23,14 +25,24 @@ export class Store {
         }
       }
     );
+
+    const whenUsersOrgHasBeenSaved = reaction(
+      () => this.userStore.currentOrg,
+      (value, prevValue) => {
+        console.log('asdadsaaddsadsadadadddasdadads')
+        if(prevValue !== value) {
+          if(typeof value === 'number') this.userStore.loadUserInfo(value)
+        }
+      }
+    )
     
     this.subscriptions.push(dispose);
+    this.subscriptions.push(whenUsersOrgHasBeenSaved);
     this.afterLoaded()
   }
   // Загружаются данные связаные с учеткой
   afterAuthorized() {
     logger.log('мы авторизовались', Store.name);
-    //this.userStore.loadUserInfo() stoped here
   }
 
   // Загружаются общие данные, главные страницы и т.д.

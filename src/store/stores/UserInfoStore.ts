@@ -29,6 +29,14 @@ export class UserInfoStore {
 
   /** текущая организация */
   selectedOrganizationID: Optional<number> = null;
+  
+  set currentOrg(val: Optional<number>) {
+    this.selectedOrganizationID = val
+  }
+
+  get currentOrg() {
+    return this.selectedOrganizationID
+  }
 
 
   rootStore: Store;
