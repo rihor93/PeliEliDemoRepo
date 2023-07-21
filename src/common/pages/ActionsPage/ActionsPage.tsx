@@ -41,7 +41,7 @@ export const ActionsPage: React.FC = observer(() => {
       // по достижении какой-то кординаты
       // навбар становится фиксированным 
       // и всегда находится вверху окна
-      const target = document.body.getElementsByClassName('filter_list')[0];
+      const target = document.body.getElementsByClassName('action_types_list')[0];
       const height = target?.clientHeight;
       const targetRelTop = target?.getBoundingClientRect().top;
       const bodyRelTop = document.body.getBoundingClientRect().top;
@@ -64,14 +64,19 @@ export const ActionsPage: React.FC = observer(() => {
         Акции
       </Страничка.Заголовочек>
       <div style={{ height: '70px' }} />
-      <select
-        defaultValue={getOrgByID(userStore.selectedOrganizationID ?? 0)?.Name ?? 'Выберите'}
-        onChange={(e) => userStore.currentOrg = Number(e.target.value)}
-      >
-        {userStore.organizations.map((org) =>
-          <option value={org.Id}>{org.Name}</option>
-        )}
-      </select>
+      <div className='selectOr'>
+        <p>Вы заказываете тут?</p>
+        <select
+          className='selectOrg_select'
+          defaultValue={getOrgByID(userStore.selectedOrganizationID ?? 0)?.Name || 'Выберите точку'}
+          onChange={(e) => userStore.currentOrg = Number(e.target.value)}
+        >
+          <option value="Выберите точку">Выберите точку</option>
+          {userStore.organizations.map((org) =>
+            <option value={org.Id} className='selectOrg_option'>{org.Name}</option>
+          )}
+        </select>
+      </div>
       <section className='page_action_types'>
         <ul className="action_types_list">
 
@@ -146,8 +151,8 @@ export const ActionsPage: React.FC = observer(() => {
             </div>
           </div>
         )}
-        
-      <div style={{ height: '70px' }} />
+
+        <div style={{ height: '70px' }} />
       </section>
     </Страничка>
   )

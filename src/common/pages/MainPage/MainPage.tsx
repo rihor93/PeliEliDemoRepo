@@ -1,21 +1,28 @@
 import { observer } from 'mobx-react-lite';
 import { Cart, GurmagLogo } from '../../../assets';
+import { LoaderFullscreen } from '../../components';
 import Страничка from '../../components/layout/Page';
 import { useStore } from '../../hooks';
+import { Modals } from '../MenuPage/modals';
 import './MainPage.css';
 
-const Icon = () => <img src={GurmagLogo} style={{height: '40px', width: '40px', borderRadius: '8px'}} />
+const Icon = () => <img src={GurmagLogo} style={{ height: '40px', width: '40px', borderRadius: '8px' }} />
 
 
 export const MainPage: React.FC = observer(() => {
   const { mainPage } = useStore();
-  const { watchCourse } = mainPage;
+  const { selectedCourse, isLoading, watchCourse } = mainPage;
   return (
     <Страничка>
+      <LoaderFullscreen isLoad={isLoading} />
+      {selectedCourse &&
+        <Modals.course course={selectedCourse} />
+      }
       <Страничка.Заголовочек Icon={<Icon />} fixed>
         Главная
       </Страничка.Заголовочек>
       <section className='categories'>
+        <div style={{ height: '70px' }} />
         <div key='популярное' id='популярное'>
           <h1>Популярное</h1>
           <div className="courses_list">
@@ -44,8 +51,8 @@ export const MainPage: React.FC = observer(() => {
             )}
           </div>
         </div>
-        
-      <div style={{ height: '70px' }} />
+
+        <div style={{ height: '70px' }} />
       </section>
     </Страничка>
   )
