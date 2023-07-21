@@ -79,6 +79,8 @@ import MapPointsLight from './MapPointsLight.png';
 import ProfileDark from './ProfileDark.png';
 // @ts-ignore
 import ProfileLight from './ProfileLight.png';
+// @ts-ignore
+import food from './food.jpg';
 
 
 export {
@@ -121,5 +123,6 @@ export {
   MapPointsDark,
   MapPointsLight,
   ProfileDark,
-  ProfileLight,
+  ProfileLight, 
+  food
 }

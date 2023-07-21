@@ -10,7 +10,7 @@
   position: fixed;
   animation-name: fadeIn;
   animation-duration: 0.5s;
-  /* box-shadow: 5px 0px 5px var(--theme-shadow-color); todo */
+  box-shadow: 5px 0px 5px var(--theme-shadow-color);
 }
 .overlayed > .filter_list {
   flex-wrap: nowrap;

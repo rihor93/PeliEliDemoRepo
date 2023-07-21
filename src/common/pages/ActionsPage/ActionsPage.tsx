@@ -2,21 +2,21 @@ import Страничка from '../../components/layout/Page';
 import './ActionsPage.css';
 import React from 'react';
 import { useStore } from '../../hooks';
-import { gurmag_big } from '../../../assets';
+import { food, gurmag_big } from '../../../assets';
 import { observer } from 'mobx-react-lite';
+import { ErrorPage } from '../../components';
 
 export const ActionsPage: React.FC = observer(() => {
-  const { actionsPage, userStore } = useStore();
+  const { actionsPage, userStore, auth } = useStore();
   const { categories, visibleCategory } = actionsPage;
+
 
   const [
     isScrolled,
     setIsScrolled
   ] = React.useState(false);
 
-  const username = userStore.userState.userName;
-  const userBosuses = userStore.userState.userBonuses;
-  const userActions = userStore.userState.allCampaign;
+  const { userName, userBonuses, allCampaign } = userStore.userState;
 
   React.useEffect(() => {
     function listener(e: Event) {
@@ -53,10 +53,7 @@ export const ActionsPage: React.FC = observer(() => {
 
     window.addEventListener('scroll', listener)
     return () => window.removeEventListener('scroll', listener)
-  }, [visibleCategory, categories.length])
-
-  const getOrgByID = (id: number) =>
-    userStore.organizations.find((org) => org.Id === id)
+  }, [visibleCategory])
 
   return (
     <Страничка>
@@ -64,50 +61,46 @@ export const ActionsPage: React.FC = observer(() => {
         Акции
       </Страничка.Заголовочек>
       <div style={{ height: '70px' }} />
-      <div className='selectOr'>
-        <p>Вы заказываете тут?</p>
-        <select
-          className='selectOrg_select'
-          defaultValue={getOrgByID(userStore.selectedOrganizationID ?? 0)?.Name || 'Выберите точку'}
-          onChange={(e) => userStore.currentOrg = Number(e.target.value)}
+      {!userName.length
+        ? <div
+          className='hello_costumer'
+          style={{
+            background: `linear-gradient(to bottom, rgba(255, 255, 255, 0), var(--фон-страницы) 50%), url(${food})`,
+            backgroundSize: 'cover',
+            height: '300px',
+            marginBottom: '1rem'
+          }}
         >
-          <option value="Выберите точку">Выберите точку</option>
-          {userStore.organizations.map((org) =>
-            <option value={org.Id} className='selectOrg_option'>{org.Name}</option>
-          )}
-        </select>
-      </div>
-      <section className='page_action_types'>
-        <ul className="action_types_list">
-
-          {categories.map((category, index) => {
-            const isActive = actionsPage.visibleCategory == category;
-
-            return (
-              <li
-                className={`action_type ${isActive ? 'active' : ''}`}
-                key={`action_type_${index}`}
-                onClick={() => NavigateTo(category)}
-              >
-                {category}
-              </li>
-            )
-          })}
-        </ul>
-      </section>
-      {!isScrolled
-        ? null
-        : (
-          <section className='page_action_types overlayed2'>
+          <h4>Кажется вы ещё не зарегестрировались в GURMAG?</h4>
+          <p>Зарегестрируйтесь и получите персональные скидки и бонусы! 🎁</p>
+          <button className='chatBtn mt-1'>
+            Стать клиентом GURMAG
+          </button>
+        </div>
+        : <div
+          className='hello_costumer'
+          style={{
+            background: `linear-gradient(to bottom, rgba(255, 255, 255, 0), var(--фон-страницы) 50%), url(${food})`,
+            backgroundSize: 'cover',
+            height: '200px'
+          }}
+        >
+          <h4>{`Добрый день, ${userName} 👋`}</h4>
+          <p>{`Вам доступно ${userBonuses.toFixed(2)} бонусных балов!`}</p>
+        </div>
+      }
+      {!auth.isAuthorized
+        ? <ErrorPage text='Telegram идентификатор не был получен( Кажется вы зашли сюда не через телеграм' />
+        : <>
+          <section className='page_action_types'>
             <ul className="action_types_list">
 
               {categories.map((category, index) => {
-                const isActive = actionsPage.visibleCategory == category;
-
+                const isActive = index === 0;
                 return (
                   <li
                     className={`action_type ${isActive ? 'active' : ''}`}
-                    key={`fixed_action_type_${index}`}
+                    key={`action_type_${index}`}
                     onClick={() => NavigateTo(category)}
                   >
                     {category}
@@ -116,44 +109,60 @@ export const ActionsPage: React.FC = observer(() => {
               })}
             </ul>
           </section>
-        )
+          {!isScrolled
+            ? null
+            : (
+              <section className='page_action_types overlayed2'>
+                <ul className="action_types_list">
+
+                  {categories.map((category, index) => {
+                    const isActive = actionsPage.visibleCategory == category;
+
+                    return (
+                      <li
+                        className={`action_type ${isActive ? 'active' : ''}`}
+                        key={`fixed_action_type_${index}`}
+                        onClick={() => NavigateTo(category)}
+                      >
+                        {category}
+                      </li>
+                    )
+                  })}
+                </ul>
+              </section>
+            )
+          }
+          <section className='actions'>
+            {categories.map((category, index) =>
+              <div key={category + '-' + index} id={category}>
+                <h1>{category}</h1>
+                <div className="actions_list">
+                  {index === 1 &&
+                    allCampaign.map((actia, index) =>
+                      <div
+                        className="action_item"
+                        key={`${category}-${actia.VCode}-${index}`}
+                      >
+                        {/* todo image src */}
+                        <img
+                          className='action_img'
+                          // todo image src
+                          src={gurmag_big}
+                          onClick={() => console.log('todo inclick')}
+                        />
+                        <h3>{actia.Name}!</h3>
+                        <p>{actia.Description}</p>
+                      </div>
+                    )
+                  }
+                </div>
+              </div>
+            )}
+
+            <div style={{ height: '70px' }} />
+          </section>
+        </>
       }
-      <section className='actions'>
-        {categories.map((category, index) =>
-          <div key={category + '-' + index} id={category}>
-            <h1>{category}</h1>
-            <div className="actions_list">
-
-              {category !== 'Персональные'
-                ? <>
-                  {userActions.map((actia, index) =>
-                    <div
-                      className="action_item"
-                      key={`${category}-${actia.VCode}-${index}`}
-                    >
-                      {/* todo image src */}
-                      <img
-                        className='action_img'
-                        // todo image src
-                        src={gurmag_big}
-                        onClick={() => console.log('todo inclick')}
-                      />
-                      <h2>Акция, {actia.Name}!</h2>
-                      <h2>Описание, {actia.Description}</h2>
-                    </div>
-                  )}
-                </>
-                : <>
-                  <h5>{`Добрый день, ${username}`}</h5>
-                  <p>{`Вам доступно ${userBosuses.toFixed(2)} бонусных балов!`}</p>
-                </>
-              }
-            </div>
-          </div>
-        )}
-
-        <div style={{ height: '70px' }} />
-      </section>
     </Страничка>
   )
 })

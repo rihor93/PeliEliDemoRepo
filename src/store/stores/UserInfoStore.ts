@@ -1,7 +1,7 @@
 import { flow, makeAutoObservable } from "mobx";
 import { http, logger } from "../../common/features";
 import { useTelegram } from "../../common/hooks";
-import { LoadStates, LoadStatesType, Optional } from "../../common/types";
+import { LoadStates, LoadStatesType } from "../../common/types";
 import { Store } from "../RootStore";
 
 export class UserInfoStore {
@@ -28,9 +28,9 @@ export class UserInfoStore {
   organizations: Array<Organization> = [];
 
   /** текущая организация */
-  selectedOrganizationID: Optional<number> = null;
+  selectedOrganizationID: number = 0;
   
-  set currentOrg(val: Optional<number>) {
+  set currentOrg(val: number) {
     this.selectedOrganizationID = val
   }
 
@@ -53,12 +53,18 @@ export class UserInfoStore {
     const response = yield http.get('/getUserInfo/' + userId + '/' + orgId)
 
     const {
-      UserInfo: { Bonuses, NAME, COrg },
       PercentDiscount,
       DishDiscount,
       AllDiscounts,
       SetDishDiscount,
     } = response;
+    const Bonuses = response?.UserInfo?.Bonuses ?? 0;
+    const NAME = response?.UserInfo?.NAME ?? '';
+    const COrg = response?.UserInfo?.COrg ?? 0;
+
+    if(!response?.UserInfo) {
+      logger.log('Похоже пользователь не зареган в ГУРМАГ', 'GET /loadUserInfo')
+    }
 
     const newState = {
       userName: NAME,

@@ -22,6 +22,7 @@ export class Store {
       (value, prevValue) => {
         if (value === true && prevValue === false) {
           this.afterAuthorized()
+          this.userStore.loadUserInfo(0)
         }
       }
     );
@@ -29,7 +30,7 @@ export class Store {
     const whenUsersOrgHasBeenSaved = reaction(
       () => this.userStore.currentOrg,
       (value, prevValue) => {
-        console.log('asdadsaaddsadsadadadddasdadads')
+        logger.log('Org_id изменился - загружаем другие скидки loadUserInfo', Store.name)
         if(prevValue !== value) {
           if(typeof value === 'number') this.userStore.loadUserInfo(value)
         }

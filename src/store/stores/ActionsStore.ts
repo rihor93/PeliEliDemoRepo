@@ -10,7 +10,7 @@ export class ActionsPageStore {
     return this.state === LoadStates.LOADING
   }
 
-  categories: Array<string> = ['Общие', 'Персональные']; // todo
+  categories: Array<string> = ['Персональные', 'Общие'];
   rootStore: Store
   constructor(rootStore: Store) {
     makeAutoObservable(this)
