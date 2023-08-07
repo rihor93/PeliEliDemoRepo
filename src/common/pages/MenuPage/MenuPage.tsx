@@ -16,7 +16,6 @@ export const MenuPage: React.FC = observer(() => {
         <Modals.course course={selectedCourse} />
       }
       <Sections.header />
-      <Sections.carusel />
       <Sections.filter />
       <Sections.categories />
       <Sections.footer />

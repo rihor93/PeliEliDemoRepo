@@ -6,6 +6,7 @@ import { config } from '../../configuration';
 import { replaceImgSrc } from '../../helpers';
 import { useStore } from '../../hooks';
 import { Modals } from '../MenuPage/modals';
+import { Sections } from '../MenuPage/sections';
 import './MainPage.css';
 
 const Icon = () => <img src={GurmagLogo} style={{ height: '40px', width: '40px', borderRadius: '8px' }} />
@@ -23,8 +24,10 @@ export const MainPage: React.FC = observer(() => {
       <Страничка.Заголовочек Icon={<Icon />} fixed>
         Главная
       </Страничка.Заголовочек>
+      
       <section className='categories'>
         <div style={{ height: '70px' }} />
+      <Sections.carusel />
         <div key='популярное' id='популярное'>
           <h1>Популярное</h1>
           <div className="courses_list">

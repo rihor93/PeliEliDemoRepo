@@ -1,0 +1,35 @@
+.screen {
+  overflow: hidden;
+  margin: 0 auto;
+  min-height: 100%;
+}
+
+.screen_header {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+}
+
+.screen_header__static {
+  position: static;
+}
+
+.screen_header__fixed {
+  position: fixed;
+  background: var(--фон-элемента);
+  z-index: 2;
+}
+.screen_header__back_button { 
+  position: absolute;
+  width: 23px;
+  height: 18px;
+}
+.screen_header__logo { 
+  left: 0;
+  position: absolute;
+  height: 40px; 
+  width: 40px; 
+  border-radius: 8px; 
+}
