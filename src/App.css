@@ -94,6 +94,7 @@ a {
   padding-top: 62px;
   padding-bottom: 62px;
   display: flex;
+  width: 100%;
   flex-wrap: wrap;
   flex-direction: row;
   justify-content: left;

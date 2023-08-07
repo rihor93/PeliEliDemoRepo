@@ -88,7 +88,7 @@ export const ActionsPage: React.FC = observer(() => {
           }}
         >
           <h4>{`Добрый день, ${userName} 👋`}</h4>
-          <p>{`Вам доступно ${userBonuses.toFixed(2)} бонусных балов!`}</p>
+          <p style={{marginTop: '15px', marginBottom: '10px'}}>{`Вам доступно ${userBonuses.toFixed(2)} бонусных балов!`}</p>
         </div>
       }
       {!auth.isAuthorized
@@ -139,6 +139,9 @@ export const ActionsPage: React.FC = observer(() => {
               <div key={category + '-' + index} id={category}>
                 <h1>{category}</h1>
                 <div className="actions_list">
+                  {index === 0 && 
+                    <p style={{marginLeft: '20px'}}>Персональных акций нет</p>
+                  }
                   {index === 1 &&
                     allCampaign.map((actia, index) =>
                       <div
