@@ -3,6 +3,8 @@ import React from 'react';
 import './Categories.css';
 import { observer } from 'mobx-react-lite';
 import { Cart, GurmagLogo } from '../../../../../assets';
+import { config } from '../../../../configuration';
+import { replaceImgSrc } from '../../../../helpers';
 
 
 export const Categories: React.FC = observer(() => {
@@ -22,9 +24,9 @@ export const Categories: React.FC = observer(() => {
                 className="course_item"
                 key={`${category.Name}-${course.Name}-${index}`}
               >
-                {/* todo image src */}
                 <img
-                  src={GurmagLogo}
+                  src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}&compression=true`}
+                  onError={replaceImgSrc(GurmagLogo)}
                   onClick={() => watchCourse(course)}
                 />
                 <div className='item_bady'>

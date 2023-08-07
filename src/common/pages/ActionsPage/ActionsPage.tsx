@@ -5,6 +5,8 @@ import { useStore } from '../../hooks';
 import { food, gurmag_big } from '../../../assets';
 import { observer } from 'mobx-react-lite';
 import { ErrorPage } from '../../components';
+import { config } from '../../configuration';
+import { replaceImgSrc } from '../../helpers';
 
 export const ActionsPage: React.FC = observer(() => {
   const { actionsPage, userStore, auth } = useStore();
@@ -143,11 +145,10 @@ export const ActionsPage: React.FC = observer(() => {
                         className="action_item"
                         key={`${category}-${actia.VCode}-${index}`}
                       >
-                        {/* todo image src */}
                         <img
                           className='action_img'
-                          // todo image src
-                          src={gurmag_big}
+                          src={config.apiURL + '/api/v2/image/Disount?vcode=' + actia.VCode}
+                          onError={replaceImgSrc(gurmag_big)}
                           onClick={() => console.log('todo inclick')}
                         />
                         <h3>{actia.Name}!</h3>

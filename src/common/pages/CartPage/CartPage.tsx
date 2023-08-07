@@ -2,6 +2,8 @@ import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { CrossDark, CrossLight, DarkMinus, DarkPlus, GurmagLogo, LightMinus, LightPlus } from '../../../assets';
 import Страничка from '../../components/layout/Page';
+import { config } from '../../configuration';
+import { replaceImgSrc } from '../../helpers';
 import { useStore, useTheme } from '../../hooks';
 import './CartPage.css';
 
@@ -14,7 +16,7 @@ export const CartPage: React.FC = observer(
           Корзина
         </Страничка.Заголовочек>
         <Страничка.Тело>
-          {!cart.isEmpty 
+          {!cart.isEmpty
             ? null
             : <span>Корзина пуста</span>
           }
@@ -61,7 +63,10 @@ const CartItem: React.FC<{
           : CrossDark
         }
       />
-      <img src={GurmagLogo} />
+      <img
+        src={`${config.apiURL}/api/v2/image/Material?vcode=${courseInCart.couse.VCode}&compression=true`}
+        onError={replaceImgSrc(GurmagLogo)}
+      />
       <div className='cartItemBody'>
         <div>
           <span>{courseInCart.couse.Name}</span>

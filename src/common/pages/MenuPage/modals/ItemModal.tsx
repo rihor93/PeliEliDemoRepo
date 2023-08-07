@@ -2,6 +2,8 @@ import { observer } from "mobx-react-lite"
 import React from "react"
 import { cart, DarkMinus, DarkPlus, GurmagLogo, LightMinus, LightPlus } from "../../../../assets"
 import { Modal } from "../../../components"
+import { config } from "../../../configuration"
+import { replaceImgSrc } from "../../../helpers"
 import { useStore, useTheme } from "../../../hooks"
 import './ItemModal.css'
 
@@ -30,7 +32,8 @@ export const ItemModal: React.FC<{
       onHide={() => itemModal.close()}
     >
       <img
-        src={GurmagLogo} // todo there 
+        src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}`} 
+        onError={replaceImgSrc(GurmagLogo)}
         className="item_modal_img"
       />
       <div className="item_modal_body">
