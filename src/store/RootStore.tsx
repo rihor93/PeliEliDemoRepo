@@ -30,7 +30,7 @@ export class Store {
     const whenUsersOrgHasBeenSaved = reaction(
       () => this.userStore.currentOrg,
       (value, prevValue) => {
-        logger.log('Org_id изменился - загружаем другие скидки loadUserInfo', Store.name)
+        logger.log('Org_id изменился - загружаем другие скидки loadUserInfo', 'rootStore')
         if(prevValue !== value) {
           if(typeof value === 'number') this.userStore.loadUserInfo(value)
         }

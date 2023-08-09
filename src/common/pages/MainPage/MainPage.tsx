@@ -24,35 +24,38 @@ export const MainPage: React.FC = observer(() => {
       <Страничка.Заголовочек Icon={<Icon />} fixed>
         Главная
       </Страничка.Заголовочек>
-      
+
       <section className='categories'>
         <div style={{ height: '70px' }} />
-      <Sections.carusel />
+        <Sections.carusel />
         <div key='популярное' id='популярное'>
           <h1>Популярное</h1>
           <div className="courses_list">
 
-            {mainPage?.categories[0]?.CourseList?.map((course, index) =>
-              <div
-                className="course_item"
-                key={`популярное-${course.Name}-${index}`}
-              >
-                <img
-                  src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}&compression=true`}
-                  onError={replaceImgSrc(GurmagLogo)}
-                  onClick={() => watchCourse(course)}
-                />
-                <div className='item_bady'>
-                  <h5 className='title' onClick={() => watchCourse(course)}>{course.Name}</h5>
-                  <div className='price_cart'>
-                    <span>{course.Discount_Price}</span>
-                    <img
-                      src={Cart}
-                      onClick={() => watchCourse(course)}
-                    />
+            {mainPage.categories[0]?.CourseList?.map((course, index) => {
+              return (
+                <div
+                  className="course_item"
+                  key={`популярное-${course.Name}-${index}`}
+                >
+                  <img
+                    src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}&compression=true`}
+                    onError={replaceImgSrc(GurmagLogo)}
+                    onClick={() => watchCourse(course)}
+                  />
+                  <div className='item_bady'>
+                    <h5 className='title' onClick={() => watchCourse(course)}>{course.Name}</h5>
+                    <div className='price_cart'>
+                      <span>{course.Discount_Price}</span>
+                      <img
+                        src={Cart}
+                        onClick={() => watchCourse(course)}
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
+              )
+            }
             )}
           </div>
         </div>

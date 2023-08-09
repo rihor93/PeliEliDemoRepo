@@ -23,6 +23,16 @@ export class MainPageStore {
 
   categories: Array<CategoryCourse> = [];
 
+  getDishByID(id: number | string) {
+    let all: CourseItem[] = []
+    this.categories.forEach((cat) =>
+      cat.CourseList.forEach((dish) =>
+        all.push(dish)
+      )
+    )
+    return all.find((dish) => dish.VCode == id)
+  }
+
   get isLoading() {
     return this.state === LoadStates.LOADING
   }

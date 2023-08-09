@@ -23,6 +23,9 @@ export class UserInfoStore {
     this.userState = state;
   }
 
+  getAllCampaignUserByID(id: string | number) {
+    return this.userState.allCampaign.find((actia) => actia.VCode == id)
+  }
 
   /** все организации */
   organizations: Array<Organization> = [];
@@ -78,8 +81,9 @@ export class UserInfoStore {
     // сохраняем состояние
     this.setUserState(newState)
 
-    // сохраняем текущую организацию
-    this.selectedOrganizationID = COrg;
+    // сохраняем текущую организацию 
+    // если грузим первый раз
+    if(orgId === 0) this.selectedOrganizationID = COrg;
 
     // пересчитываем корзину 
     this.rootStore.cartStore.applyDiscountForCart(newState)

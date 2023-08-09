@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { gurmag_big } from "../../../../../assets";
 import { Carousel } from "../../../../components";
 import { config } from "../../../../configuration";
@@ -6,15 +7,21 @@ import { useStore } from "../../../../hooks";
 import './Actions.css';
 
 export const Actions: React.FC = () => {
-  const { userStore: { userState } } = useStore();
+  const { userStore, actionsPage } = useStore();
+  const navigate = useNavigate()
   return (
     <section className='page_carusel'>
       <Carousel>
-        {userState.allCampaign.map((campaign) =>
-          <img
+        {userStore.userState.allCampaign.map((campaign) =>
+          <img 
+            key={campaign.VCode}
             src={config.apiURL + '/api/v2/image/Disount?vcode=' + campaign.VCode}
             onError={replaceImgSrc(gurmag_big)}
             alt={`${campaign.Name} - ${campaign.Description}`}
+            onClick={() => {
+              actionsPage.watchAction(campaign)
+              navigate('/actions/' + campaign.VCode)
+            }}
           />
         )}
       </Carousel>

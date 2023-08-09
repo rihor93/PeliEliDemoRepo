@@ -7,11 +7,15 @@ import { observer } from 'mobx-react-lite';
 import { ErrorPage } from '../../components';
 import { config } from '../../configuration';
 import { replaceImgSrc } from '../../helpers';
+import WatchCampaignModal from './modals/WatchCampaignModal';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Modals } from '../MenuPage/modals';
 
 export const ActionsPage: React.FC = observer(() => {
-  const { actionsPage, userStore, auth } = useStore();
-  const { categories, visibleCategory } = actionsPage;
+  const { actionsPage, userStore, auth, mainPage } = useStore();
+  const { categories, visibleCategory, selectedAction, watchAction } = actionsPage;
 
+  const { selectedCourse } = mainPage;
 
   const [
     isScrolled,
@@ -57,11 +61,24 @@ export const ActionsPage: React.FC = observer(() => {
     return () => window.removeEventListener('scroll', listener)
   }, [visibleCategory])
 
+  const navigate = useNavigate();
+  const params = useParams<{ VCode: string }>();
+
+  React.useEffect(() => {
+    if (params.VCode) {
+      const campaign = userStore.getAllCampaignUserByID(params.VCode)
+      if (campaign) watchAction(campaign)
+    }
+  }, [userStore.userState.allCampaign])
+
   return (
     <Страничка>
       <Страничка.Заголовочек fixed backButton>
         Акции
       </Страничка.Заголовочек>
+      {selectedAction && <WatchCampaignModal campaign={selectedAction} />}
+      {selectedCourse && <Modals.course course={selectedCourse} />}
+
       <div style={{ height: '70px' }} />
       {!userName.length
         ? <div
@@ -88,7 +105,7 @@ export const ActionsPage: React.FC = observer(() => {
           }}
         >
           <h4>{`Добрый день, ${userName} 👋`}</h4>
-          <p style={{marginTop: '15px', marginBottom: '10px'}}>{`Вам доступно ${userBonuses.toFixed(2)} бонусных балов!`}</p>
+          <p style={{ marginTop: '15px', marginBottom: '10px' }}>{`Вам доступно ${userBonuses.toFixed(2)} бонусных балов!`}</p>
         </div>
       }
       {!auth.isAuthorized
@@ -139,8 +156,8 @@ export const ActionsPage: React.FC = observer(() => {
               <div key={category + '-' + index} id={category}>
                 <h1>{category}</h1>
                 <div className="actions_list">
-                  {index === 0 && 
-                    <p style={{marginLeft: '20px'}}>Персональных акций нет</p>
+                  {index === 0 &&
+                    <p style={{ marginLeft: '20px' }}>Персональных акций нет</p>
                   }
                   {index === 1 &&
                     allCampaign.map((actia, index) =>
@@ -152,7 +169,10 @@ export const ActionsPage: React.FC = observer(() => {
                           className='action_img'
                           src={config.apiURL + '/api/v2/image/Disount?vcode=' + actia.VCode}
                           onError={replaceImgSrc(gurmag_big)}
-                          onClick={() => console.log('todo inclick')}
+                          onClick={() => {
+                            watchAction(actia)
+                            navigate('/actions/' + actia.VCode)
+                          }}
                         />
                         <h3>{actia.Name}!</h3>
                         <p>{actia.Description}</p>

@@ -1,24 +1,54 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
-import { CrossDark, CrossLight, DarkMinus, DarkPlus, GurmagLogo, LightMinus, LightPlus } from '../../../assets';
+import { LocationDark, LocationLight } from '../../../assets';
 import Страничка from '../../components/layout/Page';
-import { config } from '../../configuration';
-import { replaceImgSrc } from '../../helpers';
 import { useStore, useTheme } from '../../hooks';
+import CartItem from './cartItem/CartItem';
 import './CartPage.css';
+import { ConfirmOrderModal } from './modals/confirmOrderModal';
 
 export const CartPage: React.FC = observer(
   () => {
-    const { cartStore: cart } = useStore();
+    const { theme } = useTheme();
+    const { cartStore: cart, userStore } = useStore();
+    const isdarkMode = theme === 'dark';
     return (
       <Страничка>
+      <ConfirmOrderModal />
         <Страничка.Заголовочек fixed backButton>
           Корзина
         </Страничка.Заголовочек>
         <Страничка.Тело>
           {!cart.isEmpty
-            ? null
-            : <span>Корзина пуста</span>
+            ? <div style={{marginTop: '15px'}}>
+              <img
+                src={isdarkMode
+                  ? LocationLight
+                  : LocationDark
+                }
+                alt="выберите место получения"
+              />
+              <span style={{margin: '0 7px'}}>Где хотите забрать?</span>
+              <select
+                defaultValue={0}
+                onChange={(e) => userStore.currentOrg = Number(e.target.value)}
+                style={{
+                  background: 'var(--фон-страницы)', 
+                  color: 'var(--tg-theme-text-color)',
+                  border: '1px solid var(--обводка-кнопок)',
+                  borderRadius: '100px',
+                  padding: '0.5rem'
+                }}
+              >
+                <option key={0} value={0}>Точка не выбрана</option>
+                {userStore.organizations.map((point) =>
+                  <option key={point.Id} value={point.Id}>{point.Name}</option>
+                )}
+              </select>
+            </div>
+            : <div style={{width: '100%', height: '100%', display: 'flex', justifyContent: 'center'}}>
+              <p>Корзина пуста 🛒</p>
+            </div>
           }
           {cart.items.map((item, index) =>
             <CartItem
@@ -32,7 +62,7 @@ export const CartPage: React.FC = observer(
 
         <Страничка.Кнопочка
           disabled={cart.isEmpty}
-          onClick={() => console.log('todo - оформление заказа')}
+          onClick={() => cart.confirmOrderModal.open()}
         >
           {`Оформить заказ за ${cart.totalPrice}`}
         </Страничка.Кнопочка>
@@ -41,55 +71,3 @@ export const CartPage: React.FC = observer(
   }
 )
 
-const CartItem: React.FC<{
-  courseInCart: CouseInCart,
-  add: () => void,
-  remove: () => void,
-}> = ({ courseInCart, add, remove }) => {
-  const { theme } = useTheme();
-  const isDarkMode = theme === 'dark';
-  const onClose = () => {
-    for (let i = 0; i < courseInCart.quantity; i++) {
-      remove()
-    }
-  }
-  return (
-    <div className='cartItem'>
-      <img
-        onClick={onClose}
-        className='closeButton'
-        src={isDarkMode
-          ? CrossLight
-          : CrossDark
-        }
-      />
-      <img
-        src={`${config.apiURL}/api/v2/image/Material?vcode=${courseInCart.couse.VCode}&compression=true`}
-        onError={replaceImgSrc(GurmagLogo)}
-      />
-      <div className='cartItemBody'>
-        <div>
-          <span>{courseInCart.couse.Name}</span>
-        </div>
-        <div className="row">
-          <div className="cout">
-            <img
-              alt="Убавить"
-              className="minus"
-              src={isDarkMode ? LightMinus : DarkMinus}
-              onClick={remove}
-            />
-            <span className="count">{courseInCart.quantity}</span>
-            <img
-              alt="Добавить"
-              className="plus"
-              src={isDarkMode ? LightPlus : DarkPlus}
-              onClick={add}
-            />
-          </div>
-          <h5>{`${courseInCart.priceWithDiscount} ₽`}</h5>
-        </div>
-      </div>
-    </div>
-  )
-}

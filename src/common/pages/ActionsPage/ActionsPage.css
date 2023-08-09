@@ -12,6 +12,7 @@
   animation-duration: 0.5s;
   background: var(--фон-элемента);
   box-shadow: 0 2.5px 5px -2px var(--theme-shadow-color);
+  z-index: 2;
 }
 
 .overlayed>.action_types {
@@ -28,6 +29,7 @@
   white-space: nowrap;
   overflow-x: overlay;
   padding-bottom: 5px;
+  margin-top: 8px;
 }
 
 /* size */
@@ -110,11 +112,19 @@
 }
 
 .action_item {
+  width: 100%;
   border-radius: 8px;
   background: var(--фон-элемента);
   box-shadow: 0 2.5px 5px -2px var(--theme-shadow-color);
   overflow: hidden;
   margin-bottom: 10px;
+}
+
+.action_item>h3 {
+  margin: 8px;
+}
+.action_item>p {
+  margin: 0 8px 8px 8px
 }
 
 .action_img {
