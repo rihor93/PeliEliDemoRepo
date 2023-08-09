@@ -31,6 +31,11 @@ const routes: Array<{
       element: <MenuPage />
     },
     {
+      path: '/menu/:catVCode/:VCode',
+      private: false,
+      element: <MenuPage />
+    },
+    {
       path: '/cart',
       private: false, // true, todo
       element: <CartPage />
@@ -47,6 +52,11 @@ const routes: Array<{
     },
     {
       path: '/actions',
+      private: false, // true, todo
+      element: <ActionsPage />
+    },
+    {
+      path: '/actions/:VCode',
       private: false, // true, todo
       element: <ActionsPage />
     },
