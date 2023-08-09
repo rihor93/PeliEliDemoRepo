@@ -1,0 +1,6 @@
+.confirm_modal__body {
+  margin-bottom: 100px;
+  position: relative;
+  min-width: 90vw;
+  box-sizing: border-box;
+}

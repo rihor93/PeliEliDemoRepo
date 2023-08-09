@@ -1,6 +1,7 @@
 import { makeAutoObservable } from "mobx";
 import { Undef } from "../../common/types";
 import { Store } from "../RootStore";
+import { Modal } from "./MainPageStore";
 
 
 
@@ -10,6 +11,9 @@ export class CartStore {
     this.rootStore = rootStore;
     makeAutoObservable(this);
   }
+
+  
+  confirmOrderModal = new Modal();
 
   items: Array<CouseInCart> = [];
   totalPrice = 0;
