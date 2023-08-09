@@ -20,6 +20,7 @@
   display: flex;
   border-radius: 8px 8px 0 0;
   flex-direction: column;
+  z-index: -2;
 }
 
 @keyframes Jump {
@@ -84,6 +85,7 @@
   align-items: center;
   border-radius: 8px;
   background: var(--фон-страницы);
+  z-index: 2;
 }
 
 .modal_close_button:hover {
