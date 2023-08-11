@@ -5,6 +5,7 @@ type CourseItem = {
   CatVCode: number,
   Discount_Price: number,
   Price: number,
+  Quality: number,
 }
 
 /** Тип категории с блюдами */
