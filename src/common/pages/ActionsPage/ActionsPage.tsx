@@ -4,7 +4,7 @@ import React from 'react';
 import { useStore } from '../../hooks';
 import { food, gurmag_big } from '../../../assets';
 import { observer } from 'mobx-react-lite';
-import { ErrorPage } from '../../components';
+import { ErrorPage, LoaderFullscreen } from '../../components';
 import { config } from '../../configuration';
 import { replaceImgSrc } from '../../helpers';
 import WatchCampaignModal from './modals/WatchCampaignModal';
@@ -75,7 +75,8 @@ export const ActionsPage: React.FC = observer(() => {
     <Страничка>
       <Страничка.Заголовочек fixed backButton>
         Акции
-      </Страничка.Заголовочек>
+      </Страничка.Заголовочек> 
+      <LoaderFullscreen isLoad={userStore.isLoading} />
       {selectedAction && <WatchCampaignModal campaign={selectedAction} />}
       {selectedCourse && <Modals.course course={selectedCourse} />}
 

@@ -4,3 +4,10 @@
   min-width: 90vw;
   box-sizing: border-box;
 }
+
+.confirm_couseList_item > header {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+}

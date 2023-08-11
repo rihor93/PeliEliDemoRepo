@@ -3,6 +3,31 @@
   overflow-y: scroll;
 }
 
+/* size */
+.watchActionModal__body::-webkit-scrollbar {
+  height: 5px;
+  width: 7px;
+}
+
+/* Track */
+.watchActionModal__body::-webkit-scrollbar-track {
+  background: 'none';
+}
+ 
+/* Handle */
+.watchActionModal__body::-webkit-scrollbar-thumb {
+  background: var(--tg-theme-button-color); 
+  /* background: #949fff;  */
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+.watchActionModal__body::-webkit-scrollbar-thumb:hover {
+  background: var(--tg-theme-button-color); 
+  /* background: #5364fb;  */
+}
+
+
 .watchActionModal__img {
   width: 100%;
   position: relative;
@@ -20,7 +45,7 @@
 
 .watchActionModal__img>img {
   object-fit: cover;
-  width: 50%;
+  width: 100%;
   height: auto;
   border-radius: 8px;
   position: relative;
@@ -40,4 +65,11 @@
 .watchActionModal__description {
   margin-left: 10px;
   color: var(--тихий-текст);
+}
+
+.dish_link {
+  color: var(--tg-theme-button-color);
+}
+.dish_link:hover {
+  cursor: pointer;
 }
