@@ -45,6 +45,8 @@ export const MainPage: React.FC = observer(() => {
                   />
                   <div className='item_bady'>
                     <h5 className='title' onClick={() => watchCourse(course)}>{course.Name}</h5>
+                    <span style={{ color: 'var(--тихий-текст)' }}>★</span>
+                    <span>{Math.ceil(course.Quality * 10) / 10}</span>
                     <div className='price_cart'>
                       <span>{course.Discount_Price}</span>
                       <img
