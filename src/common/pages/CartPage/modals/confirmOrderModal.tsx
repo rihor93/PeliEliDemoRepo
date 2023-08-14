@@ -18,6 +18,13 @@ export const ConfirmOrderModal: React.FC = observer(() => {
         {cart.items.map((cartItem, index) =>
           <CouseInConfirm key={index} cartItem={cartItem} />
         )}
+        <div
+          style={{ cursor: 'pointer' }}
+          className="add_to_cart_button page_button"
+          onClick={() => console.log('todo оформление заказа')}
+        >
+          <span>Оформить заказ</span>
+        </div>
       </div>
     </Modal>
   )
@@ -69,10 +76,10 @@ const CouseInConfirm: React.FC<{
     <div className="confirm_couseList_item">
       <header>
         <div>
-          <span>{cartItem.couse.Name}</span>
+          <span>{`"${cartItem.couse.Name}"`}</span>
           <span>{` - ${cartItem.quantity}шт.:`}</span>
         </div>
-        <span onClick={toggleCollapse}>{collapsed ? '▲' : '▼'}</span>
+        <span style={{ fontSize: '12px' }} onClick={toggleCollapse}>{collapsed ? '▲' : '▼'}</span>
       </header>
       {!collapsed
         ? null
@@ -80,23 +87,20 @@ const CouseInConfirm: React.FC<{
           <p>{`цена со скидкой ${cartItem.priceWithDiscount}`}</p>
           {campaign &&
             <table>
-              <tr>
-                <td>акция</td>
-                <td>{campaign.Name}</td>
-              </tr>
-              <tr>
-                <td>цена со скидкой в меню</td>
-                <td>{cartItem.couse.Discount_Price}</td>
-              </tr>
-              <tr>
-                <td>цена без скидки</td>
-                <td>{cartItem.couse.Price}</td>
-              </tr>
-              {campaignDetail &&
+              <tbody>
                 <tr>
-                  <td>{infoText}</td>
+                  <td>акция</td>
+                  <td>{campaign.Name + campaignDetail ? infoText : ''}</td>
                 </tr>
-              }
+                <tr>
+                  <td>цена со скидкой в меню</td>
+                  <td>{cartItem.couse.Discount_Price}</td>
+                </tr>
+                <tr>
+                  <td>цена без скидки</td>
+                  <td>{cartItem.couse.Price}</td>
+                </tr>
+              </tbody>
             </table>
           }
         </section>
