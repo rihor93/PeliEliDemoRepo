@@ -23,8 +23,8 @@
   display: flex;
   overflow: hidden;
   flex-direction: column;
-  background: var(--фон-элемента);
-  border: 1px solid var(--обводка-карточек);
+  background: var(--tg-theme-secondary-bg-color);
+  outline: 1px solid var(--adm-color-border);
   border-radius: 8px;
   margin: 0px 6px 12px;
   height: calc(166px + 114px);
