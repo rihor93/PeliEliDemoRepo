@@ -69,7 +69,7 @@ export const ItemModal: React.FC<{
                 onClick={() => setCount((prev) => prev + 1)}
               />
             </div>
-            <h5>{`${course.Discount_Price} ₽`}</h5>
+            <h5>{`${course.Price} ₽`}</h5>
           </div>
         </div>
         <div

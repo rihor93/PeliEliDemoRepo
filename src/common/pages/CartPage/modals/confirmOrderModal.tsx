@@ -94,7 +94,7 @@ const CouseInConfirm: React.FC<{
                 </tr>
                 <tr>
                   <td>цена со скидкой в меню</td>
-                  <td>{cartItem.couse.Discount_Price}</td>
+                  <td>{cartItem.couse.Price}</td>
                 </tr>
                 <tr>
                   <td>цена без скидки</td>

@@ -34,7 +34,7 @@ export const Categories: React.FC = observer(() => {
                   <span style={{color: 'var(--тихий-текст)'}}>★</span>
                   <span>{Math.ceil(course.Quality * 10) / 10}</span>
                   <div className='price_cart'>
-                    <span>{course.Discount_Price}</span>
+                    <span>{course.Price}</span>
                     <img
                       src={Cart}
                       onClick={() => watchCourse(course)}
