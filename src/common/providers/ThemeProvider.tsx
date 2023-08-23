@@ -29,11 +29,13 @@ export const ThemeProvider = ({ children }: WithChildren) => {
   // назначить переменные тг руками
   const switchTheme = (theme: ThemeType) => {
     // сетаем свои переменные темы
+    // чтобы их можно было использовать везде
     for (const Var of myVariables) {
       document.documentElement.style.setProperty(Var.cssVar, Var[theme])
     }
     if (!isInTelegram()) {
       setTheme(theme);
+      // если мы не в тг то используемых тг вариаблов не будет
       // сетаем оставшиеся переменные если нет тг
       for (const Var of tgVariables) {
         document.documentElement.style.setProperty(Var.cssVar, Var[theme])
@@ -41,6 +43,16 @@ export const ThemeProvider = ({ children }: WithChildren) => {
       localStorage.setItem('theme', theme)
       logger.log('тема переключена на ' + theme, 'theme')
     }
+    // -----------
+    // antd-mobile
+    // сетаем антд переменные темы вот так:
+    document.documentElement.setAttribute(
+      'data-prefers-color-scheme',
+      theme
+   )
+   for (const Var of antdVariables) {
+      document.documentElement.style.setProperty(Var.cssVar, Var[theme])
+   }
   }
   React.useEffect(() => {
     switchTheme(theme)
@@ -60,7 +72,10 @@ const getThemeFromLocalstorage = () =>
       ? 'dark' as ThemeType
       : 'light' as ThemeType
 
-const tgVariables = [
+type Var = { cssVar: string, dark: string, light: string }
+
+/** телеграммные переменные, чтобы в десктопной версии тоже были какие-то цвета */
+const tgVariables: Var[] = [
   { cssVar: '--tg-color-scheme', dark: 'dark', light: 'light' },
   { cssVar: '--tg-theme-hint-color', dark: '#708499', light: '#999999' },
   { cssVar: '--tg-theme-link-color', dark: '#168ACD', light: '#73B9F5' },
@@ -71,6 +86,7 @@ const tgVariables = [
   { cssVar: '--tg-theme-text-color', dark: '#F5F5F5', light: '#222222' }
 ]
 
+/** кастомные переменные */
 const myVariables = [
   { cssVar: '--gurmag-accent-color', dark: '#FF8804', light: '#FF8804' },
   { cssVar: '--theme-shadow-color', dark: 'black', light: 'grey' },
@@ -83,4 +99,8 @@ const myVariables = [
 
   { cssVar: '--фон-элемента', dark: '#232E3C', light: '#FFFFFF' }, 
   { cssVar: '--фон-страницы', dark: '#17212B', light: '#F9F9F9' }, 
+]
+
+const antdVariables: Var[] = [
+  { cssVar: '--adm-color-background', dark: '#17212B', light: '#FFFFFF' }, 
 ]
