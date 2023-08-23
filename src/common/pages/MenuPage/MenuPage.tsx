@@ -1,12 +1,13 @@
+import { Footer } from 'antd-mobile';
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { LoaderFullscreen } from '../../components';
-import Страничка from '../../components/layout/Page';
+import Страничка, { Page } from '../../components/layout/Page';
 import { logger } from '../../features';
 import { useStore } from '../../hooks';
 import './MenuPage.css';
-import { Modals } from './modals';
+import { ItemModal } from './modals/ItemModal';
 import { Sections } from './sections';
 
 export const MenuPage: React.FC = observer(() => {
@@ -28,18 +29,29 @@ export const MenuPage: React.FC = observer(() => {
       }
     }
   }, [categories.length])
-  return (
-    <Страничка>
-      <LoaderFullscreen isLoad={isLoading} />
+  // return (
+  //   <Страничка>
+  //     <LoaderFullscreen isLoad={isLoading} />
+  //     {selectedCourse &&
+  //       <Modals.course course={selectedCourse} />
+  //     }
+  //     <Sections.header />
+  //     <Sections.filter />
+  //     <Sections.categories />
+  //     <Sections.footer />
+  //   </Страничка>
+  // )
+  return(
+    <Page>
       {selectedCourse &&
-        <Modals.course course={selectedCourse} />
+        <ItemModal course={selectedCourse} />
       }
-      <Sections.header />
+      <div style={{height: '55px'}} />
       <Sections.filter />
       <Sections.categories />
-      <Sections.footer />
-      {/* <CartOverlay count={cartStore.items.length}/> old */}
-    </Страничка>
+      <Footer content='@ 2023 Gurmag All rights reserved'></Footer>
+      <div style={{height: '55px'}} />
+    </Page>
   )
 })
 

@@ -5,6 +5,7 @@ import { observer } from 'mobx-react-lite';
 import { Cart, GurmagLogo } from '../../../../../assets';
 import { config } from '../../../../configuration';
 import { replaceImgSrc } from '../../../../helpers';
+import { Divider } from 'antd-mobile';
 
 
 export const Categories: React.FC = observer(() => {
@@ -16,7 +17,12 @@ export const Categories: React.FC = observer(() => {
 
       {categories.map((category, index) =>
         <div key={category.VCode + '-' + index} id={String(category.VCode)}>
-          <h1>{category.Name}</h1>
+          <Divider 
+            contentPosition="left" 
+            style={{fontSize: '22px'}} 
+          >
+            {category.Name}
+          </Divider>
           <div className="courses_list">
 
             {category.CourseList.map((course, index) =>
