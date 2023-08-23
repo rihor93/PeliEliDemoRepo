@@ -13,7 +13,7 @@
 .modal {
   padding: 10px;
   position: absolute;
-  background: var(--фон-элемента);
+  background: var(--tg-theme-bg-color);
   max-width: 80vw;
   animation-name: Jump;
   animation-duration: 0.3s;
@@ -84,7 +84,7 @@
   justify-content: center;
   align-items: center;
   border-radius: 8px;
-  background: var(--фон-страницы);
+  background: var(--tg-theme-secondary-bg-color);
   z-index: 2;
 }
 
