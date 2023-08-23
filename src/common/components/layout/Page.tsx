@@ -1,6 +1,11 @@
 import { useNavigate } from "react-router-dom";
 import { BackDark, BackLight, cart } from "../../../assets";
 import { useTheme } from "../../hooks";
+
+export const Page: React.FC<WithChildren> = ({ children }) => 
+  <div style={{height: '100vh', width: '100vw'}}>
+    {children}
+  </div>
 // z heccrbq!!!
 const Страничка = ({ children }: WithChildren) => {
   return (
