@@ -19,9 +19,11 @@ export class Modal {
 
 export class MainPageStore {
   state: LoadStatesType = LoadStates.INITIAL;
+  cookstate: LoadStatesType = LoadStates.INITIAL;
   rootStore: Store;
 
   categories: Array<CategoryCourse> = [];
+  cooks: Array<Cook> = [];
 
   getDishByID(id: number | string) {
     let all: CourseItem[] = []
@@ -35,6 +37,9 @@ export class MainPageStore {
 
   get isLoading() {
     return this.state === LoadStates.LOADING
+  }
+  get cookIsLoading() {
+    return this.cookstate === LoadStates.LOADING
   }
   constructor(rootStore: Store) {
     this.rootStore = rootStore;
@@ -58,10 +63,13 @@ export class MainPageStore {
     this.itemModal.open();
   }
 
-  loadMenu = flow(function* (this: MainPageStore) {
+  loadMenu = flow(function* (
+    this: MainPageStore, 
+    orgID: number
+  ) {
     this.onStart();
     try {
-      const data: Array<CategoryCourse> = yield http.get('/getUserMenu');
+      const data: Array<CategoryCourse> = yield http.get('/getUserMenu_v2/' + orgID);
       this.categories = [];
       data.forEach((category) =>
         this.categories.push(category)
@@ -69,6 +77,23 @@ export class MainPageStore {
       this.onSuccess();
     } catch (err) {
       this.onFailure(err)
+    }
+  })
+
+  loadCooks = flow(function* (
+    this: MainPageStore,
+    orgId: number
+  ) {
+    this.cookstate = 'LOADING'
+    try {
+      const data: [Cook[]] = yield http.get('/getShopInfo/' + orgId);
+      this.cooks = [];
+      data[0]?.forEach((cock) =>
+        this.cooks.push(cock)
+      )
+      this.cookstate = 'COMPLETED'
+    } catch (err) {
+      this.cookstate = 'FAILED';
     }
   })
 

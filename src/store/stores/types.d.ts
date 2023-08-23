@@ -3,9 +3,12 @@ type CourseItem = {
   VCode: number,
   Name: string,
   CatVCode: number,
-  Discount_Price: number,
   Price: number,
   Quality: number,
+  /**блюдо готовится на точке, работает без остатко */
+  NoResidue: boolean,
+  /** текущий остаток на точке */
+  EndingOcResidue: number
 }
 
 /** Тип категории с блюдами */
@@ -14,6 +17,8 @@ type CategoryCourse = {
   Name: string,
   MenuVCode: number,
   CourseList: CourseItem[],
+  /** пока нигде не используется */
+  Quality: number,
 }
 
 /** Блюдо в корзине как часть заказа */
@@ -85,3 +90,9 @@ type UserCoursePayload = {
   dishSet: DishSetDiscount[],
 }
 
+type Cook = {
+  UserId: string,
+  Rating: number,
+  FirstName: string,
+  NameWork: string,
+}
