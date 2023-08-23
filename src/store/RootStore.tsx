@@ -27,12 +27,15 @@ export class Store {
       }
     );
 
+    /** подписка на изменения org id */
     const whenUsersOrgHasBeenSaved = reaction(
       () => this.userStore.currentOrg,
       (value, prevValue) => {
         logger.log('Org_id изменился - загружаем другие скидки loadUserInfo', 'rootStore')
         if(prevValue !== value) {
-          if(typeof value === 'number') this.userStore.loadUserInfo(value)
+          this.mainPage.loadCooks(value);
+          this.mainPage.loadMenu(value);
+          this.userStore.loadUserInfo(value);
         }
       }
     )
@@ -49,7 +52,6 @@ export class Store {
   // Загружаются общие данные, главные страницы и т.д.
   afterLoaded() {
     logger.log('страница загружена', Store.name)
-    this.mainPage.loadMenu();
     this.userStore.loadOrganizations();
     this.auth.getCurrentUser();
   }
