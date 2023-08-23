@@ -64,6 +64,7 @@ const routes: Array<{
 export const Router: FC = () => 
   <BrowserRouter>
     <div style={styles.app}>
+      {/* @ts-ignore */}
       <div style={styles.top}>
         <Top />
       </div>
@@ -97,7 +98,13 @@ const styles = {
   },
   
   top: {
-    borderBottom: 'solid 1px var(--adm-color-border)',
+    borderBottom: 'solid 1px var(--adm-color-border)', 
+    position: 'fixed',
+    left: '0',
+    right: '0',
+    top: '0',
+    background: 'var(--tg-theme-bg-color)',
+    zIndex: '1'
   },
   
   body: {},
@@ -184,7 +191,9 @@ const Bottom: FC = observer(() => {
               style={{ 
                 '--border-radius': '6px', 
                 position: 'absolute',
-                right: '0',
+                top: '-0.25rem', 
+                right: '-0.5rem', 
+                fontSize: '14px'
               }}
             >
               {cartStore.items.length}
