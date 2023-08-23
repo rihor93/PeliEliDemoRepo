@@ -219,5 +219,5 @@ const Top: FC = () => {
   const onBack = () => {navigate(-1)}
   return pathname === '/'
     ? null
-    : <NavBar onBack={onBack}>{currentTab?.title}</NavBar>
+    : <NavBar onBack={onBack}>{currentTab?.title ?? 'Корзина'}</NavBar>
 }

@@ -73,14 +73,9 @@ export const ActionsPage: React.FC = observer(() => {
 
   return (
     <Страничка>
-      <Страничка.Заголовочек fixed backButton>
-        Акции
-      </Страничка.Заголовочек> 
-      <LoaderFullscreen isLoad={userStore.isLoading} />
+      <div style={{height: '55px'}} />
       {selectedAction && <WatchCampaignModal campaign={selectedAction} />}
       {selectedCourse && <Modals.course course={selectedCourse} />}
-
-      <div style={{ height: '70px' }} />
       {!userName.length
         ? <div
           className='hello_costumer'

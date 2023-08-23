@@ -7,9 +7,6 @@ export const MorePage: React.FC = () => {
   const isdarkMode = theme === 'dark';
   return (
     <Страничка>
-      <Страничка.Заголовочек fixed backButton>
-        Ещё
-      </Страничка.Заголовочек>
       <ul className='moreList'>
         <li>
           <img src={isdarkMode ? LocationLight : LocationDark} alt="Города" />

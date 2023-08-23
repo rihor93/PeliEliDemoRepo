@@ -1,3 +1,4 @@
+import Button from 'antd-mobile/es/components/button';
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { LocationDark, LocationLight } from '../../../assets';
@@ -14,10 +15,7 @@ export const CartPage: React.FC = observer(
     const isdarkMode = theme === 'dark';
     return (
       <Страничка>
-      <ConfirmOrderModal />
-        <Страничка.Заголовочек fixed backButton>
-          Корзина
-        </Страничка.Заголовочек>
+        <ConfirmOrderModal />
         <Страничка.Тело>
           {!cart.isEmpty
             ? <div style={{marginTop: '15px'}}>
@@ -59,13 +57,13 @@ export const CartPage: React.FC = observer(
             />
           )}
         </Страничка.Тело>
-
-        <Страничка.Кнопочка
+        <Button
+          style={{}}
           disabled={cart.isEmpty}
           onClick={() => cart.confirmOrderModal.open()}
         >
           {`Оформить заказ за ${cart.totalPrice}`}
-        </Страничка.Кнопочка>
+        </Button>
       </Страничка>
     )
   }

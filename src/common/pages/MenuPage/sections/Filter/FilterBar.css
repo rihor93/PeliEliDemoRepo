@@ -3,7 +3,6 @@
   background: var(--tg-theme-bg-color); 
   position: relative;
   padding: 0 10px;
-  border-bottom: solid 1px var(--adm-color-border);
 }
 .overlayed {
   top: 45px;
