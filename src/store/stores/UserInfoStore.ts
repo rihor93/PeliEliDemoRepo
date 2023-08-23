@@ -41,6 +41,10 @@ export class UserInfoStore {
     return this.selectedOrganizationID
   }
 
+  get currentOrganizaion() {
+    return this.organizations.find((org) => org.Id == this.selectedOrganizationID) as Organization
+  }
+
 
   rootStore: Store;
   constructor(rootStore: Store) {
@@ -52,6 +56,7 @@ export class UserInfoStore {
     this: UserInfoStore,
     orgId: number
   ) {
+    this.onStart()
     const { userId } = useTelegram();
     const response = yield http.get('/getUserInfo/' + userId + '/' + orgId)
 
@@ -87,6 +92,7 @@ export class UserInfoStore {
 
     // пересчитываем корзину 
     this.rootStore.cartStore.applyDiscountForCart(newState)
+    this.onSuccess()
   })
 
   loadOrganizations = flow(function* (
