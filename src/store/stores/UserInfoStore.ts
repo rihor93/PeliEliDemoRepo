@@ -120,4 +120,8 @@ export class UserInfoStore {
   }
 
   onStart() { this.state = 'LOADING'; }
+
+  get needAskAdress() {
+    return this.selectedOrganizationID == 142 || this.selectedOrganizationID == 0
+  }
 }

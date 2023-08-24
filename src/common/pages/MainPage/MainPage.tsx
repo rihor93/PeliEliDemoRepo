@@ -1,5 +1,5 @@
 import { HomeOutlined } from "@ant-design/icons"
-import { Swiper, Divider, Skeleton, Footer, Avatar, Space, Rate, Dropdown, Radio } from "antd-mobile"
+import { Modal, Swiper, Divider, Skeleton, Footer, Avatar, Space, Rate, Dropdown, Radio } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import { useNavigate } from "react-router-dom";
 import { Cart, GurmagLogo, gurmag_big } from '../../../assets';
@@ -16,6 +16,33 @@ export const MainPage: React.FC = observer(() => {
   const { selectedCourse, state, cookstate, watchCourse } = mainPage;
   const { allCampaign } = userStore.userState; 
   const navigate = useNavigate();
+
+  const askAdress = () => {
+    Modal.alert({ 
+      confirmText: 'Выбрать',
+      header: 
+        <HomeOutlined 
+          style={{
+            fontSize: 64,
+            color: 'var(--adm-color-warning)',
+          }}
+        />,
+      title: 'Выберите вашу домашнюю кухню:',
+      content: 
+        <Radio.Group 
+          defaultValue={userStore.currentOrg}
+          onChange={(e) => userStore.currentOrg = e as number}
+        >
+          <Space direction='vertical' block>
+            {userStore.organizations.map((org) => 
+              <Radio block value={org.Id} key={org.Id}>
+                {org.Name}
+              </Radio>
+            )}
+          </Space>
+        </Radio.Group>
+    })
+  }
   return(
     <Page>
       {state === 'COMPLETED' && cookstate === 'COMPLETED'
@@ -24,36 +51,42 @@ export const MainPage: React.FC = observer(() => {
           ? <ItemModal course={selectedCourse} />
           : null
         }
-        <Dropdown>
-            <Dropdown.Item 
-              key='sorter' 
-              title={
-                <div style={{fontSize: '12px', color: 'var(--тихий-текст)'}}>
-                  <HomeOutlined />
-                  <span>Ваша домашняя кухня:</span>
-                  <br />
-                  <span style={{fontSize: '18px', color: 'var(--громкий-текст)'}}>
-                    {userStore.currentOrganizaion.Name}
-                  </span>
+        {userStore.needAskAdress 
+          ? askAdress()
+          : (
+            <Dropdown>
+              <Dropdown.Item 
+                key='sorter' 
+                title={
+                  <div style={{fontSize: '12px', color: 'var(--тихий-текст)'}}>
+                    <HomeOutlined />
+                    <span>Ваша домашняя кухня:</span>
+                    <br />
+                    <span style={{fontSize: '18px', color: 'var(--громкий-текст)'}}>
+                      {userStore.currentOrganizaion?.Name}
+                    </span>
+                  </div>
+                }
+              >
+                <div style={{ padding: 12 }}>
+                  <Radio.Group 
+                    defaultValue={userStore.currentOrg}
+                    onChange={(e) => userStore.currentOrg = e as number}
+                  >
+                    <Space direction='vertical' block>
+                      {userStore.organizations.map((org) => 
+                        <Radio block value={org.Id} key={org.Id}>
+                          {org.Name}
+                        </Radio>
+                      )}
+                    </Space>
+                  </Radio.Group>
                 </div>
-              }
-            >
-              <div style={{ padding: 12 }}>
-                <Radio.Group 
-                  defaultValue={userStore.currentOrg}
-                  onChange={(e) => userStore.currentOrg = e as number}
-                >
-                  <Space direction='vertical' block>
-                    {userStore.organizations.map((org) => 
-                      <Radio block value={org.Id} key={org.Id}>
-                        {org.Name}
-                      </Radio>
-                    )}
-                  </Space>
-                </Radio.Group>
-              </div>
-            </Dropdown.Item>
-          </Dropdown>
+              </Dropdown.Item>
+            </Dropdown>
+          )
+        }
+        
           <Swiper 
             loop
             autoplay
