@@ -1,6 +1,7 @@
 import { HomeOutlined } from "@ant-design/icons"
-import { Modal, Swiper, Divider, Skeleton, Footer, Avatar, Space, Rate, Dropdown, Radio } from "antd-mobile"
+import { Toast, Modal, Swiper, Divider, Skeleton, Footer, Avatar, Space, Rate, Dropdown, Radio } from "antd-mobile"
 import { observer } from "mobx-react-lite"
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Cart, GurmagLogo, gurmag_big } from '../../../assets';
 import { Page } from "../../components";
@@ -17,32 +18,7 @@ export const MainPage: React.FC = observer(() => {
   const { allCampaign } = userStore.userState; 
   const navigate = useNavigate();
 
-  const askAdress = () => {
-    Modal.alert({ 
-      confirmText: 'Выбрать',
-      header: 
-        <HomeOutlined 
-          style={{
-            fontSize: 64,
-            color: 'var(--adm-color-warning)',
-          }}
-        />,
-      title: 'Выберите вашу домашнюю кухню:',
-      content: 
-        <Radio.Group 
-          defaultValue={userStore.currentOrg}
-          onChange={(e) => userStore.currentOrg = e as number}
-        >
-          <Space direction='vertical' block>
-            {userStore.organizations.map((org) => 
-              <Radio block value={org.Id} key={org.Id}>
-                {org.Name}
-              </Radio>
-            )}
-          </Space>
-        </Radio.Group>
-    })
-  }
+  const [askedAddr, setAskedAddr] = useState(0)
   return(
     <Page>
       {state === 'COMPLETED' && cookstate === 'COMPLETED'
@@ -52,7 +28,39 @@ export const MainPage: React.FC = observer(() => {
           : null
         }
         {userStore.needAskAdress 
-          ? askAdress()
+          ? <Modal 
+              visible={userStore.needAskAdress} 
+              title='Выберите вашу домашнюю кухню:'
+              content={
+                <Radio.Group 
+                  onChange={(e) => setAskedAddr(e as number)}
+                >
+                  <Space direction='vertical' block>
+                    {userStore.organizations.map((org) => 
+                      <Radio block value={org.Id} key={org.Id}>
+                        {org.Name}
+                      </Radio>
+                    )}
+                  </Space>
+                </Radio.Group>
+              }
+              actions={[
+                {
+                  key: 'confirm', 
+                  text: 'Сохранить', 
+                  onClick() {
+                    if(askedAddr == 142 || askedAddr == 0) {
+                      Toast.show({
+                        content: 'Выберите местоположение',
+                        position: 'center',
+                      })
+                    } else {
+                      userStore.currentOrg = askedAddr
+                    }
+                  },
+                }
+              ]}
+            /> 
           : (
             <Dropdown>
               <Dropdown.Item 
