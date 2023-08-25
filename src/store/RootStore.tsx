@@ -53,7 +53,7 @@ export class Store {
   afterLoaded() {
     logger.log('страница загружена', Store.name)
     this.userStore.loadOrganizations();
-    this.auth.getCurrentUser();
+    this.auth.authorize();
   }
 
   onDestroy() {

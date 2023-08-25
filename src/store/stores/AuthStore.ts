@@ -42,8 +42,8 @@ export class AuthStore {
     this.state = state;
   }
 
-  /** todo auth */
-  getCurrentUser() {
+  /** тут мы авторизуемся */
+  authorize() {
     this.setState('AUTHORIZING')
     const { userId } = useTelegram();
     if(!userId) {

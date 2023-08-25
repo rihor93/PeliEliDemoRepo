@@ -48,6 +48,38 @@ export class MainPageStore {
   }
 
   itemModal = new Modal();
+  watchCockModal = new Modal();
+  selectedCock: Optional<Cook> = null;
+  selectedCockReviews: CookReviews[] = [];
+  loadCookInfoState: LoadStatesType = 'INITIAL';
+  async watchCook(cook: Cook) {
+    this.selectedCock = cook;
+    this.loadCookReviews(cook);
+    this.watchCockModal.open();
+  }
+  async closeCookWatch() {
+    this.selectedCock = null;
+    this.selectedCockReviews = [];
+    this.watchCockModal.close();
+  }
+
+  loadCookReviews = flow(function* (
+    this: MainPageStore,
+    cook: Cook
+  ) {
+    const point = this.rootStore.userStore.currentOrg;
+    try{
+      this.loadCookInfoState = 'LOADING';
+      this.selectedCockReviews = []
+      const response = yield http.get(`getShopInfo/${point}/${cook.UserId}`);
+      response.forEach((element: any) => {
+        this.selectedCockReviews.push(element)
+      });
+      this.loadCookInfoState = 'COMPLETED';
+    } catch(e) {
+      this.loadCookInfoState = 'FAILED';
+    }
+  })
 
   /** категория блюд которая видна на экране */
   visibleCategory: Optional<string> = null;

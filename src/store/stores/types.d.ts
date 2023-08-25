@@ -75,10 +75,15 @@ type Organization = {
 
 type UserInfoState = {
   userName: string,
-  userBonuses: number,
+  /** кол-во каких-то бонусов */
+  userBonuses: number, 
+  /** это детали основных акций: сидка N процентов на cумму от A до B */
   percentDiscounts: PercentDiscount[],
+  /** это детали основных акций: скидка на какое-то блюдо */
   dishDiscounts: DishDiscount[],
+  /** это основыне акции */
   allCampaign: AllCampaignUser[],
+  /** это детали основных акций: скидка на сет из блюд */
   dishSet: DishSetDiscount[],
 }
 
@@ -90,9 +95,23 @@ type UserCoursePayload = {
   dishSet: DishSetDiscount[],
 }
 
+/** Работник */
 type Cook = {
   UserId: string,
   Rating: number,
   FirstName: string,
   NameWork: string,
+}
+
+/** отзыв на каждое блюдо работника */
+type CookReviews = { 
+  Rating: number
+  /** название категории */
+  Category: string,
+  /** название блюда */
+  Course: string,
+  /** название сотрудника */
+  FIO: string,
+  /** 2023-08-15T15:53:23.745Z */
+  Date: string,
 }

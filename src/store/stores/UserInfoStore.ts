@@ -9,6 +9,8 @@ export class UserInfoStore {
   state: LoadStatesType = LoadStates.INITIAL;
 
   get isLoading() { return this.state === 'LOADING' }
+  get isFailed() { return this.state === 'FAILED' }
+  get isDone() { return this.state === 'COMPLETED' }
 
 
   userState: UserInfoState = {

@@ -10,9 +10,14 @@ import { replaceImgSrc } from '../../helpers';
 import { useStore } from '../../hooks';
 import { ItemModal } from "../MenuPage/modals/ItemModal";
 import './MainPage.css';
+import { FC } from 'react';
+import Ellipsis from "antd-mobile/es/components/ellipsis";
+import Image from "antd-mobile/es/components/image";
+import { List } from "antd-mobile";
+import moment from "moment";
 
 
-export const MainPage: React.FC = observer(() => { 
+export const MainPage: FC = observer(() => { 
   const { userStore, actionsPage, mainPage } = useStore();
   const { selectedCourse, state, cookstate, watchCourse } = mainPage;
   const { allCampaign } = userStore.userState; 
@@ -30,6 +35,14 @@ export const MainPage: React.FC = observer(() => {
         {userStore.needAskAdress 
           ? <Modal 
               visible={userStore.needAskAdress} 
+              onClose={() => {
+                if(askedAddr == 142 || askedAddr == 0) {
+                  Toast.show({
+                    content: 'Выберите местоположение',
+                    position: 'center',
+                  })
+                }
+              }}
               title='Выберите вашу домашнюю кухню:'
               content={
                 <Radio.Group 
@@ -137,13 +150,88 @@ export const MainPage: React.FC = observer(() => {
               overflowY: 'hidden', 
             }} 
           >
+            <Modal 
+              visible={mainPage.watchCockModal.show}
+              onClose={() => mainPage.closeCookWatch()}
+              closeOnMaskClick
+              bodyStyle={{width: '80vw'}}
+              content={
+                mainPage.loadCookInfoState === 'LOADING'
+                  ? <>
+                    <Skeleton.Paragraph></Skeleton.Paragraph>
+                  </>
+                  : !mainPage.selectedCock ? null : <>
+                    <span>
+                      <Rate
+                        allowHalf
+                        readOnly 
+                        count={1}
+                        defaultValue={1}
+                        style={{'--star-size': '20px' }}
+                      />
+                      {/* @ts-ignore */}
+                      <span style={{fontSize: '20px'}}>
+                        {Math.ceil(mainPage.selectedCock?.Rating * 10) / 10}
+                      </span>
+                    </span>
+                    <br />
+                    
+                    <span>{mainPage.selectedCock.NameWork}</span>
+
+
+                    {/* @ts-ignore */}
+                    {/* {[...new Set(mainPage.selectedCockReviews[0].map((item) => item.Category))].map(str => 
+                      <span style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                        <span>{str}</span>
+                        <span>
+                          <Rate
+                            allowHalf
+                            readOnly 
+                            count={1}
+                            defaultValue={1}
+                            style={{'--star-size': '14px' }}
+                          />  
+                        </span>
+                    </span>
+                    )} */}
+                    <List header='Последние отзывы'>
+                      {/* @ts-ignore */}
+                      {mainPage.selectedCockReviews[0].map((review, index) => (
+                        <List.Item
+                          key={index}
+                          prefix={
+                            <Avatar 
+                              src=''
+                              style={{ 
+                                borderRadius: 20, 
+                                width: '40px', 
+                                height: '40px', 
+                              }}
+                              fit='cover'
+                            />
+                          }
+                          description={`★${review.Rating} ${review.Course}`}
+                        >
+                          <span style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                            <span>{review.FIO?.length ? review.FIO : 'Покупатель'}</span>
+                            <span style={{fontSize:'12px', color: 'var(--тихий-текст)'}}>
+                              {moment(review.Date).format('DD-MM-YYYY')}
+                            </span>
+                          </span>
+                        </List.Item>
+                      ))}
+                    </List>
+                  </>
+              }
+            />
             {mainPage.cooks.map((cook) => 
                 <Space 
-                  style={{ '--gap': '3px', width: '33%' }}
+                  style={{ '--gap': '3px', width: '33%', margin: '0 0.25rem' }}
                   direction="vertical" 
                   justify="center" 
                   align="center" 
                   key={cook.UserId}
+                  onClick={() => mainPage.watchCook(cook)}
                 >
                   <Avatar 
                     src={config.apiURL + '/api/v2/image/Cook?vcode=' + cook.UserId} 
@@ -155,18 +243,13 @@ export const MainPage: React.FC = observer(() => {
                     }}
                   />
                   <span style={{color: 'var(--громкий-текст)', fontSize: '18px'}}>{cook.FirstName}</span>
-                  
-                  <span 
+                  <Ellipsis 
+                    content={cook.NameWork} 
                     style={{
                       color: 'var(--тихий-текст)', 
                       fontSize: '12px',
-                      textAlign: 'center',
-                      whiteSpace: 'nowrap', 
-                      textOverflow: 'ellipsis'
                     }}
-                  >
-                    {cook.NameWork}
-                  </span>
+                  />
                   <Space align="center" style={{'--gap': '3px'}}>
                     <div style={{fontSize: '20px'}} >{Math.ceil(cook.Rating * 10) / 10}</div>
                     <Rate
@@ -215,26 +298,7 @@ export const MainPage: React.FC = observer(() => {
           <Footer content='@ 2023 Gurmag All rights reserved'></Footer>
           <div style={{height: '50px', width: '100%'}}></div> 
         </>
-        : <>
-          <Skeleton animated style={skeletonStyle} />
-          <Skeleton.Title style={{margin: '1rem'}} />
-          <section className='categories'>
-            <div>
-              <div className="courses_list">
-                {new Array(2).fill(null).map((_, index) => 
-                  <div className="course_item" key={index}>
-                    <Skeleton style={{width: '100%'}} />
-                    <div className='item_bady'>
-                      <Skeleton.Title />
-                      <Skeleton.Paragraph />
-                      <Skeleton />
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          </section>
-        </>
+        : preloader()
       }
     </Page>
   )
@@ -247,3 +311,24 @@ const skeletonStyle: React.CSSProperties = {
   margin: '0.5rem', 
   borderRadius: '8px', 
 }
+
+const preloader = () => [
+  <Skeleton animated style={skeletonStyle} />,
+  <Skeleton.Title style={{margin: '1rem'}} />,
+  <section className='categories'>
+    <div>
+      <div className="courses_list">
+        {new Array(2).fill(null).map((_, index) => 
+          <div className="course_item" key={index}>
+            <Skeleton style={{width: '100%'}} />
+            <div className='item_bady'>
+              <Skeleton.Title />
+              <Skeleton.Paragraph />
+              <Skeleton />
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+]
