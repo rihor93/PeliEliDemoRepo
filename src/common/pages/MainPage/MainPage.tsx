@@ -1,5 +1,5 @@
 import { HomeOutlined } from "@ant-design/icons"
-import { Toast, Modal, Swiper, Divider, Skeleton, Footer, Avatar, Space, Rate, Dropdown, Radio } from "antd-mobile"
+import { Toast, Modal, Swiper, Divider, Skeleton, Footer, Avatar, Space, Rate, Dropdown, Radio, Popup, Button } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -12,7 +12,6 @@ import { ItemModal } from "../MenuPage/modals/ItemModal";
 import './MainPage.css';
 import { FC } from 'react';
 import Ellipsis from "antd-mobile/es/components/ellipsis";
-import Image from "antd-mobile/es/components/image";
 import { List } from "antd-mobile";
 import moment from "moment";
 
@@ -33,18 +32,22 @@ export const MainPage: FC = observer(() => {
           : null
         }
         {userStore.needAskAdress 
-          ? <Modal 
+          ? <Popup 
               visible={userStore.needAskAdress} 
-              onClose={() => {
-                if(askedAddr == 142 || askedAddr == 0) {
-                  Toast.show({
-                    content: 'Выберите местоположение',
-                    position: 'center',
-                  })
-                }
+              onMaskClick={() => {
+                Toast.show({
+                  content: 'Пожалуйста, выберите местоположение',
+                  position: 'center',
+                })
               }}
-              title='Выберите вашу домашнюю кухню:'
-              content={
+              bodyStyle={{
+                borderTopLeftRadius: '8px',
+                borderTopRightRadius: '8px',
+                padding:'0 0.5rem 0.5rem 0.5rem'
+              }}
+            >
+              <div>
+                <Divider>Выберите вашу домашнюю кухню:</Divider>
                 <Radio.Group 
                   onChange={(e) => setAskedAddr(e as number)}
                 >
@@ -56,12 +59,12 @@ export const MainPage: FC = observer(() => {
                     )}
                   </Space>
                 </Radio.Group>
-              }
-              actions={[
-                {
-                  key: 'confirm', 
-                  text: 'Сохранить', 
-                  onClick() {
+                <Button 
+                  block 
+                  color='primary' 
+                  size='large'
+                  className="mt-1"
+                  onClick={() => {
                     if(askedAddr == 142 || askedAddr == 0) {
                       Toast.show({
                         content: 'Выберите местоположение',
@@ -70,10 +73,12 @@ export const MainPage: FC = observer(() => {
                     } else {
                       userStore.currentOrg = askedAddr
                     }
-                  },
-                }
-              ]}
-            /> 
+                  }}
+                >
+                  Сохранить
+                </Button>
+              </div>
+            </Popup>
           : (
             <Dropdown>
               <Dropdown.Item 
@@ -150,17 +155,26 @@ export const MainPage: FC = observer(() => {
               overflowY: 'hidden', 
             }} 
           >
-            <Modal 
+            <Popup 
               visible={mainPage.watchCockModal.show}
               onClose={() => mainPage.closeCookWatch()}
               closeOnMaskClick
-              bodyStyle={{width: '80vw'}}
-              content={
+              bodyStyle={{
+                borderTopLeftRadius: '8px',
+                borderTopRightRadius: '8px',
+                padding:'1rem 0.5rem 0.5rem 0.5rem'
+              }}
+            >
+              {
                 mainPage.loadCookInfoState === 'LOADING'
-                  ? <>
-                    <Skeleton.Paragraph></Skeleton.Paragraph>
-                  </>
-                  : !mainPage.selectedCock ? null : <>
+                ? <div>
+                  <Skeleton.Paragraph />
+                  <Skeleton.Paragraph />
+                  <Skeleton.Paragraph />
+                </div>
+                : !mainPage.selectedCock 
+                  ? null 
+                  : <div style={{maxHeight: '65vh', overflow: 'scroll'}}>
                     <span>
                       <Rate
                         allowHalf
@@ -176,24 +190,7 @@ export const MainPage: FC = observer(() => {
                     </span>
                     <br />
                     
-                    <span>{mainPage.selectedCock.NameWork}</span>
-
-
-                    {/* @ts-ignore */}
-                    {/* {[...new Set(mainPage.selectedCockReviews[0].map((item) => item.Category))].map(str => 
-                      <span style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                        <span>{str}</span>
-                        <span>
-                          <Rate
-                            allowHalf
-                            readOnly 
-                            count={1}
-                            defaultValue={1}
-                            style={{'--star-size': '14px' }}
-                          />  
-                        </span>
-                    </span>
-                    )} */}
+                    <span style={{margin: '0.5rem'}}>{mainPage.selectedCock.NameWork}</span>
                     <List header='Последние отзывы'>
                       {/* @ts-ignore */}
                       {mainPage.selectedCockReviews[0].map((review, index) => (
@@ -221,9 +218,9 @@ export const MainPage: FC = observer(() => {
                         </List.Item>
                       ))}
                     </List>
-                  </>
+                  </div>
               }
-            />
+            </Popup>
             {mainPage.cooks.map((cook) => 
                 <Space 
                   style={{ '--gap': '3px', width: '33%', margin: '0 0.25rem' }}
@@ -313,9 +310,9 @@ const skeletonStyle: React.CSSProperties = {
 }
 
 const preloader = () => [
-  <Skeleton animated style={skeletonStyle} />,
-  <Skeleton.Title style={{margin: '1rem'}} />,
-  <section className='categories'>
+  <Skeleton key={1} animated style={skeletonStyle} />,
+  <Skeleton.Title key={2} style={{margin: '1rem'}} />,
+  <section key={3} className='categories'>
     <div>
       <div className="courses_list">
         {new Array(2).fill(null).map((_, index) => 
