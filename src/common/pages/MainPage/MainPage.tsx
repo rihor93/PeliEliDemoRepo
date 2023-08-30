@@ -330,9 +330,26 @@ export const MainPage: FC = observer(() => {
                     position: 'relative', 
                     borderRadius: '8px',
                     outline: '1px solid var(--adm-color-border)',
-                    background: colors[Math.floor(Math.random() * (colors.length))]
+                    background: 'var(--tg-theme-secondary-bg-color)'
                   }}
                 >
+                  <div 
+                    style={{
+                      position: 'absolute', 
+                      right: 0,
+                      top: 0,
+                      borderTopRightRadius: '8px',
+                      borderBottomLeftRadius: '8px',
+                      padding: '0.2rem',
+                      background: 'var(--adm-color-warning)',
+                      fontSize: '20px',
+                      fontWeight: '900',
+                      fontStyle: 'italic',
+                      color: 'white'
+                    }}
+                  >
+                    <span>Акция</span>
+                  </div>
                   <WaterMark
                     content={'Ели-Пели'}
                     fullPage={false}
@@ -349,13 +366,35 @@ export const MainPage: FC = observer(() => {
                       // @ts-ignore
                       fontSize: '30px',
                       lineHeight: 'normal', 
-                      textTransform: 'uppercase'
+                      textTransform: 'uppercase',
+                      borderBottom: '1px solid var(--громкий-текст)'
                     }}
                   >
                     {aksya.Name.replace(/ *\{[^}]*\} */g, "")}
                   </h1>
-                  <p>{aksya.Description.replace(/ *\{[^}]*\} */g, "")}</p>
-                  <p>{text}</p>
+                  <p 
+                    style={{
+                      padding: '0.5rem', 
+                      fontSize: '16px',
+                      fontStyle: 'italic',
+                      fontWeight: '500', 
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    {aksya.Description.replace(/ *\{[^}]*\} */g, "")}
+                  </p>
+                  <p 
+                    style={{
+                      padding: '0.5rem', 
+                      fontSize: '16px',
+                      fontStyle: 'italic',
+                      fontWeight: '500', 
+                      textTransform: 'uppercase',
+                      marginBottom:'5px'
+                    }}
+                  >
+                    {text}
+                  </p>
                   {!dishArr.length 
                     ? null
                     : <div className="courses_list">
@@ -365,6 +404,7 @@ export const MainPage: FC = observer(() => {
                           : <div
                             className="course_item"
                             key={`${aksya.Name}-${course.Name}-${index}`}
+                            style={{background: 'var(--tg-theme-bg-color)'}}
                           >
                             <img
                               src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}&compression=true`}
@@ -469,5 +509,6 @@ const preloader = () => [
   </section>
 ]
 
-const colors = ['#ace0ff', '#bcffbd', '#e4fabd', '#ffcfac']
+const lightcolors = ['#ace0ff', '#bcffbd', '#e4fabd', '#ffcfac']
+const darkcolors = ['#4B2828', '#4B3928', '#484B28', '#2D4B28', '#284B41', '#28494B', '#28304B', '#46284B', '#4B2837']
 
