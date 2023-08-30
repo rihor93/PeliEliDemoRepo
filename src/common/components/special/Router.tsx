@@ -120,12 +120,13 @@ const styles = {
 }
 
 
-import { NavBar, TabBar, Tag } from 'antd-mobile'
+import { NavBar, SearchBar, Skeleton, Space, TabBar, Tag } from 'antd-mobile'
 import {
   AppOutline,
   AppstoreOutline,
   GiftOutline,
   MoreOutline,
+  SearchOutline,
   UnorderedListOutline,
 } from 'antd-mobile-icons';
 
@@ -158,6 +159,7 @@ const tabs = [
 
 const Bottom: FC = observer(() => {
   const { pathname } = useLocation();
+  const { mainPage } = useStore();
   const navigate = useNavigate();
 
   const setRouteActive = (value: string) => {navigate(value)}
@@ -174,38 +176,42 @@ const Bottom: FC = observer(() => {
 
   return condition
     ? null
-    : <TabBar 
-      activeKey={currentTab?.key} 
-      onChange={value => setRouteActive(value)}
-    >
-      {tabs.map(item => 
-        <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
-      )}
-      <TabBar.Item 
-        key='/cart'
-        icon={
-          <div style={{position: 'relative'}}>
-            <AppstoreOutline />
-            <Tag
-              color='primary' 
-              style={{ 
-                '--border-radius': '6px', 
-                position: 'absolute',
-                top: '-0.25rem', 
-                right: '-0.5rem', 
-                fontSize: '14px'
-              }}
-            >
-              {cartStore.items.length}
-            </Tag>
-          </div>
-        }
-        title='Корзина'  
-      />
-    </TabBar>
+    : mainPage.isLoading || mainPage.cookIsLoading
+      ? preloader() 
+      : <TabBar 
+          activeKey={currentTab?.key} 
+          onChange={value => setRouteActive(value)}
+        >
+          {tabs.map(item => 
+            <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
+          )}
+          <TabBar.Item 
+            key='/cart' 
+            title='Корзина' 
+            icon={
+              <div style={{position: 'relative'}}>
+                <AppstoreOutline />
+                <Tag
+                  color='primary' 
+                  style={{ 
+                    position: 'absolute',
+                    top: '-0.25rem', 
+                    right: '-0.5rem', 
+                    fontSize: '14px', 
+                    '--border-radius': '6px', 
+                  }}
+                >
+                  {cartStore.items.length}
+                </Tag>
+              </div>
+            }
+          />
+        </TabBar>
 })
 
-const Top: FC = () => {
+const Top: FC = observer(() => {
+  const stor = useStore();
+  
   const { pathname } = useLocation();
 
   const navigate = useNavigate();
@@ -217,7 +223,48 @@ const Top: FC = () => {
   )
 
   const onBack = () => {navigate(-1)}
+
+  const right = (
+    <div style={{ fontSize: 24 }} onClick={() => stor.setSearchInputVisible(true)}>
+      <Space style={{ '--gap': '16px' }}>
+        <SearchOutline />
+      </Space>
+    </div>
+  )
+  const isShowRight = pathname.split('/').includes('menu')
   return pathname === '/'
     ? null
-    : <NavBar onBack={onBack}>{currentTab?.title ?? 'Корзина'}</NavBar>
-}
+    : <>
+      <NavBar 
+        right={isShowRight ? right : null} 
+        onBack={onBack}
+      >
+        {isShowRight && stor.searchInputVisible
+          ? <SearchBar 
+            style={{
+              background: 'var(--tg-theme-secondary-bg-color)', 
+              borderRadius: '8px'
+            }}
+            onChange={(e) => stor.mainPage.dishSearcher.search(e)}
+            value={stor.mainPage.dishSearcher.searchTerm}
+            cancelText='×' 
+            placeholder='найти еду!' 
+            onCancel={() => stor.setSearchInputVisible(false)}
+            showCancelButton={() => true} 
+          />
+          : currentTab?.title ?? 'Корзина'
+        }
+      </NavBar>
+    </>
+})
+
+const preloader = () => 
+  <TabBar>
+    {new Array(5).fill(null).map((_, index) => 
+      <TabBar.Item 
+        key={index} 
+        icon={<Skeleton style={{width: '25px', height: '25px', borderRadius: '100px'}} />} 
+        title={<Skeleton style={{width: '50px', height: '14px'}} />} 
+      />
+    )}
+  </TabBar>
