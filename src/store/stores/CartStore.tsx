@@ -1,11 +1,29 @@
-import { makeAutoObservable } from "mobx";
-import { Undef } from "../../common/types";
+import { flow, makeAutoObservable } from "mobx";
+import { http } from "../../common/features";
+import { LoadStatesType, Undef } from "../../common/types";
 import { Store } from "../RootStore";
 import { Modal } from "./MainPageStore";
 
 
 
-export class CartStore {
+export class CartStore { 
+  state: LoadStatesType = 'INITIAL';
+  get isLoading() { return this.state === 'LOADING' }
+  get isDone() { return this.state === 'COMPLETED' }
+  get isFailed() { return this.state === 'FAILED' }
+
+  onStart() { this.state = 'LOADING' }
+  onSuccess(text?: string) {
+    if(text?.length) {
+      console.log('todo')
+      // todo показывать сообщение об успехе пользователю
+    }
+    this.state = 'COMPLETED'
+  }
+  onFailure(errStr: string) {
+    // todo показывать сообщение об ошибке пользователю
+    this.state = 'FAILED'
+  }
   rootStore: Store
   constructor(rootStore: Store) {
     this.rootStore = rootStore;
@@ -223,5 +241,17 @@ export class CartStore {
       userInfo.dishSet,
     )
   }
+
+  postOrder = flow(function* (
+    this: CartStore,
+    order: Order
+  ) {
+    try {
+      const response: Order = yield http.post('/NewOrder', order);
+      if(response) this.onSuccess('Заказ успешно оформлен');
+    } catch (e) {
+      this.onFailure('Не удалось оформить заказ')
+    }
+  })
 }
 

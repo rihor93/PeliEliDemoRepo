@@ -6,6 +6,13 @@ import { logger } from "../common/features";
 import { ActionsPageStore } from "./stores/ActionsStore";
 
 export class Store {
+  /** видна ли поисковая строка в навбаре */
+  searchInputVisible = false
+  /** показываем или скрываем поисковую строку */
+  setSearchInputVisible(val: boolean) {
+    this.searchInputVisible = val;
+  }
+
   auth = new AuthStore(this); // todo auth
   mainPage = new MainPageStore(this);
   cartStore = new CartStore(this);

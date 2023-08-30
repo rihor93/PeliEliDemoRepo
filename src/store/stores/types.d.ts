@@ -115,3 +115,15 @@ type CookReviews = {
   /** 2023-08-15T15:53:23.745Z */
   Date: string,
 }
+
+type Order = {
+  itemsInCart: Array<CouseInCart>,
+  /** userid str - "187151411" */
+  userId:string, 
+  /** current org number str - "115" */
+  currentOrg: string,
+  /** phone number str - "79273067412" */ 
+  contactPhone: string,
+  /** ISOdate str - "2023-08-24T07:55:07.983Z" */
+  orderDate: string
+}

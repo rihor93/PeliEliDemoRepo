@@ -102,5 +102,6 @@ const myVariables = [
 ]
 
 const antdVariables: Var[] = [
-  { cssVar: '--adm-color-background', dark: '#17212B', light: '#FFFFFF' }, 
+  { cssVar: '--adm-color-background', dark: 'var(--tg-theme-bg-color)', light: 'var(--tg-theme-bg-color)' }, 
+  { cssVar: '--adm-color-box', dark: 'var(--tg-theme-secondary-bg-color)', light: 'var(--tg-theme-secondary-bg-color)' }, 
 ]

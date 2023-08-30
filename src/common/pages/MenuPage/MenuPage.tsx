@@ -1,4 +1,4 @@
-import { Footer, Skeleton } from 'antd-mobile';
+import { Button, Divider, Footer, Popup, Radio, Skeleton, Space, Toast } from 'antd-mobile';
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { useParams } from 'react-router-dom';
@@ -10,7 +10,7 @@ import { ItemModal } from './modals/ItemModal';
 import { Sections } from './sections';
 
 export const MenuPage: React.FC = observer(() => {
-  const { mainPage } = useStore();
+  const { mainPage, userStore } = useStore();
   const { selectedCourse, state, categories } = mainPage; 
   
   const params = useParams<{
@@ -28,22 +28,61 @@ export const MenuPage: React.FC = observer(() => {
       }
     }
   }, [categories.length])
-  // return (
-  //   <Страничка>
-  //     <LoaderFullscreen isLoad={isLoading} />
-  //     {selectedCourse &&
-  //       <Modals.course course={selectedCourse} />
-  //     }
-  //     <Sections.header />
-  //     <Sections.filter />
-  //     <Sections.categories />
-  //     <Sections.footer />
-  //   </Страничка>
-  // )
+  const [askedAddr, setAskedAddr] = React.useState(0)
   return state === 'COMPLETED'
     ? <Page>
         {selectedCourse &&
           <ItemModal course={selectedCourse} />
+        }
+        {userStore.needAskAdress 
+          ? <Popup 
+              visible={userStore.needAskAdress} 
+              onMaskClick={() => {
+                Toast.show({
+                  content: 'Пожалуйста, выберите местоположение',
+                  position: 'center',
+                })
+              }}
+              bodyStyle={{
+                borderTopLeftRadius: '8px',
+                borderTopRightRadius: '8px',
+                padding:'0 0.5rem 0.5rem 0.5rem'
+              }}
+            >
+              <div>
+                <Divider>Выберите вашу домашнюю кухню:</Divider>
+                <Radio.Group 
+                  onChange={(e) => setAskedAddr(e as number)}
+                >
+                  <Space direction='vertical' block>
+                    {userStore.organizations.map((org) => 
+                      <Radio block value={org.Id} key={org.Id}>
+                        {org.Name}
+                      </Radio>
+                    )}
+                  </Space>
+                </Radio.Group>
+                <Button 
+                  block 
+                  color='primary' 
+                  size='large'
+                  className="mt-1"
+                  onClick={() => {
+                    if(askedAddr == 142 || askedAddr == 0) {
+                      Toast.show({
+                        content: 'Выберите местоположение',
+                        position: 'center',
+                      })
+                    } else {
+                      userStore.currentOrg = askedAddr
+                    }
+                  }}
+                >
+                  Сохранить
+                </Button>
+              </div>
+            </Popup>
+          : null
         }
         <div style={{height: '55px'}} />
         <Sections.filter />

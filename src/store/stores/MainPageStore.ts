@@ -17,6 +17,47 @@ export class Modal {
   }
 }
 
+export class Searcher {
+  _result: Array<any> = []
+  _inputDataGetter: () => Array<any>
+
+  get isSearching() {
+    return Boolean(this.searchTerm.length)
+  }
+
+  constructor(inputGetter: () => Array<any>) {
+    this._inputDataGetter = inputGetter;
+    this._result = this._inputDataGetter();
+    makeAutoObservable(this);
+  }
+
+  searchTerm = ''
+  search(term: string) {
+    this.searchTerm = term;
+    const data = this._inputDataGetter()
+    if (!this.isSearching) {
+      this._result = data;
+    } else {
+      this._result = data.filter((d) => {
+        const bools = Object.keys(d).map((key) => {
+          if (typeof d[key] === 'string') {
+            return d[key]
+              .toLowerCase()
+              .includes(this.searchTerm.toLowerCase()) || false;
+          } else {
+            return false
+          }
+        })
+        return bools.includes(true);
+      })
+    }
+
+  }
+  get result() {
+    return this._result
+  }
+}
+
 export class MainPageStore {
   state: LoadStatesType = LoadStates.INITIAL;
   cookstate: LoadStatesType = LoadStates.INITIAL;
@@ -24,6 +65,17 @@ export class MainPageStore {
 
   categories: Array<CategoryCourse> = [];
   cooks: Array<Cook> = [];
+
+  get allDishes() {
+    const result: CourseItem[] = []
+    this.categories.forEach((category) => 
+      category.CourseList.forEach((couse) => 
+        result.push(couse)
+      )
+    )
+    return result;
+  }
+  dishSearcher = new Searcher(() => this.allDishes)
 
   getDishByID(id: number | string) {
     let all: CourseItem[] = []

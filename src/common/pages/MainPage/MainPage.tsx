@@ -1,5 +1,5 @@
 import { HomeOutlined } from "@ant-design/icons"
-import { Toast, Modal, Swiper, Divider, Skeleton, Footer, Avatar, Space, Rate, Dropdown, Radio, Popup, Button } from "antd-mobile"
+import { Toast, Swiper, Divider, Skeleton, Footer, Avatar, Space, Rate, Dropdown, Radio, Popup, Button, WaterMark } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -7,19 +7,32 @@ import { Cart, GurmagLogo, gurmag_big } from '../../../assets';
 import { Page } from "../../components";
 import { config } from '../../configuration';
 import { replaceImgSrc } from '../../helpers';
-import { useStore } from '../../hooks';
+import { useStore, useTheme } from '../../hooks';
 import { ItemModal } from "../MenuPage/modals/ItemModal";
 import './MainPage.css';
 import { FC } from 'react';
 import Ellipsis from "antd-mobile/es/components/ellipsis";
 import { List } from "antd-mobile";
 import moment from "moment";
+import { Optional, Undef } from "../../types";
 
 
 export const MainPage: FC = observer(() => { 
+  const { theme } = useTheme();
+
+  const isDarkMode = theme === 'light';
+
   const { userStore, actionsPage, mainPage } = useStore();
+
   const { selectedCourse, state, cookstate, watchCourse } = mainPage;
-  const { allCampaign } = userStore.userState; 
+
+  const { 
+    dishSet, 
+    allCampaign, 
+    dishDiscounts,  
+    percentDiscounts 
+  } = userStore.userState; 
+
   const navigate = useNavigate();
 
   const [askedAddr, setAskedAddr] = useState(0)
@@ -143,7 +156,7 @@ export const MainPage: FC = observer(() => {
             )}
           </Swiper>
           
-          <Divider contentPosition="left" style={{fontSize: '22px'}} >Сегодня в гурмаге</Divider>
+          
           <Divider contentPosition="left" style={{fontSize: '22px'}} >Сегодня готовят</Divider>
           <div 
             style={{
@@ -260,6 +273,131 @@ export const MainPage: FC = observer(() => {
                 </Space>
             )}
           </div>
+          <Divider contentPosition="left" style={{fontSize: '22px'}} >Сегодня в гурмаге</Divider>
+          <section className='categories'>
+            {allCampaign.map((aksya) => { 
+              /** ищем детали для этой скидки в скидках на блюда */
+              const dishDiscount = dishDiscounts.find((dishDiscount) =>
+                dishDiscount.vcode === aksya.VCode
+              )
+
+              /** ищем детали для этой скидки в процентных скидках */
+              const percentDiscount = percentDiscounts.find((percentDiscount) =>
+                percentDiscount.vcode === aksya.VCode
+              )
+
+              /** ищем детали для этой скидки в скидках на сеты */
+              const setDish = dishSet.find((setDish) =>
+                setDish.vcode === aksya.VCode
+              )
+
+              let text: Optional<string> = null;
+              let dishArr: Undef<CourseItem>[] = []; 
+
+              // должна найтись только одна из трех 
+              // если это скидка 
+              // на одно блюдо
+              if (dishDiscount && !percentDiscount && !setDish) {
+                const targetDish = mainPage.getDishByID(dishDiscount.dish)
+                if (targetDish?.Name) 
+                  text = `Cкидка ${dishDiscount.price}руб на "${targetDish?.Name}"`
+                
+              }
+
+              // если это процентная скидка
+              if (!dishDiscount && percentDiscount && !setDish) {
+                const { MaxSum, MinSum, discountPercent, bonusRate } = percentDiscount;
+                text = `Cкидка ${discountPercent}% на сумму от ${MinSum} до ${MaxSum} руб`;
+                if (bonusRate) text = text + ` + ${bonusRate} бонусных баллов`
+              }
+
+              // если это скидка на сет
+              if (!dishDiscount && !percentDiscount && setDish) {
+                text = `Cкидка на ${aksya.quantity} блюда из списка:`;
+                dishArr = setDish.dishes.map((dishDiscount) =>
+                  mainPage.getDishByID(dishDiscount.dish)
+                )
+              }
+
+
+              return(
+                <div 
+                  key={aksya.VCode} 
+                  id={String(aksya.VCode)} 
+                  style={{ 
+                    margin: '0 6px 12px 6px',
+                    padding: '10px',
+                    position: 'relative', 
+                    borderRadius: '8px',
+                    outline: '1px solid var(--adm-color-border)',
+                    background: colors[Math.floor(Math.random() * (colors.length))]
+                  }}
+                >
+                  <WaterMark
+                    content={'Ели-Пели'}
+                    fullPage={false}
+                    width={70}
+                    height={25}
+                  />
+                  <h1 
+                    style={{
+                      whiteSpace: 'break-spaces', 
+                      textAlign: 'center',
+                      fontSize: '24px',
+                      fontStyle: 'italic',
+                      fontWeight: '900',
+                      // @ts-ignore
+                      fontSize: '30px',
+                      lineHeight: 'normal', 
+                      textTransform: 'uppercase'
+                    }}
+                  >
+                    {aksya.Name.replace(/ *\{[^}]*\} */g, "")}
+                  </h1>
+                  <p>{aksya.Description.replace(/ *\{[^}]*\} */g, "")}</p>
+                  <p>{text}</p>
+                  {!dishArr.length 
+                    ? null
+                    : <div className="courses_list">
+                      {dishArr.map((course, index) =>
+                        !course
+                          ? null
+                          : <div
+                            className="course_item"
+                            key={`${aksya.Name}-${course.Name}-${index}`}
+                          >
+                            <img
+                              src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}&compression=true`}
+                              onError={replaceImgSrc(GurmagLogo)}
+                              onClick={() => watchCourse(course)}
+                            />
+                            <div className='item_bady'>
+                              <h5 
+                                className='title' 
+                                onClick={() => watchCourse(course)}
+                              >
+                                {course.Name}
+                              </h5>
+                              <span style={{color: 'var(--тихий-текст)'}}>★</span>
+                              <span>{Math.ceil(course.Quality * 10) / 10}</span>
+                              <div className='price_cart'>
+                                <span>{course.Price}</span>
+                                <img
+                                  src={Cart}
+                                  onClick={() => watchCourse(course)}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                      )}
+
+                    </div>
+                  }
+                </div>
+              )
+            })}
+
+          </section>
           <Divider contentPosition="left" style={{fontSize: '22px'}} >Популярные блюда</Divider>
           <section className='categories'>
             <div key='популярное' id='популярное'>
@@ -292,6 +430,7 @@ export const MainPage: FC = observer(() => {
               </div>
             </div>
           </section>
+          
           <Footer content='@ 2023 Gurmag All rights reserved'></Footer>
           <div style={{height: '50px', width: '100%'}}></div> 
         </>
@@ -329,3 +468,6 @@ const preloader = () => [
     </div>
   </section>
 ]
+
+const colors = ['#ace0ff', '#bcffbd', '#e4fabd', '#ffcfac']
+

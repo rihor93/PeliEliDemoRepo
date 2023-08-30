@@ -7,7 +7,8 @@ export const Filter: React.FC = observer(() => {
   const { mainPage } = useStore();
   const {
     categories,
-    visibleCategory
+    visibleCategory, 
+    dishSearcher
   } = mainPage;
 
   const [
@@ -53,51 +54,55 @@ export const Filter: React.FC = observer(() => {
   }, [visibleCategory, categories.length])
 
 
-  return (
-    <>
-      <section className='filter page_filter'>
-        <ul className="filter_list">
-
-          {categories.map((category, index) => {
-            const isActive = mainPage.visibleCategory == String(category.VCode);
-
-            return (
-              <li
-                className={`filter_item ${isActive ? 'active' : ''}`}
-                key={`filter_item_${index}`}
-                onClick={() => NavigateTo(String(category.VCode))}
-              >
-                {category.Name}
-              </li>
-            )
-          })}
-        </ul>
-      </section>
-      {!isScrolled
-        ? null
-        : (
-          <section className='filter page_filter overlayed'>
-            <ul className="filter_list">
-
-              {categories.map((category, index) => {
-                const isActive = mainPage.visibleCategory == String(category.VCode);
-
-                return (
-                  <li
-                    className={`filter_item ${isActive ? 'active' : ''}`}
-                    key={`fixed_filter_item_${index}`}
-                    onClick={() => NavigateTo(String(category.VCode))}
-                  >
-                    {category.Name}
-                  </li>
-                )
-              })}
-            </ul>
-          </section>
-        )
-      }
-    </>
-  )
+  if(dishSearcher.isSearching) {
+    return null
+  } else {
+    return (
+      <>
+        <section className='filter page_filter'>
+          <ul className="filter_list">
+  
+            {categories.map((category, index) => {
+              const isActive = mainPage.visibleCategory == String(category.VCode);
+  
+              return (
+                <li
+                  className={`filter_item ${isActive ? 'active' : ''}`}
+                  key={`filter_item_${index}`}
+                  onClick={() => NavigateTo(String(category.VCode))}
+                >
+                  {category.Name}
+                </li>
+              )
+            })}
+          </ul>
+        </section>
+        {!isScrolled
+          ? null
+          : (
+            <section className='filter page_filter overlayed'>
+              <ul className="filter_list">
+  
+                {categories.map((category, index) => {
+                  const isActive = mainPage.visibleCategory == String(category.VCode);
+  
+                  return (
+                    <li
+                      className={`filter_item ${isActive ? 'active' : ''}`}
+                      key={`fixed_filter_item_${index}`}
+                      onClick={() => NavigateTo(String(category.VCode))}
+                    >
+                      {category.Name}
+                    </li>
+                  )
+                })}
+              </ul>
+            </section>
+          )
+        }
+      </>
+    )
+  }
 })
 
 function NavigateTo(categoryID: string) {
