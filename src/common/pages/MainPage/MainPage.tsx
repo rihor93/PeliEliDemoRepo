@@ -1,5 +1,5 @@
 import { HomeOutlined } from "@ant-design/icons"
-import { Toast, Swiper, Divider, Skeleton, Footer, Avatar, Space, Rate, Dropdown, Radio, Popup, Button, WaterMark } from "antd-mobile"
+import { Toast, Swiper, Divider, Skeleton, Footer, Avatar, Space, Rate, Dropdown, Radio, Popup, Button, WaterMark, Result } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -15,6 +15,7 @@ import Ellipsis from "antd-mobile/es/components/ellipsis";
 import { List } from "antd-mobile";
 import moment from "moment";
 import { Optional, Undef } from "../../types";
+import { ClockCircleOutline } from "antd-mobile-icons";
 
 
 export const MainPage: FC = observer(() => { 
@@ -234,6 +235,16 @@ export const MainPage: FC = observer(() => {
                   </div>
               }
             </Popup>
+            {!mainPage.cooks.length
+              ? <Result
+                style={{width: '100%'}}
+                icon={<ClockCircleOutline />}
+                status='success'
+                title='Упс'
+                description={`Сегодня на ${userStore.currentOrganizaion?.Name} никто не готовит((`}
+              />
+              : null
+            }
             {mainPage.cooks.map((cook) => 
                 <Space 
                   style={{ '--gap': '3px', width: '33%', margin: '0 0.25rem' }}
@@ -275,6 +286,16 @@ export const MainPage: FC = observer(() => {
           </div>
           <Divider contentPosition="left" style={{fontSize: '22px'}} >Сегодня в гурмаге</Divider>
           <section className='categories'>
+            {!allCampaign.length
+              ? <Result
+                style={{width: '100%'}}
+                icon={<ClockCircleOutline />}
+                status='success'
+                title='Акций нет'
+                description={`Сегодня на ${userStore.currentOrganizaion?.Name} акций нет((`}
+              />
+              : null
+            }
             {allCampaign.map((aksya) => { 
               /** ищем детали для этой скидки в скидках на блюда */
               const dishDiscount = dishDiscounts.find((dishDiscount) =>

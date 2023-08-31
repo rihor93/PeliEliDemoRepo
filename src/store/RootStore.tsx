@@ -2,7 +2,7 @@ import React from "react";
 import { makeAutoObservable, reaction } from "mobx";
 import { AuthStore, CartStore, MainPageStore } from "./stores";
 import { UserInfoStore } from "./stores/UserInfoStore";
-import { logger } from "../common/features";
+import { getItem, logger } from "../common/features";
 import { ActionsPageStore } from "./stores/ActionsStore";
 
 export class Store {
@@ -33,6 +33,34 @@ export class Store {
         }
       }
     );
+    /**
+     * Когда все загрузится можем
+     * зайти в localstorage
+     * и взять сохраненную корзину
+     */
+    const whenAllReady = reaction(
+      () => [this.mainPage.state, this.mainPage.cookstate, this.userStore.state],
+      (vals, prevVals) => {
+        if(!vals.map(val => val === 'COMPLETED').includes(false)) {
+          console.log(!vals.map(val => val === 'COMPLETED').includes(false))
+          // вспоминаем что сохранили в локал стораге
+          const savedCart = getItem<CouseInCart[]>('cartItems')
+          // надо проверить есть ли сейчас это блюдо в меню
+          if(savedCart?.length) {
+            this.cartStore.items = [];
+            savedCart.forEach((couseInCart) => {
+              const isExistsOnMenu = this.mainPage.allDishes.find((bludo) => 
+                bludo.VCode === couseInCart.couse.VCode
+              )
+              // если есть то норм
+              if(isExistsOnMenu) for (let i = 1; i <= couseInCart.quantity; i++) {
+                this.cartStore.addCourseToCart(isExistsOnMenu)                
+              }
+            })
+          }
+        }
+      }
+    )
 
     /** подписка на изменения org id */
     const whenUsersOrgHasBeenSaved = reaction(
@@ -48,6 +76,7 @@ export class Store {
     )
     
     this.subscriptions.push(dispose);
+    this.subscriptions.push(whenAllReady);
     this.subscriptions.push(whenUsersOrgHasBeenSaved);
     this.afterLoaded()
   }

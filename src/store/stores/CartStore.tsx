@@ -1,12 +1,18 @@
 import { flow, makeAutoObservable } from "mobx";
-import { http } from "../../common/features";
+import { http, setItem } from "../../common/features";
 import { LoadStatesType, Undef } from "../../common/types";
 import { Store } from "../RootStore";
 import { Modal } from "./MainPageStore";
 
+export const receptionTypes = {
+  pickup: 'pickup',
+  delivery: 'delivery'
+} as const;
+export type ReceptionType = typeof receptionTypes[keyof typeof receptionTypes];
 
 
 export class CartStore { 
+  /** состояние запросов */
   state: LoadStatesType = 'INITIAL';
   get isLoading() { return this.state === 'LOADING' }
   get isDone() { return this.state === 'COMPLETED' }
@@ -24,6 +30,12 @@ export class CartStore {
     // todo показывать сообщение об ошибке пользователю
     this.state = 'FAILED'
   }
+
+  receptionType: ReceptionType = 'pickup';
+  setReceptionType(receptionType: ReceptionType) {
+    this.receptionType = receptionType
+  }
+
   rootStore: Store
   constructor(rootStore: Store) {
     this.rootStore = rootStore;
@@ -156,7 +168,7 @@ export class CartStore {
       let curDishSets: DishSetDiscountActive[] = [];
       //проверим все скидки, найдем наибольшую
       let maxPercentDiscount: PercentDiscount = { vcode: 0, MinSum: 0, MaxSum: 0, bonusRate: 0, discountPercent: 0 };
-      percentDiscounts.forEach(a => {
+      percentDiscounts?.forEach(a => {
         if (maxPercentDiscount.vcode == 0) {
           maxPercentDiscount = a;
         } else if (maxPercentDiscount.discountPercent < a.discountPercent) {
@@ -228,6 +240,13 @@ export class CartStore {
     this.totalPrice = new_state.items.reduce((acc, cur) => 
       acc + cur.priceWithDiscount, 0
     )
+
+    
+    // корзину запоминаем 
+    // только когда все загрузилось,
+    // иначе запомним пустой массив 
+    const { state: load, cookstate } = this.rootStore.mainPage;
+    if(load === 'COMPLETED' && cookstate === 'COMPLETED') setItem('cartItems', state.items)
   }
 
   applyDiscountForCart(userInfo: UserInfoState) {
@@ -242,6 +261,8 @@ export class CartStore {
     )
   }
 
+  watchdetailModal = new Modal()
+
   postOrder = flow(function* (
     this: CartStore,
     order: Order
@@ -253,5 +274,17 @@ export class CartStore {
       this.onFailure('Не удалось оформить заказ')
     }
   })
+
+  deliveryOptions = [
+    {
+      label: 'Самовывоз',
+      value: receptionTypes.pickup as ReceptionType,
+    },
+    {
+      disabled: true,
+      label: 'Доставка',
+      value: receptionTypes.delivery as ReceptionType,
+    }
+  ]
 }
 

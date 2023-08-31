@@ -1,22 +1,102 @@
-import { Popup, Toast, Divider, Radio, Space } from 'antd-mobile';
+import { Popup, Toast, Divider, Radio, Space, Skeleton, Dropdown, Selector, Input, DatePicker, Form, Collapse } from 'antd-mobile';
 import Button from 'antd-mobile/es/components/button';
 import { observer } from 'mobx-react-lite';
+import moment from 'moment';
 import React from 'react';
-import { LocationDark, LocationLight } from '../../../assets';
 import Страничка from '../../components/layout/Page';
-import { useStore, useTheme } from '../../hooks';
+import { useStore } from '../../hooks';
+import { Optional, Undef } from '../../types';
 import CartItem from './cartItem/CartItem';
 import './CartPage.css';
 import { ConfirmOrderModal } from './modals/confirmOrderModal';
 
+
 export const CartPage: React.FC = observer(
   () => {
-    const { theme } = useTheme();
-    const { cartStore: cart, userStore } = useStore();
-    const isdarkMode = theme === 'dark';
-    const [askedAddr, setAskedAddr] = React.useState(0)
+    const { cartStore: cart, userStore, mainPage } = useStore();
+    /** Если надо спросить домашнюю кухню */
+    const [askedAddr, setAskedAddr] = React.useState(0);
+
+    /** Показывать ли датапикер для ввода даты */
+    const [visible, setVisible] = React.useState(false);
+
+    /** сама дата */
+    const [date, setDate] = React.useState(new Date());
+
+    /** время заказа */
+    const [time, setTime] = React.useState(moment(new Date()).format('HH:MM'));
+
     return (
       <Страничка>
+      <Popup 
+        visible={cart.watchdetailModal.show}
+        onClose={() => cart.watchdetailModal.close()}
+        closeOnMaskClick
+        bodyStyle={{
+          borderTopLeftRadius: '8px',
+          borderTopRightRadius: '8px',
+          padding:'0 0.5rem 0.5rem 0.5rem'
+        }}
+      >
+        <div style={{width: '100%', minHeight: '75vh'}}>
+          <Divider contentPosition='left'>Способ доставки</Divider>
+          <Selector
+            options={cart.deliveryOptions}
+            value={[cart.receptionType]}
+            onChange={(arr) => cart.setReceptionType(arr[0])}
+          />
+          {cart.receptionType === 'pickup' 
+            ? <>
+              <Divider contentPosition='left'>Где хотите забрать?</Divider>
+              <Dropdown>
+                <Dropdown.Item 
+                  key='sorter'                     
+                  title={
+                    <span style={{fontSize: '17px'}}>
+                      {userStore.currentOrganizaion?.Name}
+                    </span>
+                  }
+                >
+                  <div style={{ padding: 12, fontSize: '12px' }}>
+                    <Radio.Group 
+                      value={userStore.currentOrg}
+                      onChange={(e) => userStore.currentOrg = e as number}
+                    >
+                      <Space direction='vertical' block>
+                        {userStore.organizations.map((org) => 
+                          <Radio block value={org.Id} key={org.Id}>
+                            {org.Name}
+                          </Radio>
+                        )}
+                      </Space>
+                    </Radio.Group>
+                  </div>
+                </Dropdown.Item>
+              </Dropdown>
+            </>
+            : <>
+              <Divider contentPosition='left'>Введите адрес доставки</Divider>
+              <Form>
+                <Form.Item label='Ваш адрес, чтобы доставщик мог вас найти'>
+                  <Input 
+                    placeholder='Ул. Пушикна, Дом Колотушшкина 273819237'
+                  />
+                </Form.Item>
+              </Form>
+            </>
+          }
+          
+          
+          <DatePicker 
+            visible={visible}
+            onClose={() => setVisible(false)}
+            onConfirm={(isoStr) => setDate(isoStr)}
+            defaultValue={new Date()}
+            confirmText='Сохранить'
+            cancelText='Закрыть'
+          />
+        </div>
+      </Popup>
         <ConfirmOrderModal />
         {userStore.needAskAdress 
           ? <Popup 
@@ -69,55 +149,170 @@ export const CartPage: React.FC = observer(
           : null
         }
         <Страничка.Тело>
-          {!cart.isEmpty
-            ? <div style={{marginTop: '15px'}}>
-              <img
-                src={isdarkMode
-                  ? LocationLight
-                  : LocationDark
-                }
-                alt="выберите место получения"
-              />
-              <span style={{margin: '0 7px'}}>Где хотите забрать?</span>
-              <select
-                defaultValue={0}
-                onChange={(e) => userStore.currentOrg = Number(e.target.value)}
+        {mainPage.isLoading && mainPage.cookIsLoading 
+          ? preloader()
+          : <>
+            {!cart.isEmpty
+              ? cart.items.map((item, index) =>
+                <CartItem
+                  key={`cart_item_${index}`}
+                  courseInCart={item}
+                  add={() => cart.addCourseToCart(item.couse)}
+                  remove={() => cart.removeFromCart(item.couse.VCode)}
+                />
+              )
+              : <div 
                 style={{
-                  background: 'var(--фон-страницы)', 
-                  color: 'var(--tg-theme-text-color)',
-                  border: '1px solid var(--обводка-кнопок)',
-                  borderRadius: '100px',
-                  padding: '0.5rem'
-                }}
-              >
-                <option key={0} value={0}>Точка не выбрана</option>
-                {userStore.organizations.map((point) =>
-                  <option key={point.Id} value={point.Id}>{point.Name}</option>
-                )}
-              </select>
-            </div>
-            : <div style={{width: '100%', height: '100%', display: 'flex', justifyContent: 'center'}}>
-              <p>Корзина пуста 🛒</p>
-            </div>
-          }
-          {cart.items.map((item, index) =>
-            <CartItem
-              key={`cart_item_${index}`}
-              courseInCart={item}
-              add={() => cart.addCourseToCart(item.couse)}
-              remove={() => cart.removeFromCart(item.couse.VCode)}
+                  width: '100%', 
+                  height: '100%', 
+                  display: 'flex', 
+                  justifyContent: 'center', 
+                  marginTop: '1rem'
+                }}>
+                <p>Корзина пуста 🛒</p>
+              </div>
+            }
+          </>
+        }
+        
+        <div className='row' style={{width: '100%', padding: '1rem'}}>
+          <h5>Итого:</h5>
+          <h5>{`${Math.ceil(cart.totalPrice * 10) / 10} ₽`}</h5>
+        </div>
+        <Form layout='horizontal' style={{width: '100%'}}>
+          <Form.Item label='Дата заказа:' childElementPosition='right'>
+            <span onClick={() => setVisible(true)}>
+              {moment(date).format('DD-MM-YYYY')}
+            </span>
+          </Form.Item>
+          <Form.Item label='Время' childElementPosition='right'>
+            <Input 
+              type={'time'}
+              value={time}
+              onChange={(e) => setTime(e)}
+              placeholder={moment(new Date()).format('HH-MM')}
             />
-          )}
+          </Form.Item>
+        </Form>
+
+        <Divider contentPosition='left'>
+          Проверьте детали заказа
+        </Divider>
+        <Collapse style={{width: '100%'}}>
+          {cart.items.map((cartItem, index) => { 
+            const { 
+              dishSet, 
+              allCampaign, 
+              dishDiscounts, 
+              percentDiscounts 
+            } = userStore.userState
+            
+            /** ищем детали для этой скидки в скидках на блюда */
+            const campaignAllInfo = allCampaign.find((camp) =>
+              camp.VCode === cartItem.campaign
+            )
+            /** ищем детали для этой скидки в скидках на блюда */
+            const dishDiscount = dishDiscounts.find((dishDiscount) =>
+              dishDiscount.vcode === cartItem.campaign
+            )
+
+            /** ищем детали для этой скидки в процентных скидках */
+            const percentDiscount = percentDiscounts.find((percentDiscount) =>
+              percentDiscount.vcode === cartItem.campaign
+            )
+
+            /** ищем детали для этой скидки в скидках на сеты */
+            const setDish = dishSet.find((setDish) =>
+              setDish.vcode === cartItem.campaign
+            )
+
+            let text: Optional<string> = null;
+            let dishArr: Undef<CourseItem>[] = []; 
+
+            // должна найтись только одна из трех 
+            // если это скидка 
+            // на одно блюдо
+            if (dishDiscount && !percentDiscount && !setDish) {
+              const targetDish = mainPage.getDishByID(dishDiscount.dish)
+              if (targetDish?.Name) 
+                text = `Cкидка ${dishDiscount.price}руб на "${targetDish?.Name}"`
+              
+            }
+
+            // если это процентная скидка
+            if (!dishDiscount && percentDiscount && !setDish) {
+              const { MaxSum, MinSum, discountPercent, bonusRate } = percentDiscount;
+              text = `Cкидка ${discountPercent}% на сумму от ${MinSum} до ${MaxSum} руб`;
+              if (bonusRate) text = text + ` + ${bonusRate} бонусных баллов`
+            }
+
+            // если это скидка на сет
+            if (!dishDiscount && !percentDiscount && setDish) {
+              text = `Cкидка на ${setDish.dishCount} блюда из списка:`;
+              dishArr = setDish.dishes.map((dishDiscount) =>
+                mainPage.getDishByID(dishDiscount.dish)
+              )
+            }
+            return(
+              <Collapse.Panel 
+                key={String(index)} 
+                title={`${cartItem.couse.Name} - ${cartItem.quantity}шт.:`}
+              >
+                <Form>
+                  {campaignAllInfo 
+                    ? <Form.Item label='Акция'>
+                      <span>{campaignAllInfo.Name}</span><br />
+                      <span>{campaignAllInfo.Description}</span><br />
+                      <span>{text}</span><br />
+                    </Form.Item>
+                    : null
+                  }
+                  <Form.Item label={`цена со скидкой за ${cartItem.quantity} шт`}>
+                    <Input                       
+                      readOnly
+                      value={String(cartItem.priceWithDiscount)}
+                    />
+                  </Form.Item>
+                  <Form.Item label={`цена без скидки за 1шт`}>
+                    <Input                       
+                      readOnly
+                      value={String(cartItem.couse.Price)}
+                    />
+                  </Form.Item>
+                </Form>
+              </Collapse.Panel>
+            )
+          })}
+        </Collapse>
+        {cart.isEmpty 
+          ? null
+          : <Button 
+            block 
+            color='primary' 
+            size='large' 
+            style={{borderRadius: '8px'}}
+            className='mt-1'
+            onClick={() => cart.watchdetailModal.open()}
+          >
+            Заказать
+          </Button>
+        }
         </Страничка.Тело>
-        <Button
-          style={{}}
-          disabled={cart.isEmpty}
-          onClick={() => cart.confirmOrderModal.open()}
-        >
-          {`Оформить заказ за ${cart.totalPrice}`}
-        </Button>
       </Страничка>
     )
   }
 )
 
+
+
+const preloader = () => <> 
+  <Skeleton animated style={skeletonStyle} />
+  <Skeleton animated style={skeletonStyle} />
+</>
+
+const skeletonStyle = {
+  width: '100%', 
+  height: '100px', 
+  borderRadius: '8px', 
+  marginTop: '1rem'
+}

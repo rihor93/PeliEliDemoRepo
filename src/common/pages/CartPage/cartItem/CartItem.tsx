@@ -49,7 +49,7 @@ const CartItem: React.FC<{
               onClick={add}
             />
           </div>
-          <h5>{`${courseInCart.priceWithDiscount} ₽`}</h5>
+          <h5>{`${Math.ceil(courseInCart.priceWithDiscount * 10) / 10} ₽`}</h5>
         </div>
       </div>
     </div>

@@ -4,5 +4,5 @@ export function setItem(key: string, body: Object | Array<any>) {
 }
 
 export function getItem<T>(key: string) {
-  return JSON.parse(localStorage.getItem(key) ?? '') as T;
+  return JSON.parse(localStorage.getItem(key) ?? '{}') as T;
 }

@@ -176,7 +176,7 @@ const Bottom: FC = observer(() => {
 
   return condition
     ? null
-    : mainPage.isLoading || mainPage.cookIsLoading
+    : mainPage.isLoading && mainPage.cookIsLoading
       ? preloader() 
       : <TabBar 
           activeKey={currentTab?.key} 
