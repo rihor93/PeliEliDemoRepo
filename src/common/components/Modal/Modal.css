@@ -14,7 +14,7 @@
   padding: 10px;
   position: absolute;
   background: var(--tg-theme-bg-color);
-  max-width: 80vw;
+  min-width: 80vw;
   animation-name: Jump;
   animation-duration: 0.3s;
   display: flex;
@@ -37,19 +37,19 @@
 
 @media screen and (min-width: 300px) {
   .modal {
-    max-width: 93vw;
+    min-width: 93vw;
   }
 }
 
 @media screen and (min-width: 576px) {
   .modal {
-    max-width: 92vw;
+    min-width: 92vw;
   }
 }
 
 @media screen and (min-width: 768px) {
   .modal {
-    max-width: 88vw;
+    min-width: 88vw;
     flex-direction: row;
   }
   .modal_background {
@@ -59,19 +59,19 @@
 
 @media screen and (min-width: 992px) {
   .modal {
-    max-width: 84vw;
+    min-width: 84vw;
   }
 }
 
 @media screen and (min-width: 1200px) {
   .modal {
-    max-width: 80vw;
+    min-width: 80vw;
   }
 }
 
 @media screen and (min-width: 1400px) {
   .modal {
-    max-width: 80vw;
+    min-width: 80vw;
   }
 }
 

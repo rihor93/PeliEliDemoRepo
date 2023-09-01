@@ -1,3 +1,4 @@
+import { Toast } from "antd-mobile";
 import { flow, makeAutoObservable } from "mobx";
 import { http, setItem } from "../../common/features";
 import { LoadStatesType, Undef } from "../../common/types";
@@ -21,13 +22,20 @@ export class CartStore {
   onStart() { this.state = 'LOADING' }
   onSuccess(text?: string) {
     if(text?.length) {
-      console.log('todo')
-      // todo показывать сообщение об успехе пользователю
+      Toast.show({
+        content: text,
+        position: 'center',
+      })
     }
     this.state = 'COMPLETED'
   }
   onFailure(errStr: string) {
-    // todo показывать сообщение об ошибке пользователю
+    if(errStr.length) {
+      Toast.show({
+        content: errStr,
+        position: 'center',
+      })
+    }
     this.state = 'FAILED'
   }
 
@@ -268,6 +276,7 @@ export class CartStore {
     order: Order
   ) {
     try {
+      this.onStart()
       const response: Order = yield http.post('/NewOrder', order);
       if(response) this.onSuccess('Заказ успешно оформлен');
     } catch (e) {

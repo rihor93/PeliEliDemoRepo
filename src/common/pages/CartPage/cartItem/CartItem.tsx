@@ -51,6 +51,29 @@ const CartItem: React.FC<{
           </div>
           <h5>{`${Math.ceil(courseInCart.priceWithDiscount * 10) / 10} ₽`}</h5>
         </div>
+        {courseInCart.couse.NoResidue 
+          ? null
+          : courseInCart.couse.EndingOcResidue < courseInCart.quantity
+            ? <div 
+              style={{
+                position: 'absolute',
+                right: '0px',
+                bottom: '0px',
+                borderBottomRightRadius: '8px',
+                borderTopLeftRadius: '8px',
+                padding: '0.1rem',
+                background: 'var(--adm-color-warning)',
+                fontSize: '14px',
+                fontWeight: '700',
+                color: 'white',
+                
+              }}
+            >
+              <p>{`сегодня осталось ${courseInCart.couse.EndingOcResidue}`}</p>
+            </div>
+            : null
+        }
+        
       </div>
     </div>
   )

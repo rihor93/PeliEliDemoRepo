@@ -38,16 +38,14 @@ export const ItemModal: React.FC<{
       />
       <div className="item_modal_body">
         <h1>{course.Name}</h1>
-        <span>Тип:</span>
-        <div className="available_types">
-          {/* todo src img here */}
-          {/* todo as select option */}
-          <img className="selected" src={GurmagLogo} />
-          <img src={GurmagLogo} />
-          <img src={GurmagLogo} />
-          <img src={GurmagLogo} />
-          <img src={GurmagLogo} />
-        </div>
+        {course.NoResidue 
+          ? null 
+          : <>
+            <span>Сегодня приготовлено:</span>
+            <h2 style={{marginLeft: '1.75rem'}}>{course.EndingOcResidue}</h2>
+          </>
+        }
+        
         <div className="count_and_price">
           <div className="row">
             <span>Количество:</span>

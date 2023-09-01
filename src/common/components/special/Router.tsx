@@ -36,27 +36,27 @@ const routes: Array<{
     },
     {
       path: '/cart',
-      private: false, // true, todo
+      private: true,
       element: <CartPage />
     },
     {
       path: '/profile',
-      private: false, // true, todo
+      private: true,
       element: <ProfilePage />
     },
     {
       path: '/more',
-      private: false, // true, todo
+      private: true,
       element: <MorePage />
     },
     {
       path: '/actions',
-      private: false, // true, todo
+      private: true,
       element: <ActionsPage />
     },
     {
       path: '/actions/:VCode',
-      private: false, // true, todo
+      private: true,
       element: <ActionsPage />
     },
   ]
@@ -180,7 +180,10 @@ const Bottom: FC = observer(() => {
       ? preloader() 
       : <TabBar 
           activeKey={currentTab?.key} 
-          onChange={value => setRouteActive(value)}
+          onChange={value => {
+            setRouteActive(value)
+            window.scrollTo({top: 0 })
+          }}
         >
           {tabs.map(item => 
             <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
