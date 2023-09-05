@@ -17,6 +17,7 @@ import { ToastHandler } from 'antd-mobile/es/components/toast';
 
 export const CartPage: React.FC = observer(
   () => {
+    /** тост с загрузкой */
     const handler = React.useRef<ToastHandler>()
     const { userId } = useTelegram();
     const { cartStore: cart, userStore, mainPage } = useStore();
@@ -35,7 +36,7 @@ export const CartPage: React.FC = observer(
     const [
       contactPhone, 
       setContactPhone
-    ] = React.useState<string>('');
+    ] = React.useState<string>(userStore.userState.Phone);
 
     React.useEffect(() => {
       const fixedDate = cart.items

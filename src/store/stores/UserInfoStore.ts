@@ -14,6 +14,7 @@ export class UserInfoStore {
 
 
   userState: UserInfoState = {
+    Phone: '',
     userName: '',
     userBonuses: 0,
     percentDiscounts: [],
@@ -71,6 +72,7 @@ export class UserInfoStore {
     const Bonuses = response?.UserInfo?.Bonuses ?? 0;
     const NAME = response?.UserInfo?.NAME ?? '';
     const COrg = response?.UserInfo?.COrg ?? 0;
+    const Phone = response?.UserInfo?.Phone ?? '';
 
     if(!response?.UserInfo) {
       logger.log('Похоже пользователь не зареган в ГУРМАГ', 'GET /loadUserInfo')
@@ -83,6 +85,7 @@ export class UserInfoStore {
       dishDiscounts: DishDiscount,
       allCampaign: AllDiscounts,
       dishSet: SetDishDiscount,
+      Phone
     }
 
     // сохраняем состояние

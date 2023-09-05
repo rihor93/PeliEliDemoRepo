@@ -74,6 +74,7 @@ type Organization = {
 }
 
 type UserInfoState = {
+  Phone: string,
   userName: string,
   /** кол-во каких-то бонусов */
   userBonuses: number, 

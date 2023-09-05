@@ -2,7 +2,7 @@ import { Toast } from "antd-mobile";
 import { ToastHandler } from "antd-mobile/es/components/toast";
 import { flow, makeAutoObservable } from "mobx";
 import { http, logger, setItem } from "../../common/features";
-import { LoadStatesType, Optional, Undef } from "../../common/types";
+import { LoadStatesType, Undef } from "../../common/types";
 import { Store } from "../RootStore";
 import { Modal } from "./MainPageStore";
 
@@ -318,7 +318,8 @@ export class CartStore {
         this.items = [];
         this.totalPrice = 0;
       };
-    } catch (e) {
+    } catch (e) { 
+      logger.log('Заказ блин не оформился', 'cart-store')
       this.onFailure('Не удалось оформить заказ')
     }
   })
