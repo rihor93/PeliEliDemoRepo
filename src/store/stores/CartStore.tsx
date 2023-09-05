@@ -1,6 +1,7 @@
 import { Toast } from "antd-mobile";
+import { ToastHandler } from "antd-mobile/es/components/toast";
 import { flow, makeAutoObservable } from "mobx";
-import { http, setItem } from "../../common/features";
+import { http, logger, setItem } from "../../common/features";
 import { LoadStatesType, Optional, Undef } from "../../common/types";
 import { Store } from "../RootStore";
 import { Modal } from "./MainPageStore";
@@ -19,10 +20,13 @@ export class CartStore {
   get isDone() { return this.state === 'COMPLETED' }
   get isFailed() { return this.state === 'FAILED' }
 
-  onStart() { this.state = 'LOADING' }
+  onStart() { 
+    this.state = 'LOADING' 
+  }
   onSuccess(text?: string) {
     if(text?.length) {
       Toast.show({
+        icon: 'success',
         content: text,
         position: 'center',
       })
@@ -31,7 +35,8 @@ export class CartStore {
   }
   onFailure(errStr: string) {
     if(errStr.length) {
-      Toast.show({
+      Toast.show({ 
+        icon: 'fail', 
         content: errStr,
         position: 'center',
       })
@@ -230,7 +235,7 @@ export class CartStore {
               // @ts-ignore
               if(dishDiscount.discountPercent) {
                 // @ts-ignore
-                courseItem.priceWithDiscount = courseItem.couse.Price - (courseItem.couse.Price * dishDiscount.discountPercent / 100);
+                courseItem.priceWithDiscount = (courseItem.couse.Price - (courseItem.couse.Price * dishDiscount.discountPercent / 100)) * courseItem.quantity;
               }
             }
           }
@@ -253,7 +258,7 @@ export class CartStore {
               // @ts-ignore
               if(dishInSet.discountPercent) {
                 // @ts-ignore
-                courseItem.priceWithDiscount = courseItem.couse.Price - (courseItem.couse.Price * dishInSet.discountPercent / 100);
+                courseItem.priceWithDiscount = courseItem.quantity * (courseItem.couse.Price - (courseItem.couse.Price * dishInSet.discountPercent / 100));
               }
             }
           }
@@ -293,12 +298,26 @@ export class CartStore {
 
   postOrder = flow(function* (
     this: CartStore,
-    order: Order
+    order: Order, 
+    handler: React.MutableRefObject<ToastHandler | undefined>
   ) {
     try {
       this.onStart()
+      handler.current = Toast.show({
+        icon: 'loading',
+        content: 'Загрузка',
+        position: 'center', 
+        duration: 0
+      })
       const response: Order = yield http.post('/NewOrder', order);
-      if(response) this.onSuccess('Заказ успешно оформлен');
+      logger.log('Делаем запрос оформить заказ', 'cart-store')
+      if(response) {
+        logger.log('Заказ успешно оформлен', 'cart-store')
+        handler.current?.close()
+        this.onSuccess('Заказ успешно оформлен')
+        this.items = [];
+        this.totalPrice = 0;
+      };
     } catch (e) {
       this.onFailure('Не удалось оформить заказ')
     }

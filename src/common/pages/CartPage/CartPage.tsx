@@ -1,5 +1,4 @@
-import { Popup, Toast, Divider, Radio, Space, Skeleton, Dropdown, Selector, Input, DatePicker, Form, Collapse, Picker } from 'antd-mobile';
-import { DownOutline } from 'antd-mobile-icons';
+import { Popup, Toast, Divider, Radio, Space, Skeleton, Dropdown, Selector, Input, DatePicker, Form, Collapse } from 'antd-mobile';
 import Button from 'antd-mobile/es/components/button';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
@@ -10,13 +9,15 @@ import { Optional, Undef } from '../../types';
 import CartItem from './cartItem/CartItem';
 import './CartPage.css';
 import { ConfirmOrderModal } from './modals/confirmOrderModal';
-import type { PickerValue } from 'antd-mobile/es/components/picker'
 import { toJS } from 'mobx';
+import { ToastHandler } from 'antd-mobile/es/components/toast';
+
 
 
 
 export const CartPage: React.FC = observer(
   () => {
+    const handler = React.useRef<ToastHandler>()
     const { userId } = useTelegram();
     const { cartStore: cart, userStore, mainPage } = useStore();
     /** Если надо спросить домашнюю кухню */
@@ -45,6 +46,12 @@ export const CartPage: React.FC = observer(
       
       setDate(fixedDate)
     }, [cart.items.length, cart.items])
+
+    const validationPhoneErr = React.useCallback(() => {
+      if(!contactPhone.length) return 'Введите номер телефона'
+      if(contactPhone.length !== 11 ) return 'Номер телефона указан неверно!'
+      return null
+    }, [contactPhone.length])
 
     return (
       <Страничка>
@@ -184,7 +191,15 @@ export const CartPage: React.FC = observer(
                 if (dishDiscount && !percentDiscount && !setDish) {
                   const targetDish = mainPage.getDishByID(dishDiscount.dish)
                   if (targetDish?.Name) 
-                    text = `Cкидка ${dishDiscount.price}руб на "${targetDish?.Name}"`
+                    if(dishDiscount.price) {
+                      text = `Cкидка ${dishDiscount.price}руб на "${targetDish?.Name}"`
+                    }
+                    // @ts-ignore
+                    if(dishDiscount.discountPercent) {
+                      // @ts-ignore
+                      text = `Cкидка ${dishDiscount.discountPercent}% на "${targetDish?.Name}"`
+                    }
+                    
                   
                 }
 
@@ -209,23 +224,19 @@ export const CartPage: React.FC = observer(
                   >
                     <Form>
                       {campaignAllInfo 
-                        ? <Form.Item label='Акция'>
-                          <span>{campaignAllInfo.Name}</span><br />
-                          <span>{campaignAllInfo.Description}</span><br />
+                        ? <Form.Item label={`Акция - ${campaignAllInfo.Name.replace(/ *\{[^}]*\} */g, "")}`}>
+                          <span>{campaignAllInfo.Description.replace(/ *\{[^}]*\} */g, "")}</span><br />
                           <span>{text}</span><br />
                         </Form.Item>
                         : null
                       }
-                      <Form.Item label={`цена со скидкой за ${cartItem.quantity} шт`}>
+                      <Form.Item 
+                        label={`цена со скидкой за ${cartItem.quantity} шт`} 
+                        extra={<s>{`${Math.ceil((cartItem.couse.Price * cartItem.quantity) * 100) / 100} руб.`}</s>}
+                      >
                         <Input                       
                           readOnly
-                          value={String(cartItem.priceWithDiscount)}
-                        />
-                      </Form.Item>
-                      <Form.Item label={`цена без скидки за 1шт`}>
-                        <Input                       
-                          readOnly
-                          value={String(cartItem.couse.Price)}
+                          value={String(Math.ceil(cartItem.priceWithDiscount * 100) / 100) + ' руб.'}
                         />
                       </Form.Item>
                     </Form>
@@ -234,7 +245,8 @@ export const CartPage: React.FC = observer(
               })}
             </Collapse>
             <Divider contentPosition='left'>Способ доставки</Divider>
-            <Selector
+            <Selector 
+              style={{display: 'flex', justifyContent: 'center'}}
               options={cart.deliveryOptions}
               value={[cart.receptionType]}
               onChange={(arr) => cart.setReceptionType(arr[0])}
@@ -281,12 +293,20 @@ export const CartPage: React.FC = observer(
             }
             <Divider contentPosition='left'>Контактный телефон</Divider>
             <Input 
-              style={{ '--text-align': 'center' }}
+              style={{ 
+                '--text-align': 'center', 
+                border: validationPhoneErr()?.length ?'1px solid var(--adm-color-warning)' : '', 
+                borderRadius: '100px'
+              }}
               placeholder='Введите ваш номер'
               onChange={(str) => setContactPhone(str)}
               value={contactPhone}
               type='tel'
             />
+            {!validationPhoneErr()?.length 
+              ? null
+              : <span style={{color: 'var(--adm-color-warning)'}}>Введите номер телефона</span>
+            }
           </div>
         }
         <div className='row' style={{width: '100%', padding: '1rem'}}>
@@ -321,19 +341,22 @@ export const CartPage: React.FC = observer(
             size='large' 
             className='mt-1'
             style={{borderRadius: '8px'}}
-            onClick={() => cart.postOrder({
-              itemsInCart: toJS(cart.items),
-              userId, 
-              currentOrg: String(userStore.currentOrg),
-              contactPhone,
-              orderDate: (() => {
-                const [hours, minets] = time.split(':')
-                const orderDate = date;
-                orderDate.setHours(Number(hours));
-                orderDate.setMinutes(Number(minets));
-                return orderDate.toISOString()
-              })()
-            })}
+            onClick={() => validationPhoneErr()?.length 
+              ? Toast.show({ content: 'Укажите номер телефона', position: 'center' })
+              : cart.postOrder({
+                itemsInCart: toJS(cart.items),
+                userId, 
+                currentOrg: String(userStore.currentOrg),
+                contactPhone,
+                orderDate: (() => {
+                  const [hours, minets] = time.split(':')
+                  const orderDate = date;
+                  orderDate.setHours(Number(hours));
+                  orderDate.setMinutes(Number(minets));
+                  return orderDate.toISOString()
+                })()
+              }, handler)
+            }
           >
             Заказать
           </Button>
