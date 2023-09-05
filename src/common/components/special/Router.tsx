@@ -36,27 +36,27 @@ const routes: Array<{
     },
     {
       path: '/cart',
-      private: true,
+      private: false, // true,
       element: <CartPage />
     },
     {
       path: '/profile',
-      private: true,
+      private: false, // true,
       element: <ProfilePage />
     },
     {
       path: '/more',
-      private: true,
+      private: false, // true,
       element: <MorePage />
     },
     {
       path: '/actions',
-      private: true,
+      private: false, // true,
       element: <ActionsPage />
     },
     {
       path: '/actions/:VCode',
-      private: true,
+      private: false, // true,
       element: <ActionsPage />
     },
   ]

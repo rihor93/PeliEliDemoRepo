@@ -1,7 +1,7 @@
 import { Toast } from "antd-mobile";
 import { flow, makeAutoObservable } from "mobx";
 import { http, setItem } from "../../common/features";
-import { LoadStatesType, Undef } from "../../common/types";
+import { LoadStatesType, Optional, Undef } from "../../common/types";
 import { Store } from "../RootStore";
 import { Modal } from "./MainPageStore";
 
@@ -220,7 +220,18 @@ export class CartStore {
             //если есть процентная скидка
             if (courseItem.quantity * dishDiscount.price < courseItem.priceWithDiscount) {
               courseItem.campaign = dishDiscount.vcode;
-              courseItem.priceWithDiscount = courseItem.quantity * dishDiscount.price;
+              // я не понимаю как оно работает 
+              // но тут надо сделать так
+              // если есть установленный прайс
+              if(dishDiscount.price){ 
+                courseItem.priceWithDiscount = courseItem.quantity * dishDiscount.price;
+              }
+              // если нет прайса но есть скидочный процент
+              // @ts-ignore
+              if(dishDiscount.discountPercent) {
+                // @ts-ignore
+                courseItem.priceWithDiscount = courseItem.couse.Price - (courseItem.couse.Price * dishDiscount.discountPercent / 100);
+              }
             }
           }
         }
@@ -234,7 +245,16 @@ export class CartStore {
             let dishInSet = curDishSets[j].dishes.find(a => a.dish == courseItem.couse.VCode);
             if (dishInSet !== undefined) {
               courseItem.campaign = curDishSets[j].vcode;
-              courseItem.priceWithDiscount = courseItem.quantity * dishInSet.price;
+              // если есть установленный прайс
+              if(dishInSet.price){ 
+                courseItem.priceWithDiscount = courseItem.quantity * dishInSet.price;
+              }
+              // если нет прайса но есть скидочный процент
+              // @ts-ignore
+              if(dishInSet.discountPercent) {
+                // @ts-ignore
+                courseItem.priceWithDiscount = courseItem.couse.Price - (courseItem.couse.Price * dishInSet.discountPercent / 100);
+              }
             }
           }
         }
