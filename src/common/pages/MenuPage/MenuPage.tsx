@@ -92,7 +92,7 @@ export const MenuPage: React.FC = observer(() => {
       </Page>
     : <Page>
       <Skeleton animated style={skeletonStyle} />
-      <Skeleton.Title style={{margin: '1rem'}} />
+      <Skeleton.Title style={{margin: '1rem'}} animated />
       <section className='categories'>
         <div>
           <div className="courses_list">
@@ -100,9 +100,9 @@ export const MenuPage: React.FC = observer(() => {
               <div className="course_item" key={index}>
                 <Skeleton style={{width: '100%'}} />
                 <div className='item_bady'>
-                  <Skeleton.Title />
-                  <Skeleton.Paragraph />
-                  <Skeleton />
+                  <Skeleton.Title animated />
+                  <Skeleton.Paragraph animated />
+                  <Skeleton animated />
                 </div>
               </div>
             )}

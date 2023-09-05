@@ -162,6 +162,8 @@ const Bottom: FC = observer(() => {
   const { mainPage } = useStore();
   const navigate = useNavigate();
 
+  const { state, cookstate } = mainPage
+
   const setRouteActive = (value: string) => {navigate(value)}
 
   const currentTab = tabs.find((tab) => 
@@ -172,44 +174,44 @@ const Bottom: FC = observer(() => {
 
   const { cartStore } = useStore();
 
-  const condition = false
+  const condition = false // todo я забыл что хотел тут доделать
 
   return condition
     ? null
-    : mainPage.isLoading && mainPage.cookIsLoading
-      ? preloader() 
-      : <TabBar 
-          activeKey={currentTab?.key} 
-          onChange={value => {
-            setRouteActive(value)
-            window.scrollTo({top: 0 })
-          }}
-        >
-          {tabs.map(item => 
-            <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
-          )}
-          <TabBar.Item 
-            key='/cart' 
-            title='Корзина' 
-            icon={
-              <div style={{position: 'relative'}}>
-                <AppstoreOutline />
-                <Tag
-                  color='primary' 
-                  style={{ 
-                    position: 'absolute',
-                    top: '-0.25rem', 
-                    right: '-0.5rem', 
-                    fontSize: '14px', 
-                    '--border-radius': '6px', 
-                  }}
-                >
-                  {cartStore.items.length}
-                </Tag>
-              </div>
-            }
-          />
-        </TabBar>
+    : state === 'COMPLETED' && cookstate === 'COMPLETED'
+      ? <TabBar 
+        activeKey={currentTab?.key} 
+        onChange={value => {
+          setRouteActive(value)
+          window.scrollTo({top: 0 })
+        }}
+      >
+        {tabs.map(item => 
+          <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
+        )}
+        <TabBar.Item 
+          key='/cart' 
+          title='Корзина' 
+          icon={
+            <div style={{position: 'relative'}}>
+              <AppstoreOutline />
+              <Tag
+                color='primary' 
+                style={{ 
+                  position: 'absolute',
+                  top: '-0.25rem', 
+                  right: '-0.5rem', 
+                  fontSize: '14px', 
+                  '--border-radius': '6px', 
+                }}
+              >
+                {cartStore.items.length}
+              </Tag>
+            </div>
+          }
+        />
+      </TabBar> 
+      : preloader()
 })
 
 const Top: FC = observer(() => {
@@ -266,8 +268,8 @@ const preloader = () =>
     {new Array(5).fill(null).map((_, index) => 
       <TabBar.Item 
         key={index} 
-        icon={<Skeleton style={{width: '25px', height: '25px', borderRadius: '100px'}} />} 
-        title={<Skeleton style={{width: '50px', height: '14px'}} />} 
+        icon={<Skeleton animated style={{width: '25px', height: '25px', borderRadius: '100px'}} />} 
+        title={<Skeleton animated style={{width: '50px', height: '14px'}} />} 
       />
     )}
   </TabBar>

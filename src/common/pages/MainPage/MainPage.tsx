@@ -182,9 +182,9 @@ export const MainPage: FC = observer(() => {
               {
                 mainPage.loadCookInfoState === 'LOADING'
                 ? <div>
-                  <Skeleton.Paragraph />
-                  <Skeleton.Paragraph />
-                  <Skeleton.Paragraph />
+                  <Skeleton.Paragraph animated />
+                  <Skeleton.Paragraph animated />
+                  <Skeleton.Paragraph animated />
                 </div>
                 : !mainPage.selectedCock 
                   ? null 
@@ -511,17 +511,17 @@ const skeletonStyle: React.CSSProperties = {
 
 const preloader = () => [
   <Skeleton key={1} animated style={skeletonStyle} />,
-  <Skeleton.Title key={2} style={{margin: '1rem'}} />,
+  <Skeleton.Title key={2} animated style={{margin: '1rem'}} />,
   <section key={3} className='categories'>
     <div>
       <div className="courses_list">
         {new Array(2).fill(null).map((_, index) => 
           <div className="course_item" key={index}>
-            <Skeleton style={{width: '100%'}} />
+            <Skeleton style={{width: '100%'}} animated />
             <div className='item_bady'>
-              <Skeleton.Title />
-              <Skeleton.Paragraph />
-              <Skeleton />
+              <Skeleton.Title animated />
+              <Skeleton.Paragraph animated />
+              <Skeleton animated />
             </div>
           </div>
         )}
@@ -529,7 +529,3 @@ const preloader = () => [
     </div>
   </section>
 ]
-
-const lightcolors = ['#ace0ff', '#bcffbd', '#e4fabd', '#ffcfac']
-const darkcolors = ['#4B2828', '#4B3928', '#484B28', '#2D4B28', '#284B41', '#28494B', '#28304B', '#46284B', '#4B2837']
-
