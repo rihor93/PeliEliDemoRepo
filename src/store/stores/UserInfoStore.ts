@@ -1,7 +1,8 @@
+import { Toast } from "antd-mobile";
 import { flow, makeAutoObservable } from "mobx";
 import { http, logger } from "../../common/features";
 import { useTelegram } from "../../common/hooks";
-import { LoadStates, LoadStatesType } from "../../common/types";
+import { LoadStates, LoadStatesType, Undef } from "../../common/types";
 import { Store } from "../RootStore";
 
 export class UserInfoStore {
@@ -38,6 +39,23 @@ export class UserInfoStore {
   
   set currentOrg(val: number) {
     this.selectedOrganizationID = val
+  }
+
+  async saveCurrentOrg(newOrgId: number) {
+    this.onStart();
+    const { userId } = useTelegram();
+    try {
+      const response: Undef<string> = await http.post(
+        '/setUserOrg', 
+        { userId, newOrgId }
+      )
+      if(response) {
+        logger.log('Организация успешно сменена', 'User-Info-Store');
+        this.onSuccess();
+      }
+    } catch(err) {
+      this.onFailure()
+    }
   }
 
   get currentOrg() {
@@ -108,14 +126,16 @@ export class UserInfoStore {
       this.organizations = yield http.get('/GetOrgForWeb');
       this.onSuccess();
     } catch (err) {
-      this.onFailure(err);
+      this.onFailure('Не удалось сохранить домашнюю кухню(((((((((((((((');
     }
   })
 
-  onFailure(err: unknown) {
-    logger.error(err, UserInfoStore.name)
-    // todo показывать сообщение об 
-    // ошибке пользователю на экарне
+  onFailure(errStr?: string) {
+    logger.error(errStr, 'User-Info-Store')
+    Toast.show({
+      content: errStr, 
+      position: 'center'
+    })
     this.state = 'FAILED';
   }
 

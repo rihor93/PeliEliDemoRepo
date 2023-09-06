@@ -1,5 +1,22 @@
 import { HomeOutlined } from "@ant-design/icons"
-import { Toast, Swiper, Divider, Skeleton, Footer, Avatar, Space, Rate, Dropdown, Radio, Popup, Button, WaterMark, Result } from "antd-mobile"
+import { 
+  Toast, 
+  Swiper, 
+  Divider, 
+  Skeleton, 
+  Footer, 
+  Avatar, 
+  Space, 
+  Rate, 
+  Dropdown, 
+  Radio, 
+  Popup, 
+  Button, 
+  WaterMark, 
+  Result, 
+  Ellipsis, 
+  List
+} from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -7,22 +24,16 @@ import { Cart, GurmagLogo, gurmag_big } from '../../../assets';
 import { Page } from "../../components";
 import { config } from '../../configuration';
 import { replaceImgSrc } from '../../helpers';
-import { useStore, useTheme } from '../../hooks';
+import { useStore } from '../../hooks';
 import { ItemModal } from "../MenuPage/modals/ItemModal";
 import './MainPage.css';
 import { FC } from 'react';
-import Ellipsis from "antd-mobile/es/components/ellipsis";
-import { List } from "antd-mobile";
 import moment from "moment";
 import { Optional, Undef } from "../../types";
 import { ClockCircleOutline } from "antd-mobile-icons";
 
 
 export const MainPage: FC = observer(() => { 
-  const { theme } = useTheme();
-
-  const isDarkMode = theme === 'light';
-
   const { userStore, actionsPage, mainPage } = useStore();
 
   const { selectedCourse, state, cookstate, watchCourse } = mainPage;
@@ -63,7 +74,7 @@ export const MainPage: FC = observer(() => {
               <div>
                 <Divider>Выберите вашу домашнюю кухню:</Divider>
                 <Radio.Group 
-                  onChange={(e) => setAskedAddr(e as number)}
+                  onChange={e => setAskedAddr(e as number)}
                 >
                   <Space direction='vertical' block>
                     {userStore.organizations.map((org) => 
@@ -85,7 +96,8 @@ export const MainPage: FC = observer(() => {
                         position: 'center',
                       })
                     } else {
-                      userStore.currentOrg = askedAddr
+                      userStore.currentOrg = askedAddr;
+                      userStore.saveCurrentOrg(askedAddr)
                     }
                   }}
                 >
@@ -111,7 +123,10 @@ export const MainPage: FC = observer(() => {
                 <div style={{ padding: 12 }}>
                   <Radio.Group 
                     defaultValue={userStore.currentOrg}
-                    onChange={(e) => userStore.currentOrg = e as number}
+                    onChange={e => {
+                      userStore.currentOrg = e as number
+                      userStore.saveCurrentOrg(e as number)
+                    }}
                   >
                     <Space direction='vertical' block>
                       {userStore.organizations.map((org) => 
