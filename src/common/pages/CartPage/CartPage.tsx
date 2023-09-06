@@ -164,23 +164,29 @@ export const CartPage: React.FC = observer(
                   percentDiscounts 
                 } = userStore.userState
                 
-                /** ищем детали для этой скидки в скидках на блюда */
-                const campaignAllInfo = allCampaign.find((camp) =>
+                /** ищем основную инфу */
+                const campaignAllInfo = allCampaign.find(camp =>
                   camp.VCode === cartItem.campaign
                 )
                 /** ищем детали для этой скидки в скидках на блюда */
-                const dishDiscount = dishDiscounts.find((dishDiscount) =>
+                const dishDiscount = dishDiscounts.filter(dishDiscount =>
                   dishDiscount.vcode === cartItem.campaign
+                ).find(dishDiscount => 
+                  dishDiscount.dish === cartItem.couse.VCode
                 )
 
                 /** ищем детали для этой скидки в процентных скидках */
-                const percentDiscount = percentDiscounts.find((percentDiscount) =>
+                const percentDiscount = percentDiscounts.find(percentDiscount =>
                   percentDiscount.vcode === cartItem.campaign
                 )
 
                 /** ищем детали для этой скидки в скидках на сеты */
-                const setDish = dishSet.find((setDish) =>
+                const setDish = dishSet.filter((setDish) =>
                   setDish.vcode === cartItem.campaign
+                ).find(setDish =>
+                  Boolean(setDish.dishes.find(dishSet =>
+                    dishSet.dish === cartItem.couse.VCode
+                  ))
                 )
 
                 let text: Optional<string> = null;
