@@ -63,35 +63,43 @@ export const MorePage: React.FC = observer(() => {
         : null
       }
       <ul className='moreList'>
-        <li>
+        {/* <li>
           <img src={isdarkMode ? LocationLight : LocationDark} alt="Города" />
           <select name="" id="">
             {['Уфа', 'Агидель', 'Стерлитамак', 'Белебей', 'Набережные Челны'].map((city) =>
               <option key={city} value={city}>{city}</option>
             )}
           </select>
+        </li> */}
+        <li>
+          <img src={isdarkMode ? LocationLight : LocationDark} alt="Города" />
+          <span>Уфа</span>
+        </li>
+        <li className='mt-1'>
+          <a href="tel:89870401199">
+            <img src={telephone} style={{ height: '24px' }} alt="Телефон" />
+            <span style={{marginLeft: '0.75rem'}}>8-987-040-11-99</span>
+          </a>
         </li>
         <li>
-          <img src={telephone} style={{ height: '24px' }} alt="Телефон" />
-          +7 (800) 800-00-00
-        </li>
-        <li>
-          <button className='chatBtn'>
-            <img className='chatBtn_img' src={ChatLight} alt="Написать в чат" />
-            Написать в чат
-          </button>
+          <a href="tg://resolve?domain=Elipeli_operator">
+            <button className='chatBtn'>
+              <img className='chatBtn_img' src={ChatLight} alt="Написать в чат" />
+              Написать в чат
+            </button>
+          </a>
         </li>
         <li className='mt-1'>
           <img className='me-1' src={isdarkMode ? ProfileLight : ProfileDark} alt="profile" />
-          Профиль
+          Профиль (дорабатывается)
         </li>
         <li className='mt-1'>
           <img className='me-1' src={isdarkMode ? MapPointsLight : MapPointsDark} alt="Адреса доставки" />
-          Адреса доставки
+          Адреса доставки (дорабатывается)
         </li>
         <li className='mt-1'>
           <img className='me-1' src={isdarkMode ? HistoryLight : HistoryDark} alt="История заказов" />
-          История заказов
+          История заказов (дорабатывается)
         </li>
       </ul>
     </Страничка>

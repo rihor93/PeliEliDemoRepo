@@ -114,9 +114,12 @@ type CookReviews = {
   /** название сотрудника */
   FIO: string,
   /** 2023-08-15T15:53:23.745Z */
-  Date: string,
+  Date: string, 
+  /** "79174308652" */
+  Phone: string,
 }
 
+/** заказ */
 type Order = {
   itemsInCart: Array<CouseInCart>,
   /** userid str - "187151411" */
@@ -127,4 +130,15 @@ type Order = {
   contactPhone: string,
   /** ISOdate str - "2023-08-24T07:55:07.983Z" */
   orderDate: string
+}
+
+type CourseOtzyv = {
+  /** 2023-09-08T04:38:41.173Z */
+  Date: string,
+  /** "Жанна" */
+  FIO: string,
+  /** "79899559625" */
+  Phone: string,
+  /** "5" */
+  Rating: string,
 }

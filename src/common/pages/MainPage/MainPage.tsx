@@ -12,7 +12,6 @@ import {
   Radio, 
   Popup, 
   Button, 
-  WaterMark, 
   Result, 
   Ellipsis, 
   List
@@ -29,7 +28,6 @@ import { ItemModal } from "../MenuPage/modals/ItemModal";
 import './MainPage.css';
 import { FC } from 'react';
 import moment from "moment";
-import { Optional, Undef } from "../../types";
 import { ClockCircleOutline } from "antd-mobile-icons";
 
 
@@ -38,12 +36,7 @@ export const MainPage: FC = observer(() => {
 
   const { selectedCourse, state, cookstate, watchCourse } = mainPage;
 
-  const { 
-    dishSet, 
-    allCampaign, 
-    dishDiscounts,  
-    percentDiscounts 
-  } = userStore.userState; 
+  const { allCampaign } = userStore.userState; 
 
   const navigate = useNavigate();
 
@@ -222,30 +215,124 @@ export const MainPage: FC = observer(() => {
                     <span style={{margin: '0.5rem'}}>{mainPage.selectedCock.NameWork}</span>
                     <List header='Последние отзывы'>
                       {/* @ts-ignore */}
-                      {mainPage.selectedCockReviews[0].map((review, index) => (
-                        <List.Item
-                          key={index}
-                          prefix={
-                            <Avatar 
-                              src=''
-                              style={{ 
-                                borderRadius: 20, 
-                                width: '40px', 
-                                height: '40px', 
-                              }}
-                              fit='cover'
-                            />
-                          }
-                          description={`★${review.Rating} ${review.Course}`}
-                        >
-                          <span style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                            <span>{review.FIO?.length ? review.FIO : 'Покупатель'}</span>
-                            <span style={{fontSize:'12px', color: 'var(--тихий-текст)'}}>
-                              {moment(review.Date).format('DD-MM-YYYY')}
+                      {mainPage.selectedCockReviews[0]?.map((review: CookReviews, index) => {
+                        const splitedNum = review.Phone.split('')
+                        const last3nums = [...splitedNum].slice(8, 11)
+                        // const next2nums = [...splitedNum].slice(6, 8)
+                        // const middle2nums = [...splitedNum].slice(4, 6)
+                        const first3nums = [...splitedNum].slice(1, 4)
+                        const countryCode = [...splitedNum].slice(0, 1)
+                        const maskedTel = [...countryCode, '-', first3nums, '-', '**', '-', '**', '-', last3nums]
+                        return(
+                          <List.Item
+                            key={index}
+                            prefix={
+                              <Avatar 
+                                src=''
+                                style={{ 
+                                  borderRadius: 20, 
+                                  width: '40px', 
+                                  height: '40px', 
+                                }}
+                                fit='cover'
+                              />
+                            }
+                            description={ 
+                              <div>
+                                <p>{maskedTel}</p>
+                                <p>{`★${review.Rating} - ${review.Course}`}</p>
+                              </div>
+                            }
+                          >
+                            <span style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <span>{review.FIO?.length ? review.FIO : 'Покупатель'}</span>
+                              <span style={{fontSize:'12px', color: 'var(--тихий-текст)'}}>
+                                {moment(review.Date).format('DD-MM-YYYY')}
+                              </span>
                             </span>
-                          </span>
-                        </List.Item>
-                      ))}
+                          </List.Item>
+                        )
+                      })}
+                    </List>
+                  </div>
+              }
+            </Popup>
+            <Popup 
+              visible={mainPage.otziviModal.show}
+              onClose={() => mainPage.closeWatchOtzivi()}
+              closeOnMaskClick
+              bodyStyle={{
+                borderTopLeftRadius: '8px',
+                borderTopRightRadius: '8px',
+                padding:'1rem 0.5rem 0.5rem 0.5rem'
+              }}
+            >
+              {
+                mainPage.otzivistate === 'LOADING'
+                ? <div>
+                  <Skeleton.Paragraph animated />
+                  <Skeleton.Paragraph animated />
+                  <Skeleton.Paragraph animated />
+                </div>
+                : !mainPage.selectedCourse 
+                  ? null 
+                  : <div style={{maxHeight: '65vh', overflow: 'scroll'}}>
+                    <span>
+                      <Rate
+                        allowHalf
+                        readOnly 
+                        count={1}
+                        defaultValue={1}
+                        style={{'--star-size': '20px' }}
+                      />
+                      {/* @ts-ignore */}
+                      <span style={{fontSize: '20px'}}>
+                        {Math.ceil(mainPage.selectedCourse.Quality * 10) / 10}
+                      </span>
+                    </span>
+                    <br />
+                    <br />
+                    
+                    <span style={{margin: '0.5rem'}}>{mainPage.selectedCourse.Name}</span>
+                    <List header='Последние отзывы'>
+                      {/* @ts-ignore */}
+                      {mainPage.selectedCourseReviews[0]?.map((review: CourseOtzyv, index) => {
+                        const splitedNum = review.Phone.split('')
+                        const last3nums = [...splitedNum].slice(8, 11)
+                        // const next2nums = [...splitedNum].slice(6, 8)
+                        // const middle2nums = [...splitedNum].slice(4, 6)
+                        const first3nums = [...splitedNum].slice(1, 4)
+                        const countryCode = [...splitedNum].slice(0, 1)
+                        const maskedTel = [...countryCode, '-', ...first3nums, '-', '**', '-', '**', '-', ...last3nums]
+                        return(
+                          <List.Item
+                            key={index}
+                            prefix={
+                              <Avatar 
+                                src=''
+                                style={{ 
+                                  borderRadius: 20, 
+                                  width: '40px', 
+                                  height: '40px', 
+                                }}
+                                fit='cover'
+                              />
+                            }
+                            description={ 
+                              <div>
+                                <p>{`${maskedTel.join('')} поставил ★${review.Rating}`}</p>
+                              </div>
+                            }
+                          >
+                            <span style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                              <span>{review.FIO?.length ? review.FIO : 'Покупатель'}</span>
+                              <span style={{fontSize:'12px', color: 'var(--тихий-текст)'}}>
+                                {moment(review.Date).format('DD-MM-YYYY')}
+                              </span>
+                            </span>
+                          </List.Item>
+                        )
+                      })}
                     </List>
                   </div>
               }
@@ -299,181 +386,7 @@ export const MainPage: FC = observer(() => {
                 </Space>
             )}
           </div>
-          <Divider contentPosition="left" style={{fontSize: '22px'}} >Сегодня в гурмаге</Divider>
-          <section className='categories'>
-            {!allCampaign.length
-              ? <Result
-                style={{width: '100%'}}
-                icon={<ClockCircleOutline />}
-                status='success'
-                title='Акций нет'
-                description={`Сегодня на ${userStore.currentOrganizaion?.Name} акций нет((`}
-              />
-              : null
-            }
-            {allCampaign.map((aksya) => { 
-              /** ищем детали для этой скидки в скидках на блюда */
-              const dishDiscount = dishDiscounts.find((dishDiscount) =>
-                dishDiscount.vcode === aksya.VCode
-              )
-
-              /** ищем детали для этой скидки в процентных скидках */
-              const percentDiscount = percentDiscounts.find((percentDiscount) =>
-                percentDiscount.vcode === aksya.VCode
-              )
-
-              /** ищем детали для этой скидки в скидках на сеты */
-              const setDish = dishSet.find((setDish) =>
-                setDish.vcode === aksya.VCode
-              )
-
-              let text: Optional<string> = null;
-              let dishArr: Undef<CourseItem>[] = []; 
-
-              // должна найтись только одна из трех 
-              // если это скидка 
-              // на одно блюдо
-              if (dishDiscount && !percentDiscount && !setDish) {
-                const targetDish = mainPage.getDishByID(dishDiscount.dish)
-                if (targetDish?.Name) 
-                  text = `Cкидка ${dishDiscount.price}руб на "${targetDish?.Name}"`
-                
-              }
-
-              // если это процентная скидка
-              if (!dishDiscount && percentDiscount && !setDish) {
-                const { MaxSum, MinSum, discountPercent, bonusRate } = percentDiscount;
-                text = `Cкидка ${discountPercent}% на сумму от ${MinSum} до ${MaxSum} руб`;
-                if (bonusRate) text = text + ` + ${bonusRate} бонусных баллов`
-              }
-
-              // если это скидка на сет
-              if (!dishDiscount && !percentDiscount && setDish) {
-                text = `Cкидка на ${aksya.quantity} блюда из списка:`;
-                dishArr = setDish.dishes.map((dishDiscount) =>
-                  mainPage.getDishByID(dishDiscount.dish)
-                )
-              }
-
-
-              return(
-                <div 
-                  key={aksya.VCode} 
-                  id={String(aksya.VCode)} 
-                  style={{ 
-                    margin: '0 6px 12px 6px',
-                    padding: '10px',
-                    position: 'relative', 
-                    borderRadius: '8px',
-                    outline: '1px solid var(--adm-color-border)',
-                    background: 'var(--tg-theme-secondary-bg-color)'
-                  }}
-                >
-                  <div 
-                    style={{
-                      position: 'absolute', 
-                      right: 0,
-                      top: 0,
-                      borderTopRightRadius: '8px',
-                      borderBottomLeftRadius: '8px',
-                      padding: '0.2rem',
-                      background: 'var(--adm-color-warning)',
-                      fontSize: '20px',
-                      fontWeight: '900',
-                      fontStyle: 'italic',
-                      color: 'white'
-                    }}
-                  >
-                    <span>Акция</span>
-                  </div>
-                  <WaterMark
-                    content={'Ели-Пели'}
-                    fullPage={false}
-                    width={70}
-                    height={25}
-                  />
-                  <h1 
-                    style={{
-                      whiteSpace: 'break-spaces', 
-                      textAlign: 'center',
-                      fontSize: '24px',
-                      fontStyle: 'italic',
-                      fontWeight: '900',
-                      // @ts-ignore
-                      fontSize: '30px',
-                      lineHeight: 'normal', 
-                      textTransform: 'uppercase',
-                      borderBottom: '1px solid var(--громкий-текст)'
-                    }}
-                  >
-                    {aksya.Name.replace(/ *\{[^}]*\} */g, "")}
-                  </h1>
-                  <p 
-                    style={{
-                      padding: '0.5rem', 
-                      fontSize: '16px',
-                      fontStyle: 'italic',
-                      fontWeight: '500', 
-                      textTransform: 'uppercase',
-                    }}
-                  >
-                    {aksya.Description.replace(/ *\{[^}]*\} */g, "")}
-                  </p>
-                  <p 
-                    style={{
-                      padding: '0.5rem', 
-                      fontSize: '16px',
-                      fontStyle: 'italic',
-                      fontWeight: '500', 
-                      textTransform: 'uppercase',
-                      marginBottom:'5px'
-                    }}
-                  >
-                    {text}
-                  </p>
-                  {!dishArr.length 
-                    ? null
-                    : <div className="courses_list">
-                      {dishArr.map((course, index) =>
-                        !course
-                          ? null
-                          : <div
-                            className="course_item"
-                            key={`${aksya.Name}-${course.Name}-${index}`}
-                            style={{background: 'var(--tg-theme-bg-color)'}}
-                          >
-                            <img
-                              src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}&compression=true`}
-                              onError={replaceImgSrc(GurmagLogo)}
-                              onClick={() => watchCourse(course)}
-                            />
-                            <div className='item_bady'>
-                              <h5 
-                                className='title' 
-                                onClick={() => watchCourse(course)}
-                              >
-                                {course.Name}
-                              </h5>
-                              <span style={{color: 'var(--тихий-текст)'}}>★</span>
-                              <span>{Math.ceil(course.Quality * 10) / 10}</span>
-                              <div className='price_cart'>
-                                <span>{course.Price}</span>
-                                <img
-                                  src={Cart}
-                                  onClick={() => watchCourse(course)}
-                                />
-                              </div>
-                            </div>
-                          </div>
-                      )}
-
-                    </div>
-                  }
-                </div>
-              )
-            })}
-
-          </section>
+          
           <Divider contentPosition="left" style={{fontSize: '22px'}} >Популярные блюда</Divider>
           <section className='categories'>
             <div key='популярное' id='популярное'>
@@ -490,9 +403,28 @@ export const MainPage: FC = observer(() => {
                       onClick={() => watchCourse(course)}
                     />
                     <div className='item_bady'>
-                      <h5 className='title' onClick={() => watchCourse(course)}>{course.Name}</h5>
-                      <span style={{ color: 'var(--тихий-текст)' }}>★</span>
-                      <span>{Math.ceil(course.Quality * 10) / 10}</span>
+                      <Ellipsis 
+                        rows={2}
+                        content={course.Name}
+                        onContentClick={() => watchCourse(course)}
+                        className='title'
+                      />
+                      <Space 
+                        align='center' 
+                        style={{'--gap': '3px', margin: '0.5rem 0' }}>
+                        <Rate count={1} value={1} style={{ '--star-size': '16px' }}/>
+                        <div>{Math.ceil(course.Quality * 100) / 100}</div>
+                        <div 
+                          style={{
+                            color:'var(--tg-theme-link-color)',
+                            fontSize: '10px', 
+                          }} 
+                          onClick={() => mainPage.watchOtzivi(course)}
+                        >
+                          Смотреть отзывы
+                        </div>
+                      </Space>
+
                       <div className='price_cart'>
                         <span>{course.Price}</span>
                         <img

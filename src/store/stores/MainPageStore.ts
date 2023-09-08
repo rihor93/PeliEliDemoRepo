@@ -1,6 +1,6 @@
 import { flow, makeAutoObservable } from "mobx";
 import { http, logger } from "../../common/features";
-import { LoadStates, LoadStatesType, Optional } from "../../common/types";
+import { LoadStatesType, Optional, Undef } from "../../common/types";
 import { Store } from "../RootStore";
 
 export class Modal {
@@ -59,8 +59,18 @@ export class Searcher {
 }
 
 export class MainPageStore {
-  state: LoadStatesType = LoadStates.INITIAL;
-  cookstate: LoadStatesType = LoadStates.INITIAL;
+  /** состояние загрузки меню */
+  state: LoadStatesType = 'INITIAL';
+  /** состояние загрузки списка поваров */
+  cookstate: LoadStatesType = 'INITIAL';
+  /** состояние загрузки отзывов на блюдо */
+  otzivistate: LoadStatesType = 'INITIAL';
+  /** состояние загрузки отзывов на повара */
+  loadCookInfoState: LoadStatesType = 'INITIAL';
+
+  get isLoading() { return this.state === 'LOADING' }
+  get cookIsLoading() { return this.cookstate === 'LOADING' }
+  get otziviIsLoading() { return this.otzivistate === 'LOADING' }
   rootStore: Store;
 
   categories: Array<CategoryCourse> = [];
@@ -68,8 +78,8 @@ export class MainPageStore {
 
   get allDishes() {
     const result: CourseItem[] = []
-    this.categories.forEach((category) => 
-      category.CourseList.forEach((couse) => 
+    this.categories.forEach(category => 
+      category.CourseList.forEach(couse => 
         result.push(couse)
       )
     )
@@ -79,20 +89,15 @@ export class MainPageStore {
 
   getDishByID(id: number | string) {
     let all: CourseItem[] = []
-    this.categories.forEach((cat) =>
-      cat.CourseList.forEach((dish) =>
+    this.categories.forEach(cat => 
+      cat.CourseList.forEach(dish => 
         all.push(dish)
       )
     )
-    return all.find((dish) => dish.VCode == id)
+    return all.find(dish => dish.VCode == id)
   }
 
-  get isLoading() {
-    return this.state === LoadStates.LOADING
-  }
-  get cookIsLoading() {
-    return this.cookstate === LoadStates.LOADING
-  }
+  
   constructor(rootStore: Store) {
     this.rootStore = rootStore;
     makeAutoObservable(this);
@@ -100,10 +105,11 @@ export class MainPageStore {
   }
 
   itemModal = new Modal();
+  otziviModal = new Modal();
   watchCockModal = new Modal();
   selectedCock: Optional<Cook> = null;
   selectedCockReviews: CookReviews[] = [];
-  loadCookInfoState: LoadStatesType = 'INITIAL';
+  
   async watchCook(cook: Cook) {
     this.selectedCock = cook;
     this.loadCookReviews(cook);
@@ -142,10 +148,44 @@ export class MainPageStore {
   /** выбранное блюдо, которое откроется в отдельном окошке */
   selectedCourse: Optional<CourseItem> = null;
   watchCourse(course: Optional<CourseItem>) {
-    logger.log('Просматриваем блюдо ' + course?.Name, MainPageStore.name)
+    logger.log('Просматриваем блюдо ' + course?.Name, 'Main-Page-Store')
     this.selectedCourse = course;
     this.itemModal.open();
   }
+
+  selectedCourseReviews: CourseOtzyv[] = []
+  async watchOtzivi(course: CourseItem) {
+    logger.log('Просматриваем отзывы', 'Main-Page-Store')
+    this.selectedCourse = course;
+    this.loadCourseReviews(course);
+    this.otziviModal.open();
+  }
+
+  closeWatchOtzivi() {
+    this.selectedCourse = null;
+    this.selectedCourseReviews = [];
+    this.otziviModal.close();
+  }
+
+  loadCourseReviews = flow(function* (
+    this: MainPageStore,
+    { VCode }: CourseItem
+  ) {
+    try{
+      this.otzivistate = 'LOADING';
+      this.selectedCourseReviews = []
+      const response: Undef<CourseOtzyv[]> = yield http.get(`getCourseRating/${VCode}`);
+      if(response?.length) {
+        response.forEach(otziv => {
+          this.selectedCourseReviews.push(otziv)
+        });
+      }
+      
+      this.otzivistate = 'COMPLETED';
+    } catch(e) {
+      this.otzivistate = 'FAILED';
+    }
+  })
 
   loadMenu = flow(function* (
     this: MainPageStore, 
