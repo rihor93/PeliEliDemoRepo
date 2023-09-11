@@ -392,10 +392,10 @@ export const MainPage: FC = observer(() => {
             <div key='популярное' id='популярное'>
               <div className="courses_list">
 
-                {mainPage.categories[0]?.CourseList?.map((course, index) => 
+                {mainPage.popular?.map(course => 
                   <div
                     className="course_item"
-                    key={`популярное-${course.Name}-${index}`}
+                    key={`популярное-${course.VCode}`}
                   >
                     <img
                       src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}&compression=true`}

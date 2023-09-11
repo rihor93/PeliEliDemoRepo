@@ -142,3 +142,8 @@ type CourseOtzyv = {
   /** "5" */
   Rating: string,
 }
+
+type V3_userInfoResponse = { 
+  BaseMenu: Array<CategoryCourse>
+  PopularMenu: Array<CourseItem>
+}

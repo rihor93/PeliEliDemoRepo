@@ -74,6 +74,7 @@ export class MainPageStore {
   rootStore: Store;
 
   categories: Array<CategoryCourse> = [];
+  popular: Array<CourseItem> = [];
   cooks: Array<Cook> = [];
 
   get allDishes() {
@@ -193,11 +194,17 @@ export class MainPageStore {
   ) {
     this.onStart();
     try {
-      const data: Array<CategoryCourse> = yield http.get('/getUserMenu_v2/' + orgID);
+      const data: Undef<V3_userInfoResponse> = yield http.get('/getUserMenu_v3/' + orgID);
       this.categories = [];
-      data.forEach((category) =>
-        this.categories.push(category)
-      )
+      this.popular = [];
+      if(data?.BaseMenu && data?.PopularMenu) {
+        data.BaseMenu.forEach(category =>
+          this.categories.push(category)
+        )
+        data.PopularMenu.forEach(couse =>
+          this.popular.push(couse)
+        )
+      }
       this.onSuccess();
     } catch (err) {
       this.onFailure(err)
