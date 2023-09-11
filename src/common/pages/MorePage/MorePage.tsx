@@ -1,11 +1,12 @@
 import './MorePage.css';
 import Страничка from '../../components/layout/Page';
-import { useStore, useTheme } from '../../hooks';
+import { useStore, useTelegram, useTheme } from '../../hooks';
 import { ChatLight, HistoryDark, HistoryLight, LocationDark, LocationLight, MapPointsDark, MapPointsLight, ProfileDark, ProfileLight, telephone } from '../../../assets';
 import { Popup, Toast, Divider, Radio, Space, Button } from 'antd-mobile';
 import React from 'react';
 import { observer } from 'mobx-react-lite';
 export const MorePage: React.FC = observer(() => {
+  const tg = useTelegram();
   const { theme } = useTheme();
   const { userStore } = useStore();
   const isdarkMode = theme === 'dark';
@@ -76,13 +77,29 @@ export const MorePage: React.FC = observer(() => {
           <span>Уфа</span>
         </li>
         <li className='mt-1'>
-          <a href="tel:89870401199">
+          <a onClick={(e) => { 
+            e.preventDefault();
+            if(tg.isInTelegram()) {
+              window.open('tel:89870401199'); 
+            } else {
+              window.open('tel:89870401199'); 
+            }
+          }}>
             <img src={telephone} style={{ height: '24px' }} alt="Телефон" />
             <span style={{marginLeft: '0.75rem'}}>8-987-040-11-99</span>
           </a>
         </li>
         <li>
-          <a href="tg://resolve?domain=Elipeli_operator">
+          <a 
+            onClick={(e) => { 
+              e.preventDefault();
+              if(tg.isInTelegram()) {
+                tg.tg.openTelegramLink('tg://resolve?domain=Elipeli_operator');
+              } else {
+                window.open('tg://resolve?domain=Elipeli_operator'); 
+              }
+            }}
+          >
             <button className='chatBtn'>
               <img className='chatBtn_img' src={ChatLight} alt="Написать в чат" />
               Написать в чат
