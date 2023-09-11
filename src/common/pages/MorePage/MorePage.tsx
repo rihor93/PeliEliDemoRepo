@@ -94,9 +94,9 @@ export const MorePage: React.FC = observer(() => {
             onClick={(e) => { 
               e.preventDefault();
               if(tg.isInTelegram()) {
-                tg.tg.openTelegramLink('tg://resolve?domain=Elipeli_operator');
+                tg.tg.openTelegramLink('https://t.me/Elipeli_operator');
               } else {
-                window.open('tg://resolve?domain=Elipeli_operator'); 
+                window.open('https://t.me/Elipeli_operator'); 
               }
             }}
           >
