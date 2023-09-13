@@ -5,3 +5,4 @@ export * from './ProfilePage/ProfilePage';
 export * from './ActionsPage/ActionsPage';
 export * from './MainPage/MainPage';
 export * from './MorePage/MorePage';
+export * from './OrdersPage/OrdersPage';

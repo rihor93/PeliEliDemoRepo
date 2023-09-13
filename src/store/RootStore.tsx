@@ -4,6 +4,7 @@ import { AuthStore, CartStore, MainPageStore } from "./stores";
 import { UserInfoStore } from "./stores/UserInfoStore";
 import { getItem, logger } from "../common/features";
 import { ActionsPageStore } from "./stores/ActionsStore";
+import { useTelegram } from "../common/hooks";
 
 export class Store {
   /** видна ли поисковая строка в навбаре */
@@ -42,7 +43,6 @@ export class Store {
       () => [this.mainPage.state, this.mainPage.cookstate, this.userStore.state],
       (vals, prevVals) => {
         if(!vals.map(val => val === 'COMPLETED').includes(false)) {
-          console.log(!vals.map(val => val === 'COMPLETED').includes(false))
           // вспоминаем что сохранили в локал стораге
           const savedCart = getItem<CouseInCart[]>('cartItems')
           // надо проверить есть ли сейчас это блюдо в меню
@@ -82,12 +82,14 @@ export class Store {
   }
   // Загружаются данные связаные с учеткой
   afterAuthorized() {
-    logger.log('мы авторизовались', Store.name);
+    const { userId } = useTelegram()
+    this.userStore.loadOrdersHistory(userId)
+    logger.log('мы авторизовались', "root-store");
   }
 
   // Загружаются общие данные, главные страницы и т.д.
   afterLoaded() {
-    logger.log('страница загружена', Store.name)
+    logger.log('страница загружена', "root-store")
     this.userStore.loadOrganizations();
     this.auth.authorize();
   }

@@ -1,4 +1,4 @@
-import { Popup, Toast, Divider, Radio, Space, Skeleton, Dropdown, Selector, Input, DatePicker, Form, Collapse } from 'antd-mobile';
+import { Popup, Toast, Divider, Radio, Space, Skeleton, Dropdown, Selector, Input, DatePicker, Form, Collapse, Modal } from 'antd-mobile';
 import Button from 'antd-mobile/es/components/button';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
@@ -11,6 +11,8 @@ import './CartPage.css';
 import { ConfirmOrderModal } from './modals/confirmOrderModal';
 import { toJS } from 'mobx';
 import { ToastHandler } from 'antd-mobile/es/components/toast';
+import { isDevelopment } from '../../helpers';
+import { useNavigate } from 'react-router-dom';
 
 
 
@@ -20,6 +22,7 @@ export const CartPage: React.FC = observer(
     /** тост с загрузкой */
     const handler = React.useRef<ToastHandler>()
     const { userId } = useTelegram();
+    const navigate = useNavigate();
     const { cartStore: cart, userStore, mainPage } = useStore();
     /** Если надо спросить домашнюю кухню */
     const [askedAddr, setAskedAddr] = React.useState(0);
@@ -353,7 +356,7 @@ export const CartPage: React.FC = observer(
               : cart.postOrder({
                 itemsInCart: toJS(cart.items),
                 userId, 
-                currentOrg: String(userStore.currentOrg),
+                currentOrg: String(isDevelopment() ? 146 : userStore.currentOrg),
                 contactPhone,
                 orderDate: (() => {
                   const [hours, minets] = time.split(':')
@@ -363,6 +366,16 @@ export const CartPage: React.FC = observer(
                   return orderDate.toISOString()
                 })()
               }, handler)
+                .then(() => {
+                  Modal.confirm({
+                    content: 'Поздравляем! Заказ оформлен!',
+                    cancelText: 'Закрыть',
+                    confirmText: 'Перейти в заказы',
+                    onConfirm: () => {
+                      navigate('/orders')
+                    },
+                  })
+                })
             }
           >
             Заказать

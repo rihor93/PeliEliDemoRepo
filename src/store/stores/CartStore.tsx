@@ -1,6 +1,6 @@
 import { Toast } from "antd-mobile";
 import { ToastHandler } from "antd-mobile/es/components/toast";
-import { flow, makeAutoObservable } from "mobx";
+import { flow, makeAutoObservable, toJS } from "mobx";
 import { http, logger, setItem } from "../../common/features";
 import { LoadStatesType, Undef } from "../../common/types";
 import { Store } from "../RootStore";
@@ -296,6 +296,7 @@ export class CartStore {
 
   watchdetailModal = new Modal()
 
+  /** апи оформления заказа */
   postOrder = flow(function* (
     this: CartStore,
     order: Order, 
@@ -307,7 +308,7 @@ export class CartStore {
         icon: 'loading',
         content: 'Загрузка',
         position: 'center', 
-        duration: 0
+        duration: 0 // висит бесконечно
       })
       const response: Order = yield http.post('/NewOrder', order);
       logger.log('Делаем запрос оформить заказ', 'cart-store')
@@ -317,6 +318,25 @@ export class CartStore {
         this.onSuccess('Заказ успешно оформлен')
         this.items = [];
         this.totalPrice = 0;
+        setItem('cartItems', [])
+        this.rootStore.userStore.orderHistory.push({
+          VCode: 'new_order',
+          DocumentNumber: 'new_order',
+          DocumentDate: new Date().toISOString(),
+          DeliveryTime: order.orderDate,
+          StatusOrder: 'Создан',
+          PaymentStatus: 'Не оплачен',
+          /** "Рабкоров_20" */
+          OrgName: this.rootStore.userStore.organizations.find(org => org.Id === Number(order.currentOrg))?.Name || 'Организация не найдена',
+          OrgCode: Number(order.currentOrg),
+          OrderCost: order.itemsInCart.reduce((acc, cur) =>  acc + cur.priceWithDiscount , 0),
+          Courses: order.itemsInCart.map((item) => ({
+            CourseCost: item.priceWithDiscount,
+            CourseQuantity: item.quantity,
+            CourseCode: String(item.couse.VCode),
+            CourseName: item.couse.Name
+          }))
+        })
       };
     } catch (e) { 
       logger.log('Заказ блин не оформился', 'cart-store')

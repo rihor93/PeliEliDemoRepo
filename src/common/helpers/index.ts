@@ -3,3 +3,5 @@ export const replaceImgSrc = (newPath: any) =>
     currentTarget.onerror = null;
     currentTarget.src = newPath
   }
+
+export const isDevelopment = () => process.env.NODE_ENV === 'development'

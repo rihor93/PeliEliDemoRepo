@@ -1,3 +1,5 @@
+import moment from 'moment';
+import 'moment/locale/ru'
 import './App.css';
 import { ErrorPage, Router } from './common/components';
 import { config } from './common/configuration';
@@ -18,6 +20,8 @@ function App() {
       return <ErrorPage text={errText} />
     }
   }
+
+  moment.locale('ru');
 
   return (
     <ThemeProvider>

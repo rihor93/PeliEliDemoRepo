@@ -147,3 +147,32 @@ type V3_userInfoResponse = {
   BaseMenu: Array<CategoryCourse>
   PopularMenu: Array<CourseItem>
 }
+
+type historyOrderItem = {
+  /** !number string "99328" */
+  VCode: string,
+  /** !number string "11676" */
+  DocumentNumber: string,
+  /** iso string "2023-09-06T00:00:00.000Z" */
+  DocumentDate: string,
+  /** iso string "1970-01-01T18:09:58.627Z" */
+  DeliveryTime: string,
+  StatusOrder: OrderStatuses,
+  PaymentStatus: PaymentStatuses,
+  /** "Рабкоров_20" */
+  OrgName: string,
+  OrgCode: number,
+  OrderCost: number,
+  Courses: historyOrderCouse[]
+}
+
+type historyOrderCouse = {
+  CourseCost: number,
+  CourseQuantity: number,
+  /** !!! number string "89089" */
+  CourseCode: string,
+  CourseName: string
+}
+
+type PaymentStatuses = 'Не оплачен' | 'Оплачен частично' | 'Оплачен'
+type OrderStatuses = 'Создан' | 'В работе' | 'Сборка заказа' | 'В пути' | 'Оплачен' | 'Отменён'

@@ -2,8 +2,9 @@ import { Toast } from "antd-mobile";
 import { flow, makeAutoObservable } from "mobx";
 import { http, logger } from "../../common/features";
 import { useTelegram } from "../../common/hooks";
-import { LoadStates, LoadStatesType, Undef } from "../../common/types";
+import { LoadStates, LoadStatesType, Optional, Undef } from "../../common/types";
 import { Store } from "../RootStore";
+import { Modal } from "./MainPageStore";
 
 export class UserInfoStore {
   /** состояние запроса */
@@ -149,4 +150,42 @@ export class UserInfoStore {
   get needAskAdress() {
     return this.selectedOrganizationID == 142 || this.selectedOrganizationID == 0
   }
+
+  /** история заказов */
+  orderHistory: historyOrderItem[] = []
+  /** просматриваемый закза */
+  selectedHistoryOrder: Optional<historyOrderItem> = null
+
+  watchHistoryOrderModal = new Modal();
+
+  watchHistoryOrder(selectedHistoryOrder: historyOrderItem) {
+    this.selectedHistoryOrder = selectedHistoryOrder;
+    this.watchHistoryOrderModal.open();
+  }
+  closeHistoryOrder() {
+    this.selectedHistoryOrder = null;
+    this.watchHistoryOrderModal.close();
+  }
+
+  orderHistoryState: LoadStatesType = 'INITIAL'
+
+  loadOrdersHistory = flow(function* (
+    this: UserInfoStore, 
+    userId: string
+  ) {
+    this.orderHistoryState = 'LOADING';
+    try {
+      const response: Undef<historyOrderItem[]> = yield http.get('GetUserOrdersHistory/' + userId);
+      if(response?.length) {
+        this.orderHistory = [];
+        response.forEach(order => 
+          this.orderHistory.push(order)
+        )
+        this.orderHistoryState = 'COMPLETED';
+      }
+    } catch (err) {
+      logger.error(err, 'user-info-store')
+      this.orderHistoryState = 'FAILED';
+    }
+  })
 }

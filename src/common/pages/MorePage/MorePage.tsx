@@ -5,9 +5,11 @@ import { ChatLight, HistoryDark, HistoryLight, LocationDark, LocationLight, MapP
 import { Popup, Toast, Divider, Radio, Space, Button } from 'antd-mobile';
 import React from 'react';
 import { observer } from 'mobx-react-lite';
+import { useNavigate } from 'react-router-dom';
 export const MorePage: React.FC = observer(() => {
   const tg = useTelegram();
   const { theme } = useTheme();
+  const navigate = useNavigate();
   const { userStore } = useStore();
   const isdarkMode = theme === 'dark';
   const [askedAddr, setAskedAddr] = React.useState(0)
@@ -106,15 +108,15 @@ export const MorePage: React.FC = observer(() => {
             </button>
           </a>
         </li>
-        <li className='mt-1'>
+        <li className='mt-1' onClick={() => navigate('/profile')}>
           <img className='me-1' src={isdarkMode ? ProfileLight : ProfileDark} alt="profile" />
           Профиль (дорабатывается)
         </li>
-        <li className='mt-1'>
+        <li className='mt-1' onClick={() => navigate('/addrs')}>
           <img className='me-1' src={isdarkMode ? MapPointsLight : MapPointsDark} alt="Адреса доставки" />
           Адреса доставки (дорабатывается)
         </li>
-        <li className='mt-1'>
+        <li className='mt-1' onClick={() => navigate('/orders')}>
           <img className='me-1' src={isdarkMode ? HistoryLight : HistoryDark} alt="История заказов" />
           История заказов (дорабатывается)
         </li>

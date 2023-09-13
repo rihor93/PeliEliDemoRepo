@@ -10,6 +10,7 @@ import {
   MainPage, 
   MenuPage, 
   MorePage, 
+  OrdersPage, 
   ProfilePage 
 } from '../../pages';
 import { FC } from 'react';
@@ -59,6 +60,21 @@ const routes: Array<{
       private: false, // true,
       element: <ActionsPage />
     },
+    {
+      path: '/orders',
+      private: true,
+      element: <OrdersPage />
+    },
+    {
+      path: '/orders/:VCode',
+      private: true,
+      element: <WatchOrderDetailModal />
+    },
+    {
+      path: '/addrs',
+      private: true,
+      element: <AddrsPage />
+    }
   ]
 
 export const Router: FC = () => 
@@ -133,29 +149,64 @@ import {
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useStore } from '../../hooks';
 import { observer } from 'mobx-react-lite';
+import { AddrsPage } from '../../pages/AddrsPage/AddrsPage';
+import { WatchOrderDetailModal } from '../../pages/OrdersPage/WatchOrderHistory';
 
-const tabs = [
-  {
-    key: '/',
-    title: 'Главная',
-    icon: <AppOutline />,
-  },
-  {
-    key: '/menu',
-    title: 'Меню',
-    icon: <UnorderedListOutline />,
-  },
-  {
-    key: '/actions',
-    title: 'Акции',
-    icon: <GiftOutline />,
-  },
-  {
-    key: '/more',
-    title: 'Ещё',
-    icon: <MoreOutline />,
-  }
-]
+const tabs = {
+  top: [
+    {
+      key: '/',
+      title: 'Главная',
+    },
+    {
+      key: '/menu',
+      title: 'Меню',
+    },
+    {
+      key: '/actions',
+      title: 'Акции',
+    },
+    {
+      key: '/more',
+      title: 'Ещё',
+    },
+    {
+      key: '/orders',
+      title: 'Заказы',
+    },
+    {
+      key: '/addrs',
+      title: 'Адреса доставки',
+    },
+    {
+      key: '/profile',
+      title: 'Профиль',
+    }
+  ], 
+  // нижний тулбар
+  bottom: [
+    {
+      key: '/',
+      title: 'Главная',
+      icon: <AppOutline />,
+    },
+    {
+      key: '/menu',
+      title: 'Меню',
+      icon: <UnorderedListOutline />,
+    },
+    {
+      key: '/actions',
+      title: 'Акции',
+      icon: <GiftOutline />,
+    },
+    {
+      key: '/more',
+      title: 'Ещё',
+      icon: <MoreOutline />,
+    }
+  ], 
+}
 
 const Bottom: FC = observer(() => {
   const { pathname } = useLocation();
@@ -166,7 +217,7 @@ const Bottom: FC = observer(() => {
 
   const setRouteActive = (value: string) => {navigate(value)}
 
-  const currentTab = tabs.find((tab) => 
+  const currentTab = tabs.bottom.find((tab) => 
     tab.key !== '/' && pathname
       .split('/')
       .includes(tab.key.replace('/', ''))
@@ -186,7 +237,7 @@ const Bottom: FC = observer(() => {
           window.scrollTo({top: 0 })
         }}
       >
-        {tabs.map(item => 
+        {tabs.bottom.map(item => 
           <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
         )}
         <TabBar.Item 
@@ -221,7 +272,7 @@ const Top: FC = observer(() => {
 
   const navigate = useNavigate();
 
-  const currentTab = tabs.find((tab) => 
+  const currentTab = tabs.top.find((tab) => 
     tab.key !== '/' && pathname
       .split('/')
       .includes(tab.key.replace('/', ''))
@@ -237,7 +288,9 @@ const Top: FC = observer(() => {
     </div>
   )
   const isShowRight = pathname.split('/').includes('menu')
-  return pathname === '/'
+  // для главной и для истории заказов не показываем этот навбар
+  // в истории заказов будет другой навбар
+  return pathname === '/' || /orders/i.test(pathname)
     ? null
     : <>
       <NavBar 
