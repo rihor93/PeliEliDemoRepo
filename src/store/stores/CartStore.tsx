@@ -310,33 +310,15 @@ export class CartStore {
         position: 'center', 
         duration: 0 // висит бесконечно
       })
-      const response: Order = yield http.post('/NewOrder', order);
-      logger.log('Делаем запрос оформить заказ', 'cart-store')
-      if(response) {
+      const response: [historyOrderItem] = yield http.post('/NewOrder', order);
+      if(response?.[0]) {
         logger.log('Заказ успешно оформлен', 'cart-store')
         handler.current?.close()
         this.onSuccess('Заказ успешно оформлен')
         this.items = [];
         this.totalPrice = 0;
         setItem('cartItems', [])
-        this.rootStore.userStore.orderHistory.push({
-          VCode: 'new_order',
-          DocumentNumber: 'new_order',
-          DocumentDate: new Date().toISOString(),
-          DeliveryTime: order.orderDate,
-          StatusOrder: 'Создан',
-          PaymentStatus: 'Не оплачен',
-          /** "Рабкоров_20" */
-          OrgName: this.rootStore.userStore.organizations.find(org => org.Id === Number(order.currentOrg))?.Name || 'Организация не найдена',
-          OrgCode: Number(order.currentOrg),
-          OrderCost: order.itemsInCart.reduce((acc, cur) =>  acc + cur.priceWithDiscount , 0),
-          Courses: order.itemsInCart.map((item) => ({
-            CourseCost: item.priceWithDiscount,
-            CourseQuantity: item.quantity,
-            CourseCode: String(item.couse.VCode),
-            CourseName: item.couse.Name
-          }))
-        })
+        this.rootStore.userStore.orderHistory.push(response[0])
       };
     } catch (e) { 
       logger.log('Заказ блин не оформился', 'cart-store')

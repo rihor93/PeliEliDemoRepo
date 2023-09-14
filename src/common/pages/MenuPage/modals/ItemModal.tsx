@@ -1,3 +1,4 @@
+import { Toast } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import React from "react"
 import { cart, DarkMinus, DarkPlus, GurmagLogo, LightMinus, LightPlus } from "../../../../assets"
@@ -24,6 +25,10 @@ export const ItemModal: React.FC<{
       }
       setCount(1)
       mainPage.itemModal.close()
+      Toast.show({
+        position: 'center', 
+        content: 'Добавлено'
+      })
     }
   }
   return (
