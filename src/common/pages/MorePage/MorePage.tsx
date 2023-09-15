@@ -118,7 +118,7 @@ export const MorePage: React.FC = observer(() => {
         </li>
         <li className='mt-1' onClick={() => navigate('/orders')}>
           <img className='me-1' src={isdarkMode ? HistoryLight : HistoryDark} alt="История заказов" />
-          История заказов (дорабатывается)
+          История заказов
         </li>
       </ul>
     </Страничка>
