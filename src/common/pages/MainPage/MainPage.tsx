@@ -154,9 +154,9 @@ export const MainPage: FC = observer(() => {
                     navigate('/actions/' + campaign.VCode)
                   }}
                   style={{
-                    objectFit: 'cover',
+                    objectFit: 'contain',
                     width: '100%',
-                    height: '190px',
+                    height: 'auto',
                     display: 'flex'
                   }}
                   alt={campaign.Name} 
