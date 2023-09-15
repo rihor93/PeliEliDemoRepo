@@ -156,7 +156,7 @@ export const MainPage: FC = observer(() => {
                   style={{
                     objectFit: 'cover',
                     width: '100%',
-                    height: '180px',
+                    height: '190px',
                     display: 'flex'
                   }}
                   alt={campaign.Name} 

@@ -26,7 +26,7 @@ const W100 = {width: '100%'}
 export const OrdersPage: FC = observer(() => {
   const { userStore } = useStore()
   const navigate = useNavigate()
-  const onBack = () => {navigate('/orders')}
+  const onBack = () => {navigate(-1)}
   return(
     <div style={{background: 'var(--tg-theme-secondary-bg-color)', minHeight: '100vh'}}>
       <NavBar 
