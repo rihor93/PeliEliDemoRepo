@@ -1,4 +1,4 @@
-import { Popup, Toast, Divider, Radio, Space, Skeleton, Dropdown, Selector, Input, DatePicker, Form, Collapse, Modal } from 'antd-mobile';
+import { Popup, Toast, Divider, Radio, Space, Skeleton, Dropdown, Selector, Input, DatePicker, Form, Collapse, Modal, Dialog } from 'antd-mobile';
 import Button from 'antd-mobile/es/components/button';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
@@ -36,26 +36,116 @@ export const CartPage: React.FC = observer(
     /** время заказа */
     const [time, setTime] = React.useState(moment(new Date()).format('HH:MM'));
 
+    /**
+     * из двух отдельных инпутов берем 
+     * дату и время и слепляем 
+     * в один ISO date
+     */
+    const outputDate = React.useMemo(() => {
+      const [hours, minets] = time.split(':')
+      const orderDate = date;
+      orderDate.setHours(Number(hours));
+      orderDate.setMinutes(Number(minets));
+      return orderDate.toISOString()
+    }, [date, time])
+
     const [
       contactPhone, 
       setContactPhone
     ] = React.useState<string>(userStore.userState.Phone);
-
-    React.useEffect(() => {
-      const fixedDate = cart.items
-        .map(({ couse, quantity }) => couse.NoResidue ? false : quantity > couse.EndingOcResidue)
-        .includes(true)
-          ? moment().add(1,'days').toDate()
-          : new Date()
-      
-      setDate(fixedDate)
-    }, [cart.items.length, cart.items])
 
     const validationPhoneErr = React.useCallback(() => {
       if(!contactPhone.length) return 'Введите номер телефона'
       if(contactPhone.length !== 11 ) return 'Номер телефона указан неверно!'
       return null
     }, [contactPhone.length])
+
+    function postOrder() { 
+      // при оформлении заказа надо убедится чтобы 
+      // на дату заказа были все блюда
+      // если сегодня чего-то нет, то заказ на сегодня сделать нельзя
+      /**
+       * если сегодня нет какого-то блюда
+       */
+      const isNotAllowToday = cart.items
+        .map(({ couse, quantity }) => couse.NoResidue ? false : quantity > couse.EndingOcResidue)
+        .includes(true)
+
+      /**
+       * если заказ нужен на сегодня
+       */
+      const isOnToday = moment(outputDate).isSame(new Date(), 'day')
+      
+      if(isNotAllowToday && isOnToday) {
+        // показывем диалог если только
+        // сегодня чего-то нет
+        // а пользователь поставил сегодня
+        Dialog.show({
+          title: 'Такой заказ только завтра',
+          content: <div>
+            <p>{`Некоторые блюда, которые вы хотели заказать сегодня уже закончились(((`}</p>
+            <p>{`Вы сможете забрать заказ только завтра или позднее`}</p>
+          </div>,
+          closeOnAction: true, 
+          closeOnMaskClick: true, 
+          actions: [
+            {
+              key: 'tomorrow', 
+              text: `Забрать завтра (${moment(outputDate).add(1,'days').format('YYYY-MM-DD HH:mm')})`, 
+              onClick() {
+                const fixedDate = moment(outputDate).add(1,'days').toDate();
+                setDate(fixedDate);
+                cart.postOrder({
+                  itemsInCart: toJS(cart.items),
+                  userId, 
+                  currentOrg: String(isDevelopment() ? 146 : userStore.currentOrg),
+                  contactPhone,
+                  orderDate: fixedDate.toISOString()
+                }, handler)
+                  .then(() => {
+                    Modal.confirm({
+                      content: 'Поздравляем! Заказ оформлен!',
+                      cancelText: 'Закрыть',
+                      confirmText: 'Перейти в заказы',
+                      onConfirm: () => {
+                        navigate('/orders')
+                      },
+                    })
+                  })
+              },
+            },
+            {
+              key: 'chooseAnother', 
+              text: 'Выбрать другое время', 
+              onClick() { setVisible(true) },
+            },
+            {
+              key: 'backToCart', 
+              text: 'Вернуться к корзине'
+            }
+          ]
+        })
+        
+      } else {
+        cart.postOrder({
+          itemsInCart: toJS(cart.items),
+          userId, 
+          currentOrg: String(isDevelopment() ? 146 : userStore.currentOrg),
+          contactPhone,
+          orderDate: outputDate
+        }, handler)
+          .then(() => {
+            Modal.confirm({
+              content: 'Поздравляем! Заказ оформлен!',
+              cancelText: 'Закрыть',
+              confirmText: 'Перейти в заказы',
+              onConfirm: () => {
+                navigate('/orders')
+              },
+            })
+          })
+      }
+    }
 
     return (
       <Страничка>
@@ -353,29 +443,7 @@ export const CartPage: React.FC = observer(
             style={{borderRadius: '8px'}}
             onClick={() => validationPhoneErr()?.length 
               ? Toast.show({ content: 'Укажите номер телефона', position: 'center' })
-              : cart.postOrder({
-                itemsInCart: toJS(cart.items),
-                userId, 
-                currentOrg: String(isDevelopment() ? 146 : userStore.currentOrg),
-                contactPhone,
-                orderDate: (() => {
-                  const [hours, minets] = time.split(':')
-                  const orderDate = date;
-                  orderDate.setHours(Number(hours));
-                  orderDate.setMinutes(Number(minets));
-                  return orderDate.toISOString()
-                })()
-              }, handler)
-                .then(() => {
-                  Modal.confirm({
-                    content: 'Поздравляем! Заказ оформлен!',
-                    cancelText: 'Закрыть',
-                    confirmText: 'Перейти в заказы',
-                    onConfirm: () => {
-                      navigate('/orders')
-                    },
-                  })
-                })
+              : postOrder()
             }
           >
             Заказать
