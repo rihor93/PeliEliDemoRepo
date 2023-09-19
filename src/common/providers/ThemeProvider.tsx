@@ -97,8 +97,8 @@ const myVariables = [
   { cssVar: '--громкий-текст', dark: '#FFFFFF', light: '#000000' }, 
   { cssVar: '--тихий-текст', dark: '#DEDEDE', light: '#29363D' }, 
 
-  { cssVar: '--фон-элемента', dark: '#232E3C', light: '#FFFFFF' }, 
-  { cssVar: '--фон-страницы', dark: '#17212B', light: '#F9F9F9' }, 
+  // { cssVar: '--фон-элемента', dark: '#232E3C', light: '#FFFFFF' }, 
+  // { cssVar: '--фон-страницы', dark: '#17212B', light: '#F9F9F9' }, 
 ]
 
 const antdVariables: Var[] = [

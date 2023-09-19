@@ -31,7 +31,7 @@
 .watchActionModal__img {
   width: 100%;
   position: relative;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), var(--фон-элемента) 80%);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), var(--tg-theme-bg-color) 80%);
   background-size: cover;
   display: inline-block;
 }

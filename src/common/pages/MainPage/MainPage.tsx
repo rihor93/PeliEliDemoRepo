@@ -29,6 +29,7 @@ import './MainPage.css';
 import { FC } from 'react';
 import moment from "moment";
 import { ClockCircleOutline } from "antd-mobile-icons";
+import * as uuid from 'uuid'
 
 
 export const MainPage: FC = observer(() => { 
@@ -147,7 +148,7 @@ export const MainPage: FC = observer(() => {
             {allCampaign.map((campaign, index) => 
               <Swiper.Item key={index}>
                 <img 
-                  src={config.apiURL + '/api/v2/image/Disount?vcode=' + campaign.VCode} 
+                  src={config.apiURL + '/api/v2/image/Disount?vcode=' + campaign.VCode + '&random=' + uuid.v4()} 
                   onError={replaceImgSrc(gurmag_big)} 
                   onClick={() => {
                     actionsPage.watchAction(campaign)

@@ -8,6 +8,7 @@ import { replaceImgSrc } from "../../../helpers";
 import { useStore } from "../../../hooks";
 import { Optional, Undef } from "../../../types";
 import './WatchCampaignModal.css';
+import * as uuid from 'uuid'
 interface CampaignProp { campaign: AllCampaignUser };
 const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
 
@@ -71,7 +72,7 @@ const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
       <div className="watchActionModal__body">
         <div className="watchActionModal__img">
           <img
-            src={config.apiURL + '/api/v2/image/Disount?vcode=' + campaign.VCode}
+            src={config.apiURL + '/api/v2/image/Disount?vcode=' + campaign.VCode  + '&random=' + uuid.v4()}
             onError={replaceImgSrc(gurmag_big)}
           />
           <h3>{`🎁${campaign.Name}`}</h3>

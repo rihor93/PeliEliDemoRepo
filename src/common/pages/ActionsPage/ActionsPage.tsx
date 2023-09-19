@@ -4,13 +4,14 @@ import React from 'react';
 import { useStore } from '../../hooks';
 import { food, gurmag_big } from '../../../assets';
 import { observer } from 'mobx-react-lite';
-import { ErrorPage, LoaderFullscreen } from '../../components';
+import { ErrorPage } from '../../components';
 import { config } from '../../configuration';
 import { replaceImgSrc } from '../../helpers';
 import WatchCampaignModal from './modals/WatchCampaignModal';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Modals } from '../MenuPage/modals';
 import { Button, Divider, Popup, Radio, Space, Toast } from 'antd-mobile';
+import * as uuid from 'uuid'
 
 export const ActionsPage: React.FC = observer(() => {
   const { actionsPage, userStore, auth, mainPage } = useStore();
@@ -216,7 +217,7 @@ export const ActionsPage: React.FC = observer(() => {
                       >
                         <img
                           className='action_img'
-                          src={config.apiURL + '/api/v2/image/Disount?vcode=' + actia.VCode}
+                          src={config.apiURL + '/api/v2/image/Disount?vcode=' + actia.VCode  + '&random=' + uuid.v4()}
                           onError={replaceImgSrc(gurmag_big)}
                           onClick={() => {
                             watchAction(actia)

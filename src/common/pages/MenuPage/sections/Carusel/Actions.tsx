@@ -5,6 +5,7 @@ import { config } from "../../../../configuration";
 import { replaceImgSrc } from "../../../../helpers";
 import { useStore } from "../../../../hooks";
 import './Actions.css';
+import * as uuid from 'uuid'
 
 export const Actions: React.FC = () => {
   const { userStore, actionsPage } = useStore();
@@ -15,7 +16,7 @@ export const Actions: React.FC = () => {
         {userStore.userState.allCampaign.map((campaign) =>
           <img 
             key={campaign.VCode}
-            src={config.apiURL + '/api/v2/image/Disount?vcode=' + campaign.VCode}
+            src={config.apiURL + '/api/v2/image/Disount?vcode=' + campaign.VCode  + '&random=' + uuid.v4()}
             onError={replaceImgSrc(gurmag_big)}
             alt={`${campaign.Name} - ${campaign.Description}`}
             onClick={() => {
