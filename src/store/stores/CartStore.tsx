@@ -69,6 +69,10 @@ export class CartStore {
     return this.items.find((item) => item.couse.VCode == vcode)
   }
 
+  isInCart(course: CourseItem): boolean {
+    return Boolean(this.items.find(item => item.couse.VCode === course.VCode))
+  }
+
   addCourseToCart(couse: CourseItem) {
     let { totalPrice, items, isEmpty } = this;
     const userInfo = this.rootStore.userStore.userState;

@@ -122,9 +122,14 @@
   line-height: 32.7px;
 }
 
-.price_cart img {
-  padding: 12px;
+.price_cart>.keke {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   cursor: pointer;
-  border-radius: 50%;
-  background: var(--tg-theme-button-color);
+  width: 40px;
+  height: 40px;
+  border-radius: 100px;
+  background: var(--gurmag-accent-color);
+  position: relative;
 }

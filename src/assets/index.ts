@@ -82,6 +82,12 @@ import ProfileLight from './ProfileLight.png';
 // @ts-ignore
 import food from './food.jpg';
 
+// @ts-ignore
+import NoImageBig from './no_image_big.jpg';
+
+// @ts-ignore
+import NoImageSmall from './no_image_small.jpg'
+
 
 export {
   GurmagLogo,
@@ -124,5 +130,7 @@ export {
   MapPointsLight,
   ProfileDark,
   ProfileLight, 
-  food
+  food,
+  NoImageBig,
+  NoImageSmall
 }

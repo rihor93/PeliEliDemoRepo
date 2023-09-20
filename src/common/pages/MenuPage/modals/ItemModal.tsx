@@ -1,7 +1,7 @@
 import { Toast } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import React from "react"
-import { cart, DarkMinus, DarkPlus, GurmagLogo, LightMinus, LightPlus } from "../../../../assets"
+import { cart, DarkMinus, DarkPlus, GurmagLogo, LightMinus, LightPlus, NoImageBig } from "../../../../assets"
 import { Modal } from "../../../components"
 import { config } from "../../../configuration"
 import { replaceImgSrc } from "../../../helpers"
@@ -38,7 +38,7 @@ export const ItemModal: React.FC<{
     >
       <img
         src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}`} 
-        onError={replaceImgSrc(GurmagLogo)}
+        onError={replaceImgSrc(NoImageBig)}
         className="item_modal_img"
       />
       <div className="item_modal_body">

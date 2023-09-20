@@ -1,4 +1,4 @@
-import { HomeOutlined } from "@ant-design/icons"
+import { CheckOutlined, HomeOutlined, PlusOutlined } from "@ant-design/icons"
 import { 
   Toast, 
   Swiper, 
@@ -14,12 +14,13 @@ import {
   Button, 
   Result, 
   Ellipsis, 
-  List
+  List,
+  Tag
 } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Cart, GurmagLogo, gurmag_big } from '../../../assets';
+import { GurmagLogo, gurmag_big } from '../../../assets';
 import { Page } from "../../components";
 import { config } from '../../configuration';
 import { replaceImgSrc } from '../../helpers';
@@ -30,10 +31,11 @@ import { FC } from 'react';
 import moment from "moment";
 import { ClockCircleOutline } from "antd-mobile-icons";
 import * as uuid from 'uuid'
+import { CourseItemComponent } from "../MenuPage/sections/Categories";
 
 
 export const MainPage: FC = observer(() => { 
-  const { userStore, actionsPage, mainPage } = useStore();
+  const { userStore, actionsPage, mainPage, cartStore } = useStore();
 
   const { selectedCourse, state, cookstate, watchCourse } = mainPage;
 
@@ -348,43 +350,8 @@ export const MainPage: FC = observer(() => {
               />
               : null
             }
-            {mainPage.cooks.map((cook) => 
-                <Space 
-                  style={{ '--gap': '3px', width: '33%', margin: '0 0.25rem' }}
-                  direction="vertical" 
-                  justify="center" 
-                  align="center" 
-                  key={cook.UserId}
-                  onClick={() => mainPage.watchCook(cook)}
-                >
-                  <Avatar 
-                    src={config.apiURL + '/api/v2/image/Cook?vcode=' + cook.UserId} 
-                    style={{
-                      width: '70px', 
-                      height: '70px', 
-                      borderRadius: '35px', 
-                      objectFit: 'cover'
-                    }}
-                  />
-                  <span style={{color: 'var(--громкий-текст)', fontSize: '18px'}}>{cook.FirstName}</span>
-                  <Ellipsis 
-                    content={cook.NameWork} 
-                    style={{
-                      color: 'var(--тихий-текст)', 
-                      fontSize: '12px',
-                    }}
-                  />
-                  <Space align="center" style={{'--gap': '3px'}}>
-                    <div style={{fontSize: '20px'}} >{Math.ceil(cook.Rating * 10) / 10}</div>
-                    <Rate
-                      allowHalf
-                      readOnly 
-                      count={1}
-                      defaultValue={cook.Rating}
-                      style={{'--star-size': '10px' }}
-                    />
-                  </Space>
-                </Space>
+            {mainPage.cooks.map(cook => 
+              <Cook key={cook.UserId} cook={cook} />
             )}
           </div>
           
@@ -392,49 +359,11 @@ export const MainPage: FC = observer(() => {
           <section className='categories'>
             <div key='популярное' id='популярное'>
               <div className="courses_list">
-
                 {mainPage.popular?.map(course => 
-                  <div
-                    className="course_item"
-                    key={`популярное-${course.VCode}`}
-                  >
-                    <img
-                      src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}&compression=true`}
-                      onError={replaceImgSrc(GurmagLogo)}
-                      onClick={() => watchCourse(course)}
-                    />
-                    <div className='item_bady'>
-                      <Ellipsis 
-                        rows={2}
-                        content={course.Name}
-                        onContentClick={() => watchCourse(course)}
-                        className='title'
-                      />
-                      <Space 
-                        align='center' 
-                        style={{'--gap': '3px', margin: '0.5rem 0' }}>
-                        <Rate count={1} value={1} style={{ '--star-size': '16px' }}/>
-                        <div>{Math.ceil(course.Quality * 10) / 10}</div>
-                        <div 
-                          style={{
-                            color:'var(--tg-theme-link-color)',
-                            fontSize: '10px', 
-                          }} 
-                          onClick={() => mainPage.watchOtzivi(course)}
-                        >
-                          Смотреть отзывы
-                        </div>
-                      </Space>
-
-                      <div className='price_cart'>
-                        <span>{course.Price}</span>
-                        <img
-                          src={Cart}
-                          onClick={() => watchCourse(course)}
-                        />
-                      </div>
-                    </div>
-                  </div>
+                  <CourseItemComponent 
+                    course={course} 
+                    key={course.VCode}
+                  />
                 )}
               </div>
             </div>
@@ -477,3 +406,46 @@ const preloader = () => [
     </div>
   </section>
 ]
+
+
+const Cook: FC<{ cook: Cook }> = observer(({ cook }) => {
+  const { mainPage } = useStore();
+  return(
+    <Space 
+      style={{ '--gap': '3px', width: '33%', margin: '0 0.25rem' }}
+      direction="vertical" 
+      justify="center" 
+      align="center" 
+      key={cook.UserId}
+      onClick={() => mainPage.watchCook(cook)}
+    >
+      <Avatar 
+        src={config.apiURL + '/api/v2/image/Cook?vcode=' + cook.UserId} 
+        style={{
+          width: '70px', 
+          height: '70px', 
+          borderRadius: '35px', 
+          objectFit: 'cover'
+        }}
+      />
+      <span style={{color: 'var(--громкий-текст)', fontSize: '18px'}}>{cook.FirstName}</span>
+      <Ellipsis 
+        content={cook.NameWork} 
+        style={{
+          color: 'var(--тихий-текст)', 
+          fontSize: '12px',
+        }}
+      />
+      <Space align="center" style={{'--gap': '3px'}}>
+        <div style={{fontSize: '20px'}} >{Math.ceil(cook.Rating * 10) / 10}</div>
+        <Rate
+          allowHalf
+          readOnly 
+          count={1}
+          defaultValue={cook.Rating}
+          style={{'--star-size': '10px' }}
+        />
+      </Space>
+    </Space>
+  )
+})

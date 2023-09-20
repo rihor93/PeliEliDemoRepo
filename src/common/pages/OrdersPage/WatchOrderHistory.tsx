@@ -3,9 +3,6 @@ import { observer } from "mobx-react-lite";
 import moment from "moment";
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
-import { GurmagLogo } from "../../../assets";
-import { config } from "../../configuration";
-import { replaceImgSrc } from "../../helpers";
 import { useStore } from "../../hooks";
 
 
@@ -104,6 +101,7 @@ export const WatchOrderDetailModal: FC = observer(() => {
           <List>
             {userStore.selectedHistoryOrder.Courses.map(item => 
               <List.Item 
+                key={item.CourseCode}
                 style={{fontSize: '14px'}}
                 description={`${item.CourseCost} руб.`}
               >
@@ -139,11 +137,3 @@ const Group: FC<WithChildren> = ({ children }) =>
 
 const P: FC<WithChildren> = ({ children }) => 
   <p style={{marginTop: '0.5rem'}}>{ children }</p>
-
-const Scrollable: FC<WithChildren> = ({ children }) => 
-  <div style={{
-    display: 'flex',
-    overflowX: 'scroll'
-  }}>
-    {children}
-  </div>
