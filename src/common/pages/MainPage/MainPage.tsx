@@ -425,7 +425,8 @@ const Cook: FC<{ cook: Cook }> = observer(({ cook }) => {
           width: '70px', 
           height: '70px', 
           borderRadius: '35px', 
-          objectFit: 'cover'
+          objectFit: 'cover',
+          border: '2px solid var(--tg-theme-text-color)'
         }}
       />
       <span style={{color: 'var(--громкий-текст)', fontSize: '18px'}}>{cook.FirstName}</span>

@@ -47,7 +47,7 @@ export const ItemModal: React.FC<{
         {course.NoResidue 
           ? null 
           : <>
-            <span>Сегодня приготовлено:</span>
+            <span>Сегодня в наличии:</span>
             <h2 style={{marginLeft: '1.75rem'}}>{course.EndingOcResidue}</h2>
           </>
         }
