@@ -151,6 +151,7 @@ import { useStore } from '../../hooks';
 import { observer } from 'mobx-react-lite';
 import { AddrsPage } from '../../pages/AddrsPage/AddrsPage';
 import { WatchOrderDetailModal } from '../../pages/OrdersPage/WatchOrderHistory';
+import { HomeOutlined, ShoppingCartOutlined } from '@ant-design/icons';
 
 const tabs = {
   top: [
@@ -188,7 +189,7 @@ const tabs = {
     {
       key: '/',
       title: 'Главная',
-      icon: <AppOutline />,
+      icon: <HomeOutlined />,
     },
     {
       key: '/menu',
@@ -245,7 +246,7 @@ const Bottom: FC = observer(() => {
           title='Корзина' 
           icon={
             <div style={{position: 'relative'}}>
-              <AppstoreOutline />
+              <ShoppingCartOutlined />
               <Tag
                 color='primary' 
                 style={{ 

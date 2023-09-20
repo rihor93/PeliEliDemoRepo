@@ -414,7 +414,7 @@ export const MainPage: FC = observer(() => {
                         align='center' 
                         style={{'--gap': '3px', margin: '0.5rem 0' }}>
                         <Rate count={1} value={1} style={{ '--star-size': '16px' }}/>
-                        <div>{Math.ceil(course.Quality * 100) / 100}</div>
+                        <div>{Math.ceil(course.Quality * 10) / 10}</div>
                         <div 
                           style={{
                             color:'var(--tg-theme-link-color)',
