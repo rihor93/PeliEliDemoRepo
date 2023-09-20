@@ -47,6 +47,7 @@ export const OrdersPage: FC = observer(() => {
       <Space direction="vertical" style={{...W100, marginTop: '0.75rem'}}>
         {[...userStore.orderHistory].sort((a, b) => new Date(b.DocumentDate).getTime() - new Date(a.DocumentDate).getTime()).map(order =>
           <Card 
+            key={order.VCode}
             style={{
               width: 'calc(100% - 1.5rem)', 
               border: '1px solid var(--adm-border-color)', 
@@ -94,6 +95,7 @@ export const OrdersPage: FC = observer(() => {
             <Scrollable>
               {order.Courses.map(item => 
                 <img 
+                  key={item.CourseCode}
                   style={{
                     width: '60px',
                     height: '60px',
