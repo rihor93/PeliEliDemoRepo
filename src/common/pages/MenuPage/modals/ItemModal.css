@@ -29,6 +29,10 @@
   margin-left: 10px;
 }
 
+.item_modal_body>p {
+  margin: 10px;
+}
+
 .add_to_cart_button {
   background: var(--tg-theme-button-color);
 }

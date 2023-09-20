@@ -43,6 +43,7 @@ export const ItemModal: React.FC<{
       />
       <div className="item_modal_body">
         <h1>{course.Name}</h1>
+        <p>{course.CourseDescription}</p>
         {course.NoResidue 
           ? null 
           : <>

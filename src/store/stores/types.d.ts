@@ -9,6 +9,7 @@ type CourseItem = {
   NoResidue: boolean,
   /** текущий остаток на точке */
   EndingOcResidue: number
+  CourseDescription: string
 }
 
 /** Тип категории с блюдами */
