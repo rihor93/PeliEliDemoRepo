@@ -175,7 +175,8 @@ export class MainPageStore {
     try{
       this.otzivistate = 'LOADING';
       this.selectedCourseReviews = []
-      const response: Undef<CourseOtzyv[]> = yield http.get(`getCourseRating/${VCode}`);
+      const { currentOrg } = this.rootStore.userStore;
+      const response: Undef<CourseOtzyv[]> = yield http.get(`getCourseRatingOrg/${VCode}/${currentOrg}`);
       if(response?.length) {
         response.forEach(otziv => {
           this.selectedCourseReviews.push(otziv)
