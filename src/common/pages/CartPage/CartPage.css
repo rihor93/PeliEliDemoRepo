@@ -1,7 +1,7 @@
 .cartItem {
   width: calc(50% - 1rem);
   display: flex;
-  background: var(--фон-элемента);
+  background: var(--tg-theme-secondary-bg-color);
   margin: 1rem 1rem 0 0;
   overflow: hidden;
   border-radius: 8px;

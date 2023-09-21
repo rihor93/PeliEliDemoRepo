@@ -9,6 +9,7 @@ import { useStore } from "../../../hooks";
 import { Optional, Undef } from "../../../types";
 import './WatchCampaignModal.css';
 import * as uuid from 'uuid'
+import { Popup } from 'antd-mobile';
 interface CampaignProp { campaign: AllCampaignUser };
 const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
 
@@ -60,25 +61,37 @@ const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
   }
 
   const navigate = useNavigate()
+
   return (
-    <Modal
-      show={watchActionModal.show}
-      onHide={() => {
+    <Popup
+      position='right'
+      visible={watchActionModal.show}
+      showCloseButton
+      onClose={() => {
         watchActionModal.close()
         navigate(-1)
       }}
     >
-    
-      <div className="watchActionModal__body">
-        <div className="watchActionModal__img">
-          <img
-            src={config.apiURL + '/api/v2/image/Disount?vcode=' + campaign.VCode  + '&random=' + uuid.v4()}
-            onError={replaceImgSrc(gurmag_big)}
-          />
-          <h3>{`🎁${campaign.Name}`}</h3>
-        </div>
-        <p className="watchActionModal__description">{`${campaign.Description} - ${text}`}</p>
-        {dishArr.length ?
+      <h3 
+        style={{
+          textAlign: 'center', 
+          marginTop: '1rem'
+        }}
+      >
+        {`🎁${campaign.Name.replace(/ *\{[^}]*\} */g, "")}!!!`}
+      </h3>
+      <img
+        src={config.apiURL + '/api/v2/image/Disount?vcode=' + campaign.VCode + '&compression=true'  + '&random=' + uuid.v4()}
+        onError={replaceImgSrc(gurmag_big)}
+        style={{
+          width: 'calc(100% - 1rem)', 
+          height: 'auto', 
+          margin: '0.5rem', 
+          borderRadius: '8px'
+        }}
+      />
+      <p>{`${campaign.Description.replace(/ *\{[^}]*\} */g, "")} - ${text}`}</p>
+      {dishArr.length ?
           <ul>
             {dishArr.map((dish, index) =>
               !dish
@@ -98,8 +111,7 @@ const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
           </ul>
           : null
         }
-      </div>
-    </Modal>
+    </Popup>
   )
 }
 )

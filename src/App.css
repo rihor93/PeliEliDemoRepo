@@ -165,7 +165,7 @@ a {
 .page_btn {
   position: fixed;
   bottom: 0;
-  background: var(--фон-элемента);
+  background: var(--tg-theme-bg-color);
   width: 100%;
   display: flex;
   justify-content: center;
@@ -205,7 +205,7 @@ a {
   position: fixed;
   top: 0;
   width: 100%;
-  background: var(--фон-элемента);
+  background: var(--tg-theme-bg-color);
   display: flex;
   align-items: center;
   box-shadow: 5px 0px 5px var(--theme-shadow-color);

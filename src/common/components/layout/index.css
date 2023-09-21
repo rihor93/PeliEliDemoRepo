@@ -18,7 +18,7 @@
 
 .screen_header__fixed {
   position: fixed;
-  background: var(--фон-элемента);
+  background: var(--tg-theme-bg-color);
   z-index: 2;
 }
 .screen_header__back_button { 

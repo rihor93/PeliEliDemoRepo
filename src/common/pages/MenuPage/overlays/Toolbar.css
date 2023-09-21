@@ -7,7 +7,6 @@
   font-size: 12px;
   padding: 10px 10px 0;
   justify-content: space-around;
-  background: var(--фон-элемента);
   box-shadow: -5px 0px 5px var(--theme-shadow-color);
 }
 .toolbar_item {

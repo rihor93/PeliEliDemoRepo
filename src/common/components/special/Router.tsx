@@ -184,8 +184,21 @@ const tabs = {
       title: 'Профиль',
     }
   ], 
-  // нижний тулбар
-  bottom: [
+}
+
+const Bottom: FC = observer(() => { 
+  const { cartStore, userStore } = useStore();
+  const { pathname } = useLocation();
+  const { mainPage } = useStore();
+  const navigate = useNavigate();
+
+  const { state, cookstate } = mainPage
+
+  const setRouteActive = (value: string) => {navigate(value)}
+
+  const isHaveActions = userStore.userState.allCampaign.length
+
+  const bottom = [
     {
       key: '/',
       title: 'Главная',
@@ -199,32 +212,60 @@ const tabs = {
     {
       key: '/actions',
       title: 'Акции',
-      icon: <GiftOutline />,
+      icon: <div style={{position: 'relative'}}>
+        <GiftOutline />
+        {!isHaveActions 
+          ? null
+          : <Tag
+            color='primary' 
+            style={{ 
+              position: 'absolute',
+              top: '-0.25rem', 
+              right: '-0.5rem', 
+              fontSize: '14px', 
+              '--border-radius': '6px', 
+            }}
+          >
+            {isHaveActions}
+          </Tag>
+        }
+      </div>,
     },
     {
       key: '/more',
       title: 'Ещё',
       icon: <MoreOutline />,
+    },
+    {
+      key: '/cart' , 
+      title: 'Корзина' , 
+      icon: <div style={{position: 'relative'}}>
+        <ShoppingCartOutlined />
+        {!cartStore.items.length 
+          ? null
+          : <Tag
+            color='primary' 
+            style={{ 
+              position: 'absolute',
+              top: '-0.25rem', 
+              right: '-0.5rem', 
+              fontSize: '14px', 
+              '--border-radius': '6px', 
+            }}
+          >
+            {cartStore.items.length}
+          </Tag>
+        }
+      </div>
     }
-  ], 
-}
+  ]
 
-const Bottom: FC = observer(() => {
-  const { pathname } = useLocation();
-  const { mainPage } = useStore();
-  const navigate = useNavigate();
-
-  const { state, cookstate } = mainPage
-
-  const setRouteActive = (value: string) => {navigate(value)}
-
-  const currentTab = tabs.bottom.find((tab) => 
+  const currentTab = bottom.find((tab) => 
     tab.key !== '/' && pathname
       .split('/')
       .includes(tab.key.replace('/', ''))
   )
 
-  const { cartStore } = useStore();
 
   const condition = false // todo я забыл что хотел тут доделать
 
@@ -238,30 +279,9 @@ const Bottom: FC = observer(() => {
           window.scrollTo({top: 0 })
         }}
       >
-        {tabs.bottom.map(item => 
-          <TabBar.Item key={item.key} icon={item.icon} title={item.title} />
+        {bottom.map(tab => 
+          <TabBar.Item key={tab.key} icon={tab.icon} title={tab.title} />
         )}
-        <TabBar.Item 
-          key='/cart' 
-          title='Корзина' 
-          icon={
-            <div style={{position: 'relative'}}>
-              <ShoppingCartOutlined />
-              <Tag
-                color='primary' 
-                style={{ 
-                  position: 'absolute',
-                  top: '-0.25rem', 
-                  right: '-0.5rem', 
-                  fontSize: '14px', 
-                  '--border-radius': '6px', 
-                }}
-              >
-                {cartStore.items.length}
-              </Tag>
-            </div>
-          }
-        />
       </TabBar> 
       : preloader()
 })

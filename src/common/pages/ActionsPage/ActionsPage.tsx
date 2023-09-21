@@ -134,7 +134,7 @@ export const ActionsPage: React.FC = observer(() => {
         ? <div
           className='hello_costumer'
           style={{
-            background: `linear-gradient(to bottom, rgba(255, 255, 255, 0), var(--фон-страницы) 50%), url(${food})`,
+            background: `linear-gradient(to bottom, rgba(255, 255, 255, 0), var(--tg-theme-bg-color) 50%), url(${food})`,
             backgroundSize: 'cover',
             height: '300px',
             marginBottom: '1rem'
@@ -149,7 +149,7 @@ export const ActionsPage: React.FC = observer(() => {
         : <div
           className='hello_costumer'
           style={{
-            background: `linear-gradient(to bottom, rgba(255, 255, 255, 0), var(--фон-страницы) 50%), url(${food})`,
+            background: `linear-gradient(to bottom, rgba(255, 255, 255, 0), var(--tg-theme-bg-color) 50%), url(${food})`,
             backgroundSize: 'cover',
             height: '200px'
           }}
@@ -217,15 +217,15 @@ export const ActionsPage: React.FC = observer(() => {
                       >
                         <img
                           className='action_img'
-                          src={config.apiURL + '/api/v2/image/Disount?vcode=' + actia.VCode  + '&random=' + uuid.v4()}
+                          src={config.apiURL + '/api/v2/image/Disount?vcode=' + actia.VCode + '&compression=true' + '&random=' + uuid.v4()}
                           onError={replaceImgSrc(gurmag_big)}
                           onClick={() => {
                             watchAction(actia)
                             navigate('/actions/' + actia.VCode)
                           }}
                         />
-                        <h3>{actia.Name}!</h3>
-                        <p>{actia.Description}</p>
+                        <h3>{actia.Name.replace(/ *\{[^}]*\} */g, "")}!</h3>
+                        <p>{actia.Description.replace(/ *\{[^}]*\} */g, "")}</p>
                       </div>
                     )
                   }
