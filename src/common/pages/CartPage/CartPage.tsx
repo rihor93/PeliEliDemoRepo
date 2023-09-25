@@ -1,4 +1,4 @@
-import { Popup, Toast, Divider, Radio, Space, Skeleton, Dropdown, Selector, Input, DatePicker, Form, Collapse, Modal, Dialog } from 'antd-mobile';
+import { Popup, Toast, Divider, Radio, Space, Skeleton, Dropdown, Selector, Input, DatePicker, Form, Collapse, Modal, Dialog, Picker } from 'antd-mobile';
 import Button from 'antd-mobile/es/components/button';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
@@ -9,10 +9,11 @@ import { Optional, Undef } from '../../types';
 import CartItem from './cartItem/CartItem';
 import './CartPage.css';
 import { ConfirmOrderModal } from './modals/confirmOrderModal';
-import { toJS } from 'mobx';
+import { toJS, values } from 'mobx';
 import { ToastHandler } from 'antd-mobile/es/components/toast';
 import { isDevelopment } from '../../helpers';
 import { useNavigate } from 'react-router-dom';
+import { PickerValue } from 'antd-mobile/es/components/picker-view';
 
 
 
@@ -28,13 +29,15 @@ export const CartPage: React.FC = observer(
     const [askedAddr, setAskedAddr] = React.useState(0);
 
     /** Показывать ли датапикер для ввода даты */
-    const [visible, setVisible] = React.useState(false);
+    const [visibleDate, setVisibleDate] = React.useState(false);
+    /** Показывать ли датапикер для ввода времени */
+    const [visibleTime, setVisibleTime] = React.useState(false);
 
     /** сама дата */
     const [date, setDate] = React.useState(new Date());
 
     /** время заказа */
-    const [time, setTime] = React.useState(moment(new Date()).format('HH:MM'));
+    const [time, setTime] = React.useState(moment(new Date()).format('HH:mm'));
 
     /**
      * из двух отдельных инпутов берем 
@@ -117,7 +120,7 @@ export const CartPage: React.FC = observer(
             {
               key: 'chooseAnother', 
               text: 'Выбрать другое время', 
-              onClick() { setVisible(true) },
+              onClick() { setVisibleDate(true) },
             },
             {
               key: 'backToCart', 
@@ -146,12 +149,61 @@ export const CartPage: React.FC = observer(
           })
       }
     }
+    type pic = { label: string, value: string }
+    const workrange = React.useMemo(() => {
+      
+      let hours: pic[] = [];
+      let minutes: pic[] = [];
+      function fillMinutes(start: number, end: number) {
+        for(let i = start; i <= end; i++) {
+          const value = i < 10 ? `0${i}` : `${i}`
+          minutes.push({ label: value, value })
+        }
+      }
+      function fillHours(start: number, end: number) {
+        for(let i = start; i <= end; i++) { 
+          const value = i < 10 ? `0${i}` : `${i}`
+          hours.push({ label: value, value })
+        }
+      }
+      const minH = 9;
+      const maxH = 21;
+      // если выбрана сегодняшняя дата
+      if(moment(date).isSame(new Date(), 'day')) {
+        // сетаем только диапазон от текущего времени до конца рабочего дня
+        const nowH = moment().hours();
+        fillHours(nowH, maxH)
+        fillMinutes(0, 59)
+      } else {
+        // иначе сетаем всё время работы
+        fillHours(minH, maxH);
+        fillMinutes(0, 59)
+      }
+      
+      return [
+        hours, 
+        minutes 
+      ]
+    }, [date])
 
     return (
       <Страничка>
+      <Picker
+        columns={workrange}
+        visible={visibleTime}
+        onClose={() => {
+          setVisibleTime(false)
+        }}
+        onConfirm={(picked) => { 
+          setTime(picked.join(':'))
+        }}
+        confirmText='Сохранить'
+        cancelText='Закрыть'
+        defaultValue={time.split(':')}
+      />
       <DatePicker 
-        visible={visible}
-        onClose={() => setVisible(false)}
+        visible={visibleDate}
+        onClose={() => setVisibleDate(false)}
         onConfirm={(isoStr) => setDate(isoStr)}
         defaultValue={new Date()}
         min={
@@ -417,17 +469,14 @@ export const CartPage: React.FC = observer(
           ? null 
           : <Form layout='horizontal' style={{width: '100%'}}>
             <Form.Item label='Дата заказа:' childElementPosition='right'>
-              <span onClick={() => setVisible(true)}>
+              <span onClick={() => setVisibleDate(true)}>
                 {moment(date).format('DD-MM-YYYY')}
               </span>
             </Form.Item>
             <Form.Item label='Время' childElementPosition='right'>
-              <Input 
-                type={'time'}
-                value={time}
-                onChange={(e) => setTime(e)}
-                placeholder={moment(new Date()).format('HH-MM')}
-              />
+              <span onClick={() => setVisibleTime(true)}>
+                {time}
+              </span>
             </Form.Item>
           </Form>
         }

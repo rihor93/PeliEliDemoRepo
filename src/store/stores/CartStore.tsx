@@ -61,6 +61,18 @@ export class CartStore {
   items: Array<CouseInCart> = [];
   totalPrice = 0;
 
+  clearCart() {
+    this.items = [];
+    this.totalPrice = 0;
+    setItem('cartItems', [])
+  }
+
+  clearCousesById(vcode: number) {
+    this.items = this.items.filter(item => 
+      item.couse.VCode !== vcode
+    )
+  }
+
   get isEmpty() {
     return !this.items.length
   }
@@ -319,9 +331,7 @@ export class CartStore {
         logger.log('Заказ успешно оформлен', 'cart-store')
         handler.current?.close()
         this.onSuccess('Заказ успешно оформлен')
-        this.items = [];
-        this.totalPrice = 0;
-        setItem('cartItems', [])
+        this.clearCart()
         this.rootStore.userStore.orderHistory.push(response[0])
       };
     } catch (e) { 

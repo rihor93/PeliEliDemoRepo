@@ -138,8 +138,6 @@ const styles = {
 
 import { NavBar, SearchBar, Skeleton, Space, TabBar, Tag } from 'antd-mobile'
 import {
-  AppOutline,
-  AppstoreOutline,
   GiftOutline,
   MoreOutline,
   SearchOutline,
@@ -301,24 +299,36 @@ const Top: FC = observer(() => {
 
   const onBack = () => {navigate(-1)}
 
-  const right = (
+  const menuRightAction = (
     <div style={{ fontSize: 24 }} onClick={() => stor.setSearchInputVisible(true)}>
       <Space style={{ '--gap': '16px' }}>
         <SearchOutline />
       </Space>
     </div>
   )
-  const isShowRight = pathname.split('/').includes('menu')
+  const cartRightAction = (
+    <div 
+      onClick={() => stor.cartStore.clearCart()} 
+      style={{ color: 'grey' }}
+    >
+      Очистить
+    </div>
+  )
+  const isShowRightOnMenu = pathname.split('/').includes('menu')
+  const isShowRightOnCart = pathname.split('/').includes('cart')
   // для главной и для истории заказов не показываем этот навбар
   // в истории заказов будет другой навбар
   return pathname === '/' || /orders/i.test(pathname)
     ? null
     : <>
       <NavBar 
-        right={isShowRight ? right : null} 
+        right={(() => {
+          if(isShowRightOnMenu) return menuRightAction
+          if(isShowRightOnCart) return cartRightAction
+        })()} 
         onBack={onBack}
       >
-        {isShowRight && stor.searchInputVisible
+        {isShowRightOnMenu && stor.searchInputVisible
           ? <SearchBar 
             style={{
               background: 'var(--tg-theme-secondary-bg-color)', 

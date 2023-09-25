@@ -169,7 +169,7 @@ export const MainPage: FC = observer(() => {
           </Swiper>
           
           
-          <Divider contentPosition="left" style={{fontSize: '22px'}} >Сегодня готовят</Divider>
+          <Divider contentPosition="left" style={{fontSize: '22px'}} >Рады знакомству</Divider>
           <div 
             style={{
               margin: '0 0.5rem', 
