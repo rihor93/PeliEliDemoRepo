@@ -4,16 +4,15 @@ import { observer } from 'mobx-react-lite';
 import moment from 'moment';
 import React from 'react';
 import Страничка from '../../components/layout/Page';
-import { useStore, useTelegram } from '../../hooks';
+import { useInterval, useStore, useTelegram } from '../../hooks';
 import { Optional, Undef } from '../../types';
 import CartItem from './cartItem/CartItem';
 import './CartPage.css';
 import { ConfirmOrderModal } from './modals/confirmOrderModal';
-import { toJS, values } from 'mobx';
+import { toJS } from 'mobx';
 import { ToastHandler } from 'antd-mobile/es/components/toast';
 import { isDevelopment } from '../../helpers';
 import { useNavigate } from 'react-router-dom';
-import { PickerValue } from 'antd-mobile/es/components/picker-view';
 
 
 
@@ -36,8 +35,8 @@ export const CartPage: React.FC = observer(
     /** сама дата */
     const [date, setDate] = React.useState(new Date());
 
-    /** время заказа */
-    const [time, setTime] = React.useState(moment(new Date()).format('HH:mm'));
+    /** время заказа сразу + 15мин к текущему времени */
+    const [time, setTime] = React.useState(moment().add(15, 'minutes').format('HH:mm'));
 
     /**
      * из двух отдельных инпутов берем 
@@ -149,6 +148,14 @@ export const CartPage: React.FC = observer(
           })
       }
     }
+
+
+    
+    const [pickerM, setPickerM] = React.useState(moment().add(15, 'minutes').format('mm'))
+    const [pickerH, setPickerH] = React.useState(moment().add(15, 'minutes').format('HH'))
+
+
+
     type pic = { label: string, value: string }
     const workrange = React.useMemo(() => {
       
@@ -171,9 +178,20 @@ export const CartPage: React.FC = observer(
       // если выбрана сегодняшняя дата
       if(moment(date).isSame(new Date(), 'day')) {
         // сетаем только диапазон от текущего времени до конца рабочего дня
-        const nowH = moment().hours();
+        const nowH = moment().add(15, 'minutes').hours();
+        const nowM = moment().minutes();
         fillHours(nowH, maxH)
-        fillMinutes(0, 59)
+        // если это текущий час
+        // то мы не должны выбрать минуты раньше чем текущие минуты
+        if(pickerH === hours[0].value) {
+          if(nowM < 45) {
+            fillMinutes(nowM + 15, 59)
+          } else {
+            fillMinutes(nowM + 15 - 60, 59)
+          }
+        } else {
+          fillMinutes(0, 59)
+        }
       } else {
         // иначе сетаем всё время работы
         fillHours(minH, maxH);
@@ -184,7 +202,29 @@ export const CartPage: React.FC = observer(
         hours, 
         minutes 
       ]
-    }, [date])
+    }, [date, time, pickerH, pickerM])
+
+    useInterval(() => {
+      // каждую минуту проверяем чтобы время заказа не
+      // стало раньше чем текущее время
+      // * если заказ на сегодня
+      if(moment(date).isSame(new Date(), 'day')) {
+        // * если время заказа указано раньше чем 
+        // * текущее время + время на готовку
+        const [orderHours, orderMinets] = time.split(':')
+        const [nowHours, nowMinets] = moment()
+          .format('HH:mm')
+          .split(':')
+
+        if(
+          ((Number(orderHours) * 60) + Number(orderMinets)) < 
+          ((Number(nowHours) * 60) + Number(nowMinets) + 15)
+        ) {
+          setTime(moment().add(15, 'minutes').format('HH:mm'))
+        }
+      }
+    }, 1000 * 60)
+
 
     return (
       <Страничка>
@@ -196,6 +236,10 @@ export const CartPage: React.FC = observer(
         }}
         onConfirm={(picked) => { 
           setTime(picked.join(':'))
+        }}
+        onSelect={val => {
+          setPickerM(val[1] as string)
+          setPickerH(val[0] as string)
         }}
         confirmText='Сохранить'
         cancelText='Закрыть'
