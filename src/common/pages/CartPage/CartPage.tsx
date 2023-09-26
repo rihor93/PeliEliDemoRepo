@@ -180,22 +180,59 @@ export const CartPage: React.FC = observer(
         // сетаем только диапазон от текущего времени до конца рабочего дня
         const nowH = moment().add(15, 'minutes').hours();
         const nowM = moment().minutes();
+
+        // если время не рабочее но дата сегодняшняя
+        if(
+          (nowH * 60 + nowM) > 21 * 60 + 30 || 
+          (nowH * 60 + nowM) < 9 * 60 + 30
+        ) {
+          setDate(moment().add(1, 'day').toDate())
+        }
+        // сетаем оставшиеся раб часы
         fillHours(nowH, maxH)
         // если это текущий час
         // то мы не должны выбрать минуты раньше чем текущие минуты
-        if(pickerH === hours[0].value) {
-          if(nowM < 45) {
-            fillMinutes(nowM + 15, 59)
+        if(pickerH === hours[0]?.value) {
+          if(pickerH === '21') {
+            if(nowM <= 15) {
+              fillMinutes(nowM + 15, 30)
+            }
+          } else if(pickerH === '09') {
+            if(nowM >= 15) {
+              fillMinutes(nowM, 59)
+            }
           } else {
-            fillMinutes(nowM + 15 - 60, 59)
+            if(nowM < 45) {
+              fillMinutes(nowM + 15, 59)
+            } else {
+              fillMinutes(nowM + 15 - 60, 59)
+            }
           }
         } else {
-          fillMinutes(0, 59)
+          if(pickerH === '21') {
+            fillMinutes(0, 30)
+            // с 8:30
+          } else if (pickerH === '09') {
+            fillMinutes(30, 59)
+            // в остальных случаях полный час минуток
+          } else {
+            fillMinutes(0, 59)
+          }
         }
       } else {
         // иначе сетаем всё время работы
+        // сетаем раб часы с 9 до 21
         fillHours(minH, maxH);
-        fillMinutes(0, 59)
+        // до 21:30
+        if(pickerH === '21') {
+          fillMinutes(0, 30)
+          // с 8:30
+        } else if (pickerH === '09') {
+          fillMinutes(30, 59)
+          // в остальных случаях полный час минуток
+        } else {
+          fillMinutes(0, 59)
+        }
       }
       
       return [
