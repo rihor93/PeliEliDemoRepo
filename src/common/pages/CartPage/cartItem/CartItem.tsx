@@ -1,30 +1,37 @@
+import { observer } from "mobx-react-lite";
 import { CrossLight, CrossDark, GurmagLogo, LightMinus, DarkMinus, LightPlus, DarkPlus } from "../../../../assets";
 import { config } from "../../../configuration";
 import { replaceImgSrc } from "../../../helpers";
 import { useTheme } from "../../../hooks";
+import { Optional, Undef } from "../../../types";
 
 const CartItem: React.FC<{
   courseInCart: CouseInCart,
   add: () => void,
-  remove: () => void,
-}> = ({ courseInCart, add, remove }) => {
+  remove: () => void, 
+  campaignAllInfo: Undef<AllCampaignUser>,
+  text: Optional<string>
+}> = observer(({ courseInCart, add, remove, ...rest }) => {
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
-  const onClose = () => {
-    for (let i = 0; i < courseInCart.quantity; i++) {
-      remove()
-    }
-  }
+  // const onClose = () => {
+  //   for (let i = 0; i < courseInCart.quantity; i++) {
+  //     remove()
+  //   }
+  // }
+
+  const { campaignAllInfo, text } = rest
+  
   return (
     <div className='cartItem'>
-      <img
+      {/* <img
         onClick={onClose}
         className='closeButton'
         src={isDarkMode
           ? CrossLight
           : CrossDark
         }
-      />
+      /> */}
       <img
         src={`${config.apiURL}/api/v2/image/Material?vcode=${courseInCart.couse.VCode}&compression=true`}
         onError={replaceImgSrc(GurmagLogo)}
@@ -33,7 +40,19 @@ const CartItem: React.FC<{
         <div>
           <span>{courseInCart.couse.Name}</span>
         </div>
+        {!campaignAllInfo 
+          ? null
+          : <span style={{ color: 'var(--gurmag-accent-color)' }}>
+            {`Акция - ${campaignAllInfo.Name.replace(/ *\{[^}]*\} */g, "")}`}
+            </span>
+        }
+        <span style={{ color: 'var(--gurmag-accent-color)' }}>{text}</span>
+        
         <div className="row">
+          {courseInCart.priceWithDiscount >= courseInCart.couse.Price * courseInCart.quantity
+            ? null
+            : <s>{`${Math.ceil((courseInCart.couse.Price * courseInCart.quantity) * 100) / 100} руб.`}</s>
+          }
           <div className="cout">
             <img
               alt="Убавить"
@@ -78,5 +97,5 @@ const CartItem: React.FC<{
     </div>
   )
 }
-
+)
 export default CartItem;

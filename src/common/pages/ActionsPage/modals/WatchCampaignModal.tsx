@@ -69,7 +69,7 @@ const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
       showCloseButton
       onClose={() => {
         watchActionModal.close()
-        navigate(-1)
+        // navigate(-1)
       }}
     >
       <h3 

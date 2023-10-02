@@ -13,6 +13,7 @@ import { toJS } from 'mobx';
 import { ToastHandler } from 'antd-mobile/es/components/toast';
 import { isDevelopment } from '../../helpers';
 import { useNavigate } from 'react-router-dom';
+import { RightOutline } from 'antd-mobile-icons';
 
 
 
@@ -349,40 +350,46 @@ export const CartPage: React.FC = observer(
           : null
         }
         <Страничка.Тело>
+        <h3 style={{ margin: '2rem 0 1rem 1rem' }}>Ждём тебя в предприятии:</h3>
+        <Dropdown style={{ marginLeft: '1rem', borderRadius: '8px' }}>
+          <Dropdown.Item 
+            className='asasasasasasasa'
+            arrow={<RightOutline style={{fontSize: '18px', color: 'var(--тихий-текст)'}} />}
+            key='sorter' 
+            title={
+              <div>
+                <span style={{fontSize: '18px', color: 'var(--громкий-текст)'}}>
+                  {userStore.currentOrganizaion?.Name}
+                </span>
+                <br />
+                <span style={{fontSize: '12px', color: 'var(--тихий-текст)'}}>Уфа</span>
+              </div>
+            }
+          >
+            <div style={{ padding: 12 }}>
+              <Radio.Group 
+                defaultValue={userStore.currentOrg}
+                onChange={e => {
+                  userStore.currentOrg = e as number
+                  userStore.saveCurrentOrg(e as number)
+                }}
+              >
+                <Space direction='vertical' block>
+                  {userStore.organizations.map((org) => 
+                    <Radio block value={org.Id} key={org.Id}>
+                      {org.Name}
+                    </Radio>
+                  )}
+                </Space>
+              </Radio.Group>
+            </div>
+          </Dropdown.Item>
+        </Dropdown>
         {mainPage.isLoading && mainPage.cookIsLoading 
           ? preloader()
           : <>
             {!cart.isEmpty
-              ? cart.items.map((item, index) =>
-                <CartItem
-                  key={`cart_item_${index}`}
-                  courseInCart={item}
-                  add={() => cart.addCourseToCart(item.couse)}
-                  remove={() => cart.removeFromCart(item.couse.VCode)}
-                />
-              )
-              : <div 
-                style={{
-                  width: '100%', 
-                  height: '100%', 
-                  display: 'flex', 
-                  justifyContent: 'center', 
-                  marginTop: '1rem'
-                }}>
-                <p>Корзина пуста 🛒</p>
-              </div>
-            }
-          </>
-        }
-        
-        {cart.isEmpty 
-          ? null 
-          : <div style={{width: '100%'}}>
-            <Divider contentPosition='left'>
-              Проверьте детали заказа
-            </Divider>
-            <Collapse style={{width: '100%'}}>
-              {cart.items.map((cartItem, index) => { 
+              ? cart.items.map((item, index) => {
                 const { 
                   dishSet, 
                   allCampaign, 
@@ -392,38 +399,39 @@ export const CartPage: React.FC = observer(
                 
                 /** ищем основную инфу */
                 const campaignAllInfo = allCampaign.find(camp =>
-                  camp.VCode === cartItem.campaign
+                  camp.VCode === item.campaign
                 )
                 /** ищем детали для этой скидки в скидках на блюда */
                 const dishDiscount = dishDiscounts.filter(dishDiscount =>
-                  dishDiscount.vcode === cartItem.campaign
+                  dishDiscount.vcode === item.campaign
                 ).find(dishDiscount => 
-                  dishDiscount.dish === cartItem.couse.VCode
+                  dishDiscount.dish === item.couse.VCode
                 )
 
                 /** ищем детали для этой скидки в процентных скидках */
                 const percentDiscount = percentDiscounts.find(percentDiscount =>
-                  percentDiscount.vcode === cartItem.campaign
+                  percentDiscount.vcode === item.campaign
                 )
+
 
                 /** ищем детали для этой скидки в скидках на сеты */
                 const setDish = dishSet.filter((setDish) =>
-                  setDish.vcode === cartItem.campaign
+                  setDish.vcode === item.campaign
                 ).find(setDish =>
                   Boolean(setDish.dishes.find(dishSet =>
-                    dishSet.dish === cartItem.couse.VCode
+                    dishSet.dish === item.couse.VCode
                   ))
                 )
 
+
                 let text: Optional<string> = null;
                 let dishArr: Undef<CourseItem>[] = []; 
-
                 // должна найтись только одна из трех 
                 // если это скидка 
                 // на одно блюдо
                 if (dishDiscount && !percentDiscount && !setDish) {
                   const targetDish = mainPage.getDishByID(dishDiscount.dish)
-                  if (targetDish?.Name) 
+                  if (targetDish?.Name)
                     if(dishDiscount.price) {
                       text = `Cкидка ${dishDiscount.price}руб на "${targetDish?.Name}"`
                     }
@@ -445,38 +453,41 @@ export const CartPage: React.FC = observer(
 
                 // если это скидка на сет
                 if (!dishDiscount && !percentDiscount && setDish) {
-                  text = `Cкидка на ${setDish.dishCount} блюда из списка:`;
+                  text = `Cкидка на ${setDish.dishCount} блюда из списка`;
                   dishArr = setDish.dishes.map((dishDiscount) =>
                     mainPage.getDishByID(dishDiscount.dish)
                   )
                 }
+
+
                 return(
-                  <Collapse.Panel 
-                    key={String(index)} 
-                    title={`${cartItem.couse.Name} - ${cartItem.quantity}шт.:`}
-                  >
-                    <Form>
-                      {campaignAllInfo 
-                        ? <Form.Item label={`Акция - ${campaignAllInfo.Name.replace(/ *\{[^}]*\} */g, "")}`}>
-                          <span>{campaignAllInfo.Description.replace(/ *\{[^}]*\} */g, "")}</span><br />
-                          <span>{text}</span><br />
-                        </Form.Item>
-                        : null
-                      }
-                      <Form.Item 
-                        label={`цена со скидкой за ${cartItem.quantity} шт`} 
-                        extra={<s>{`${Math.ceil((cartItem.couse.Price * cartItem.quantity) * 100) / 100} руб.`}</s>}
-                      >
-                        <Input                       
-                          readOnly
-                          value={String(Math.ceil(cartItem.priceWithDiscount * 100) / 100) + ' руб.'}
-                        />
-                      </Form.Item>
-                    </Form>
-                  </Collapse.Panel>
+                  <CartItem
+                    key={`cart_item_${index}`}
+                    courseInCart={item}
+                    add={() => cart.addCourseToCart(item.couse)}
+                    remove={() => cart.removeFromCart(item.couse.VCode)}
+                    campaignAllInfo={campaignAllInfo}
+                    text={text}
+                  />
                 )
-              })}
-            </Collapse>
+              })
+              : <div 
+                style={{
+                  width: '100%', 
+                  height: '100%', 
+                  display: 'flex', 
+                  justifyContent: 'center', 
+                  marginTop: '1rem'
+                }}>
+                <p>Корзина пуста 🛒</p>
+              </div>
+            }
+          </>
+        }
+        
+        {cart.isEmpty 
+          ? null 
+          : <div style={{width: '100%'}}>
             <Divider contentPosition='left'>Способ доставки</Divider>
             <Selector 
               style={{display: 'flex', justifyContent: 'center'}}
@@ -485,34 +496,7 @@ export const CartPage: React.FC = observer(
               onChange={(arr) => cart.setReceptionType(arr[0])}
             />
             {cart.receptionType === 'pickup' 
-              ? <>
-                <Divider contentPosition='left'>Где хотите забрать?</Divider>
-                <Dropdown>
-                  <Dropdown.Item 
-                    key='sorter'                     
-                    title={
-                      <span style={{fontSize: '17px'}}>
-                        {userStore.currentOrganizaion?.Name}
-                      </span>
-                    }
-                  >
-                    <div style={{ padding: 12, fontSize: '12px' }}>
-                      <Radio.Group 
-                        value={userStore.currentOrg}
-                        onChange={(e) => userStore.currentOrg = e as number}
-                      >
-                        <Space direction='vertical' block>
-                          {userStore.organizations.map((org) => 
-                            <Radio block value={org.Id} key={org.Id}>
-                              {org.Name}
-                            </Radio>
-                          )}
-                        </Space>
-                      </Radio.Group>
-                    </div>
-                  </Dropdown.Item>
-                </Dropdown>
-              </>
+              ? null
               : <>
                 <Divider contentPosition='left'>Введите адрес доставки</Divider>
                 <Form>
@@ -542,10 +526,6 @@ export const CartPage: React.FC = observer(
             }
           </div>
         }
-        <div className='row' style={{width: '100%', padding: '1rem'}}>
-          <h5>Итого:</h5>
-          <h5>{`${Math.ceil(cart.totalPrice * 10) / 10} ₽`}</h5>
-        </div>
         {cart.isEmpty 
           ? null 
           : <Form layout='horizontal' style={{width: '100%'}}>
@@ -577,7 +557,9 @@ export const CartPage: React.FC = observer(
         >
           <Space direction='vertical' style={{"--gap": '0'}}>
             <span style={{fontSize: '14px'}}>Итого:</span>
-            <span style={{fontSize: '22px'}}>360 руб.</span>
+            <span style={{fontSize: '22px'}}>
+              {`${Math.ceil(cart.totalPrice * 10) / 10} ₽`}
+            </span>
           </Space>
           <Button 
             block  

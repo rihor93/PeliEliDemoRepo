@@ -1,4 +1,4 @@
-import { CheckOutlined, HomeOutlined, PlusOutlined } from "@ant-design/icons"
+import { HomeOutlined } from "@ant-design/icons"
 import { 
   Toast, 
   Swiper, 
@@ -20,7 +20,7 @@ import {
 import { observer } from "mobx-react-lite"
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { GurmagLogo, gurmag_big } from '../../../assets';
+import { gurmag_big } from '../../../assets';
 import { Page } from "../../components";
 import { config } from '../../configuration';
 import { replaceImgSrc } from '../../helpers';
@@ -32,16 +32,17 @@ import moment from "moment";
 import { ClockCircleOutline } from "antd-mobile-icons";
 import * as uuid from 'uuid'
 import { CourseItemComponent } from "../MenuPage/sections/Categories";
+import WatchCampaignModal from "../ActionsPage/modals/WatchCampaignModal";
 
 
 export const MainPage: FC = observer(() => { 
-  const { userStore, actionsPage, mainPage, cartStore } = useStore();
+  const { userStore, actionsPage, mainPage } = useStore();
 
-  const { selectedCourse, state, cookstate, watchCourse } = mainPage;
+  const { selectedCourse, state, cookstate } = mainPage;
 
   const { allCampaign } = userStore.userState; 
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const [askedAddr, setAskedAddr] = useState(0)
   return(
@@ -137,7 +138,7 @@ export const MainPage: FC = observer(() => {
             </Dropdown>
           )
         }
-        
+        {actionsPage.selectedAction && <WatchCampaignModal campaign={actionsPage.selectedAction} />}
           <Swiper 
             loop
             autoplay
@@ -154,7 +155,7 @@ export const MainPage: FC = observer(() => {
                   onError={replaceImgSrc(gurmag_big)} 
                   onClick={() => {
                     actionsPage.watchAction(campaign)
-                    navigate('/actions/' + campaign.VCode)
+                    // navigate('/actions/' + campaign.VCode)
                   }}
                   style={{
                     objectFit: 'contain',
@@ -354,20 +355,27 @@ export const MainPage: FC = observer(() => {
               <Cook key={cook.UserId} cook={cook} />
             )}
           </div>
+          {!mainPage.popular?.length
+            ? null
+            : (
+              <>
+                <Divider contentPosition="left" style={{fontSize: '22px'}} >Популярные блюда</Divider>
+                <section className='categories'>
+                  <div key='популярное' id='популярное'>
+                    <div className="courses_list">
+                      {mainPage.popular?.map(course => 
+                        <CourseItemComponent 
+                          course={course} 
+                          key={course.VCode}
+                        />
+                      )}
+                    </div>
+                  </div>
+                </section>
+              </>
+            )
+          }
           
-          <Divider contentPosition="left" style={{fontSize: '22px'}} >Популярные блюда</Divider>
-          <section className='categories'>
-            <div key='популярное' id='популярное'>
-              <div className="courses_list">
-                {mainPage.popular?.map(course => 
-                  <CourseItemComponent 
-                    course={course} 
-                    key={course.VCode}
-                  />
-                )}
-              </div>
-            </div>
-          </section>
           
           <Footer content='@ 2023 Gurmag All rights reserved'></Footer>
           <div style={{height: '50px', width: '100%'}}></div> 

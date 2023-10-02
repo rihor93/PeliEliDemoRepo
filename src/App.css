@@ -110,6 +110,7 @@ a {
 }
 
 .page_body {
+  background: var(--tg-theme-secondary-bg-color);
   padding-top: 45px;
   padding-bottom: 62px;
   display: flex;
