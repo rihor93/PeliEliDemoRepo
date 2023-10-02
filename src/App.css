@@ -1,5 +1,22 @@
+@font-face {
+  font-display: swap;
+  font-family: ITC Franklin Gothic;
+  font-style: normal;
+  font-weight: 900;
+  src: url(./fonts/ITC-Franklin-Gothic_Heavy-bb9afb67.woff) format("woff")
+}
+
+@font-face {
+  font-display: swap;
+  font-family: ITC Franklin Gothic;
+  font-style: normal;
+  font-weight: 400;
+  src: url(./fonts/ITC-Franklin-Gothic_Book-1a2e60c0.woff) format("woff")
+}
+
+
 body {
-  font-family: 'Open Sans', sans-serif !important;
+  font-family: ITC Franklin Gothic, sans-serif !important;
   /* color: var(--tg-theme-text-color); */
   background-color: var(--adm-color-background);
   /* font-size: 16px;

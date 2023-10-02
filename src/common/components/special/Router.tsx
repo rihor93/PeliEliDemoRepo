@@ -322,6 +322,7 @@ const Top: FC = observer(() => {
     ? null
     : <>
       <NavBar 
+        style={{ fontWeight: '600' }}
         right={(() => {
           if(isShowRightOnMenu) return menuRightAction
           if(isShowRightOnCart) return cartRightAction
