@@ -549,36 +549,54 @@ export const CartPage: React.FC = observer(
         {cart.isEmpty 
           ? null 
           : <Form layout='horizontal' style={{width: '100%'}}>
-            <Form.Item label='Дата заказа:' childElementPosition='right'>
-              <span onClick={() => setVisibleDate(true)}>
-                {moment(date).format('DD-MM-YYYY')}
-              </span>
-            </Form.Item>
-            <Form.Item label='Время' childElementPosition='right'>
-              <span onClick={() => setVisibleTime(true)}>
-                {time}
-              </span>
+            <Form.Item 
+              label='Приготовить заказ ко времени:' 
+              childElementPosition='right' 
+              style={{"--align-items": 'center'}}
+            >
+              <Space style={{"--gap": '1.25rem', fontSize: '20px'}}>
+                <span onClick={() => setVisibleDate(true)}>
+                  {moment(date).format('DD-MM-YYYY')}
+                </span>
+                <span onClick={() => setVisibleTime(true)}>
+                  {time}
+                </span>
+              </Space>
             </Form.Item>
           </Form>
         }
 
-        
-        {cart.isEmpty 
-          ? null
-          : <Button 
-            block 
-            color='primary' 
+        <Space 
+          style={{ 
+            width: '100%', 
+            marginTop: '0.75rem', 
+            "--gap": '0' 
+          }} 
+          justify='between' 
+          align='center'
+        >
+          <Space direction='vertical' style={{"--gap": '0'}}>
+            <span style={{fontSize: '14px'}}>Итого:</span>
+            <span style={{fontSize: '22px'}}>360 руб.</span>
+          </Space>
+          <Button 
+            block  
             size='large' 
-            className='mt-1'
-            style={{borderRadius: '8px'}}
+            disabled={cart.isEmpty}
+            style={{
+              borderRadius: '8px', 
+              background: 'var(--gurmag-accent-color)', 
+              paddingLeft: '2.5rem',
+              paddingRight: '2.5rem'
+            }}
             onClick={() => validationPhoneErr()?.length 
               ? Toast.show({ content: 'Укажите номер телефона', position: 'center' })
               : postOrder()
             }
           >
-            Заказать
+            Оформить заказ
           </Button>
-        }
+        </Space>
         </Страничка.Тело>
       </Страничка>
     )
