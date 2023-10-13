@@ -120,7 +120,7 @@ const styles = {
     right: '0',
     top: '0',
     background: 'var(--tg-theme-bg-color)',
-    zIndex: '1'
+    zIndex: '2'
   },
   
   body: {},
@@ -322,7 +322,7 @@ const Top: FC = observer(() => {
     ? null
     : <>
       <NavBar 
-        style={{ fontWeight: '600' }}
+        style={{ fontWeight: '600', background: '#2F6EA4' }}
         right={(() => {
           if(isShowRightOnMenu) return menuRightAction
           if(isShowRightOnCart) return cartRightAction

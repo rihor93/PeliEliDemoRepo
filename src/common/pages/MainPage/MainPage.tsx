@@ -15,11 +15,9 @@ import {
   Result, 
   Ellipsis, 
   List,
-  Tag
 } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { gurmag_big } from '../../../assets';
 import { Page } from "../../components";
 import { config } from '../../configuration';

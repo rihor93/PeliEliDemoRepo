@@ -9,7 +9,7 @@ import { useStore } from "../../../hooks";
 import { Optional, Undef } from "../../../types";
 import './WatchCampaignModal.css';
 import * as uuid from 'uuid'
-import { Popup } from 'antd-mobile';
+import { Image, Popup, Space, SpinLoading } from 'antd-mobile';
 interface CampaignProp { campaign: AllCampaignUser };
 const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
 
@@ -80,14 +80,23 @@ const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
       >
         {`🎁${campaign.Name.replace(/ *\{[^}]*\} */g, "")}!!!`}
       </h3>
-      <img
+      <Image 
         src={config.apiURL + '/api/v2/image/Disount?vcode=' + campaign.VCode + '&compression=true'  + '&random=' + uuid.v4()}
-        onError={replaceImgSrc(gurmag_big)}
-        style={{
+        fallback={<img src={gurmag_big} style={{
           width: 'calc(100% - 1rem)', 
           height: 'auto', 
           margin: '0.5rem', 
           borderRadius: '8px'
+        }} />}
+        placeholder={
+          <Space style={{ width: 'calc(100% - 1rem)', height: 'auto', margin: '0.5rem' }} justify='center' align='center'>
+            <SpinLoading color='primary' style={{fontSize: '42px'}} />
+          </Space>
+        }
+        fit='cover'
+        style={{
+          "--height": "auto",
+          "--width": "calc(100% - 1rem)",
         }}
       />
       <p>{`${campaign.Description.replace(/ *\{[^}]*\} */g, "")} - ${text}`}</p>

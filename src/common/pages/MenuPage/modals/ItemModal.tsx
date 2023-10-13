@@ -1,4 +1,4 @@
-import { Toast } from "antd-mobile"
+import { Image, Space, SpinLoading, Toast } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import React from "react"
 import { cart, DarkMinus, DarkPlus, GurmagLogo, LightMinus, LightPlus, NoImageBig } from "../../../../assets"
@@ -36,10 +36,21 @@ export const ItemModal: React.FC<{
       show={itemModal.show}
       onHide={() => itemModal.close()}
     >
-      <img
+      <Image 
         src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}`} 
-        onError={replaceImgSrc(NoImageBig)}
-        className="item_modal_img"
+        fallback={<img src={NoImageBig} style={{objectFit: 'cover', width: '100%', height: '33vh'}} onClick={() => mainPage.watchCourse(course)} />}
+        placeholder={
+          <Space style={{ width: '100%', height: '33vh' }} justify='center' align='center'>
+            <SpinLoading color='primary' style={{fontSize: '42px'}} />
+          </Space>
+        }
+        fit='cover'
+        style={{
+          borderTopLeftRadius: '8px',
+          borderTopRightRadius: '8px',
+          "--height": "33vh",
+          "--width": "100%",
+        }}
       />
       <div className="item_modal_body">
         <h1>{course.Name}</h1>

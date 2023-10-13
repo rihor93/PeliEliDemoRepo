@@ -2,10 +2,10 @@ import { useStore } from '../../../../hooks';
 import React from 'react';
 import './Categories.css';
 import { observer } from 'mobx-react-lite';
-import { GurmagLogo, NoImageSmall } from '../../../../../assets';
+import { NoImageSmall } from '../../../../../assets';
 import { config } from '../../../../configuration';
 import { replaceImgSrc } from '../../../../helpers';
-import { Avatar, Divider, Ellipsis, List, Popup, Rate, Result, Skeleton, Space, Tag, Toast } from 'antd-mobile';
+import { Avatar, Divider, Ellipsis, Image, List, Popup, Rate, Result, Skeleton, Space, SpinLoading, Tag, Toast } from 'antd-mobile';
 import { SmileOutline } from 'antd-mobile-icons';
 import moment from 'moment';
 import { CheckOutlined, PlusOutlined } from '@ant-design/icons';
@@ -72,7 +72,7 @@ export const Categories: React.FC = observer(() => {
   )
 })
 
-const OtziviPopup: React.FC = observer(() => {
+export const OtziviPopup: React.FC = observer(() => {
   const { mainPage } = useStore();
   return(
     <Popup 
@@ -179,10 +179,20 @@ export const CourseItemComponent: React.FC<{ course: CourseItem }> = observer(({
   
   return(
     <div className="course_item">
-      <img
-        src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}&compression=true`}
-        onError={replaceImgSrc(NoImageSmall)}
-        onClick={() => mainPage.watchCourse(course)}
+      <Image 
+        src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}&compression=true`} 
+        onClick={() => mainPage.watchCourse(course)} 
+        fallback={<img src={NoImageSmall} style={{objectFit: 'cover', width: '100%', height: '114px'}} onClick={() => mainPage.watchCourse(course)} />}
+        placeholder={
+          <Space style={{ width: '100%', height: '114px' }} justify='center' align='center'>
+            <SpinLoading color='primary' style={{fontSize: '32px'}} />
+          </Space>
+        }
+        fit='cover'
+        style={{
+          "--height": "114px",
+          "--width": "auto",
+        }}
       />
       <div className='item_bady'>
         {/* <h3 

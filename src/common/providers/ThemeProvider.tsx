@@ -103,6 +103,7 @@ const myVariables = [
 
 const antdVariables: Var[] = [
   { cssVar: '--adm-color-background', dark: 'var(--tg-theme-bg-color)', light: 'var(--tg-theme-bg-color)' }, 
+  { cssVar: '--adm-color-primary', dark: 'var(--gurmag-accent-color)', light: 'var(--gurmag-accent-color)' }, 
   { cssVar: '--adm-color-box', dark: 'var(--tg-theme-secondary-bg-color)', light: 'var(--tg-theme-secondary-bg-color)' }, 
   { cssVar: '--adm-font-family', dark: 'ITC Franklin Gothic, sans-serif', light: 'ITC Franklin Gothic, sans-serif' }
 ]
