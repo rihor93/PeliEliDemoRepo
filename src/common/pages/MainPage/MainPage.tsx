@@ -107,12 +107,12 @@ export const MainPage: FC = observer(() => {
                 style={{ justifyContent: 'left', margin: '10px 10px 0 10px' }}
                 title={
                   <>
-                    <p style={{ fontSize: '18px', color: 'var(--громкий-текст)' }}>Добрый день!</p>
+                    <p style={{ fontSize: '18px', color: 'var(--громкий-текст)', fontWeight: '500' }}>Добрый день!</p>
                     <br />
-                    <p style={{ fontSize: '15px', color: 'var(--тихий-текст)' }} >Ваша домашняя кухня:</p>
+                    <p style={{ fontSize: '15px', color: 'var(--тихий-текст)', fontWeight: '500' }} >Ваша домашняя кухня:</p>
                     <br />
                     <div style={{ width: '85vw', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <span style={{fontSize: '18px', color: 'var(--громкий-текст)', margin: '10px'}}>
+                      <span style={{fontSize: '18px', color: 'var(--громкий-текст)', margin: '10px', fontWeight: '400'}}>
                         {userStore.currentOrganizaion?.Name}
                       </span>
                       <LocationFill style={{ color: 'var(--gurmag-accent-color)', fontSize: '20px' }} />

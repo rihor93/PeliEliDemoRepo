@@ -246,3 +246,16 @@ a {
   line-height: 33px;
   letter-spacing: 0em;
 }
+
+
+.adm-divider-horizontal {
+  margin: 16px 0 !important;
+  border-width: 0 !important;
+  border-color: var(--tg-theme-bg-color) !important;
+  color: var(--громкий-текст) !important;
+  font-size: 18px !important;
+}
+
+.adm-divider-content {
+  margin-left: -1rem !important;
+}
