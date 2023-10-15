@@ -1,4 +1,3 @@
-import { HomeOutlined } from "@ant-design/icons"
 import { 
   Toast, 
   Swiper, 
@@ -27,7 +26,7 @@ import { ItemModal } from "../MenuPage/modals/ItemModal";
 import './MainPage.css';
 import { FC } from 'react';
 import moment from "moment";
-import { ClockCircleOutline } from "antd-mobile-icons";
+import { ClockCircleOutline, LocationFill } from "antd-mobile-icons";
 import * as uuid from 'uuid'
 import { CourseItemComponent } from "../MenuPage/sections/Categories";
 import WatchCampaignModal from "../ActionsPage/modals/WatchCampaignModal";
@@ -104,15 +103,21 @@ export const MainPage: FC = observer(() => {
             <Dropdown>
               <Dropdown.Item 
                 key='sorter' 
+                arrow={null}
+                style={{ justifyContent: 'left', margin: '10px 10px 0 10px' }}
                 title={
-                  <div style={{fontSize: '12px', color: 'var(--тихий-текст)'}}>
-                    <HomeOutlined />
-                    <span>Ваша домашняя кухня:</span>
+                  <>
+                    <p style={{ fontSize: '18px', color: 'var(--громкий-текст)' }}>Добрый день!</p>
                     <br />
-                    <span style={{fontSize: '18px', color: 'var(--громкий-текст)'}}>
-                      {userStore.currentOrganizaion?.Name}
-                    </span>
-                  </div>
+                    <p style={{ fontSize: '15px', color: 'var(--тихий-текст)' }} >Ваша домашняя кухня:</p>
+                    <br />
+                    <div style={{ width: '85vw', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{fontSize: '18px', color: 'var(--громкий-текст)', margin: '10px'}}>
+                        {userStore.currentOrganizaion?.Name}
+                      </span>
+                      <LocationFill style={{ color: 'var(--gurmag-accent-color)', fontSize: '20px' }} />
+                    </div>
+                  </>
                 }
               >
                 <div style={{ padding: 12 }}>
