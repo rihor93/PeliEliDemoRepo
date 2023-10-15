@@ -1,10 +1,7 @@
 import React from 'react';
 import { observer } from "mobx-react-lite";
-import { useNavigate } from "react-router-dom";
 import { gurmag_big } from "../../../../assets";
-import { Modal } from "../../../components";
 import { config } from "../../../configuration";
-import { replaceImgSrc } from "../../../helpers";
 import { useStore } from "../../../hooks";
 import { Optional, Undef } from "../../../types";
 import './WatchCampaignModal.css';
@@ -60,7 +57,7 @@ const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
     }
   }
 
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
 
   return (
     <Popup
@@ -83,43 +80,55 @@ const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
       <Image 
         src={config.apiURL + '/api/v2/image/Disount?vcode=' + campaign.VCode + '&compression=true'  + '&random=' + uuid.v4()}
         fallback={<img src={gurmag_big} style={{
-          width: 'calc(100% - 1rem)', 
-          height: 'auto', 
-          margin: '0.5rem', 
+          width: 'calc(100%)', 
+          minHeight: 'auto', 
           borderRadius: '8px'
         }} />}
         placeholder={
-          <Space style={{ width: 'calc(100% - 1rem)', height: 'auto', margin: '0.5rem' }} justify='center' align='center'>
+          <Space style={{ width: 'calc(100% - 1rem)', height: '200px', margin: '0.5rem' }} justify='center' align='center'>
             <SpinLoading color='primary' style={{fontSize: '42px'}} />
           </Space>
         }
         fit='cover'
-        style={{
+        style={{ 
+          margin: '1rem 0.5rem',
+          borderTopLeftRadius: '8px', 
+          borderTopRightRadius: '8px', 
           "--height": "auto",
           "--width": "calc(100% - 1rem)",
         }}
       />
-      <p>{`${campaign.Description.replace(/ *\{[^}]*\} */g, "")} - ${text}`}</p>
-      {dishArr.length ?
-          <ul>
-            {dishArr.map((dish, index) =>
-              !dish
-                ? <li style={{marginLeft: '20px'}} key={`no_VCode_${index}`}>блюдо сейчас нет в меню</li>
-                : <li key={`${dish.VCode}_${dish.VCode}_${index}ds`}>
-                  {/* <NavLink to={`/menu/${dish.CatVCode}/${dish.VCode}`}>
-                    {`- ${dish.Name}`}
-                  </NavLink> */}
-                  <p onClick={() => {
-                    const course = mainPage.getDishByID(dish.VCode)
-                    if (course) mainPage.watchCourse(course)
-                  }} className='dish_link'>
-                    {`👉 ${dish.Name}`}
-                  </p>
-                </li>
-            )}
-          </ul>
-          : null
-        }
+      <p style={{fontSize: '18px', fontWeight: '500'}}>{`${campaign.Description.replace(/ *\{[^}]*\} */g, "")} - ${text}`}</p>
+      <div
+        style={{ 
+          fontSize: '18px',
+          height: '100%',
+          overflow: 'scroll', 
+          margin: '0 0.75rem', 
+        }}
+      >
+         
+          {dishArr.length ?
+              <ul>
+                {dishArr.map((dish, index) =>
+                  !dish
+                    ? <li style={{marginLeft: '20px'}} key={`no_VCode_${index}`}>блюдо сейчас нет в меню</li>
+                    : <li key={`${dish.VCode}_${dish.VCode}_${index}ds`}>
+                      {/* <NavLink to={`/menu/${dish.CatVCode}/${dish.VCode}`}>
+                        {`- ${dish.Name}`}
+                      </NavLink> */}
+                      <p onClick={() => {
+                        const course = mainPage.getDishByID(dish.VCode)
+                        if (course) mainPage.watchCourse(course)
+                      }} className='dish_link'>
+                        {`👉 ${dish.Name}`}
+                      </p>
+                    </li>
+                )}
+              </ul>
+              : null
+            }
+      </div>
     </Popup>
   )
 }
