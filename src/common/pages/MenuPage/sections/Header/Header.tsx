@@ -1,4 +1,5 @@
-import { GurmagLogo, telephone } from '../../../../../assets';
+import { PhoneOutlined } from '@ant-design/icons';
+import { GurmagLogo } from '../../../../../assets';
 import './Header.css';
 export const Header: React.FC = () => {
   return (
@@ -16,7 +17,7 @@ export const Header: React.FC = () => {
         <p>Работаем круглосуточно 24/7</p>
       </div>
       <div className="header_contacts">
-        <img src={telephone} />
+      <PhoneOutlined />
         <div>
           <h5>8-800-535-35-35</h5>
           <p>Проще позвонить чем у кого-то занимать</p>

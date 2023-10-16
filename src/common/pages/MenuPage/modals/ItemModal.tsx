@@ -1,10 +1,10 @@
+import { ShoppingCartOutlined } from "@ant-design/icons"
 import { Image, Space, SpinLoading, Toast } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import React from "react"
-import { cart, DarkMinus, DarkPlus, GurmagLogo, LightMinus, LightPlus, NoImageBig } from "../../../../assets"
+import { DarkMinus, DarkPlus, LightMinus, LightPlus, NoImageBig } from "../../../../assets"
 import { Modal } from "../../../components"
 import { config } from "../../../configuration"
-import { replaceImgSrc } from "../../../helpers"
 import { useStore, useTheme } from "../../../hooks"
 import './ItemModal.css'
 
@@ -92,7 +92,7 @@ export const ItemModal: React.FC<{
           onClick={addToCart}
           style={{ cursor: count > 0 ? 'pointer' : 'not-allowed' }}
         >
-          <img src={cart} alt="Добавить в корзину" />
+          <ShoppingCartOutlined />
           <span>Добавить в корзину</span>
         </div>
       </div>
