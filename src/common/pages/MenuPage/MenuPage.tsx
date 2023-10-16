@@ -1,18 +1,23 @@
-import { Button, CapsuleTabs, Divider, Footer, Popup, Radio, Result, Skeleton, Space, Toast } from 'antd-mobile';
-import { SmileOutline } from 'antd-mobile-icons';
+import { Button, Divider, Footer, Popup, Radio, Skeleton, Space, Swiper, Toast } from 'antd-mobile';
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { gurmag_big } from '../../../assets';
 import { Page } from '../../components/layout/Page';
+import { config } from '../../configuration';
 import { logger } from '../../features';
+import { replaceImgSrc } from '../../helpers';
 import { useStore } from '../../hooks';
+import WatchCampaignModal from '../ActionsPage/modals/WatchCampaignModal';
 import './MenuPage.css';
 import { ItemModal } from './modals/ItemModal';
-import { CourseItemComponent, OtziviPopup } from './sections/Categories';
+import { Sections } from './sections';
+import * as uuid from 'uuid'
 
 export const MenuPage: React.FC = observer(() => {
-  const { mainPage, userStore } = useStore();
+  const { mainPage, userStore, actionsPage } = useStore();
   const { selectedCourse, state, categories, dishSearcher } = mainPage; 
+  const { allCampaign } = userStore.userState; 
   
   const params = useParams<{
     catVCode: string,
@@ -85,9 +90,9 @@ export const MenuPage: React.FC = observer(() => {
             </Popup>
           : null
         }
-        <div style={{height: '45px'}} />
+        <div style={{height: '46px'}} />
 
-        <section className='categories'> 
+        {/* <section className='categories'> 
           <OtziviPopup />
           {dishSearcher.isSearching 
             ? (
@@ -149,7 +154,40 @@ export const MenuPage: React.FC = observer(() => {
               </CapsuleTabs>
             )
           }
-        </section>
+        </section> */}
+        {actionsPage.selectedAction && <WatchCampaignModal campaign={actionsPage.selectedAction} />}
+          <Swiper 
+            loop
+            autoplay
+            style={{
+              borderRadius: '8px', 
+              margin: '0.5rem 0.5rem 1rem 0.5rem',
+              width: 'calc(100% - 1rem)'
+            }}
+          >
+            {allCampaign.map((campaign, index) => 
+              <Swiper.Item key={index}>
+                <img 
+                  src={config.apiURL + '/api/v2/image/Disount?vcode=' + campaign.VCode + '&random=' + uuid.v4()} 
+                  onError={replaceImgSrc(gurmag_big)} 
+                  onClick={() => {
+                    actionsPage.watchAction(campaign)
+                    // navigate('/actions/' + campaign.VCode)
+                  }}
+                  style={{
+                    objectFit: 'contain',
+                    width: '100%',
+                    height: 'auto',
+                    display: 'flex', 
+                    borderRadius: '8px', 
+                  }}
+                  alt={campaign.Name} 
+                />
+              </Swiper.Item>
+            )}
+          </Swiper>
+        <Sections.filter />
+        <Sections.categories />
         <Footer content='@ 2023 Gurmag All rights reserved'></Footer>
         <div style={{height: '55px'}} />
       </Page>

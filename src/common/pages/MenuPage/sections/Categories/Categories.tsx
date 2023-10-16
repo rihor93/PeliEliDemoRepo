@@ -195,18 +195,18 @@ export const CourseItemComponent: React.FC<{ course: CourseItem }> = observer(({
         }}
       />
       <div className='item_bady'>
-        {/* <h3 
+        <h3 
           className='title'
           onClick={() => mainPage.watchCourse(course)}
         >
           {course.Name}
-        </h3> */}
-        <Ellipsis 
+        </h3>
+        {/* <Ellipsis 
           rows={2}
           content={course.Name}
           onContentClick={() => mainPage.watchCourse(course)}
           className='title'
-        />
+        /> */}
         <Space 
           align='center' 
           style={{'--gap': '3px', margin: '0.5rem 0' }}
@@ -225,7 +225,7 @@ export const CourseItemComponent: React.FC<{ course: CourseItem }> = observer(({
         </Space>
 
         <div className='price_cart'>
-          <span>{course.Price}</span>
+          <span>{`${course.Price} ₽`}</span>
           <div className="keke">
             {cartStore.isInCart(course)
               ? <>
