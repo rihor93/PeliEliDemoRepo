@@ -1,4 +1,4 @@
-import { Popup, Toast, Divider, Radio, Space, Skeleton, Dropdown, Selector, Input, DatePicker, Form, Collapse, Modal, Dialog, Picker } from 'antd-mobile';
+import { Popup, Toast, Divider, Radio, Space, Skeleton, Dropdown, Selector, Input, DatePicker, Form, Collapse, Modal, Dialog, Picker, SelectorOption } from 'antd-mobile';
 import Button from 'antd-mobile/es/components/button';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
@@ -13,7 +13,8 @@ import { toJS } from 'mobx';
 import { ToastHandler } from 'antd-mobile/es/components/toast';
 import { isDevelopment } from '../../helpers';
 import { useNavigate } from 'react-router-dom';
-import { RightOutline } from 'antd-mobile-icons';
+import { LocationFill, RightOutline } from 'antd-mobile-icons';
+import { ReceptionType } from '../../../store/stores';
 
 
 
@@ -350,19 +351,31 @@ export const CartPage: React.FC = observer(
           : null
         }
         <Страничка.Тело>
-        <h3 style={{ margin: '2rem 0 1rem 1rem' }}>Ждём тебя в предприятии:</h3>
-        <Dropdown style={{ marginLeft: '1rem', borderRadius: '8px' }}>
+        <p 
+          style={{
+            fontFamily: 'Roboto',
+            fontSize: '18px',
+            fontWeight: '700',
+            lineHeight: '21px',
+            letterSpacing: '0em',
+            textAlign: 'left', 
+            margin: '17px 17px 0 17px'
+          }}
+        >
+          Ждём тебя в предприятии:
+        </p>
+        <Dropdown>
           <Dropdown.Item 
-            className='asasasasasasasa'
-            arrow={<RightOutline style={{fontSize: '18px', color: 'var(--тихий-текст)'}} />}
+            className='hui'
+            arrow={null}
+            style={{ justifyContent: 'left', margin: '10px 10px 0 10px' }}
             key='sorter' 
             title={
-              <div>
-                <span style={{fontSize: '18px', color: 'var(--громкий-текст)'}}>
+              <div style={{ padding: '0 2.5vw 0 2.5vw', width: '92vw', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid var(--adm-border-color)', borderRadius: '8px' }}>
+                <span style={{fontSize: '18px', color: 'var(--громкий-текст)', margin: '10px', fontWeight: '400'}}>
                   {userStore.currentOrganizaion?.Name}
                 </span>
-                <br />
-                <span style={{fontSize: '12px', color: 'var(--тихий-текст)'}}>Уфа</span>
+                <LocationFill style={{ color: 'var(--gurmag-accent-color)', fontSize: '20px' }} />
               </div>
             }
           >
@@ -488,13 +501,30 @@ export const CartPage: React.FC = observer(
         {cart.isEmpty 
           ? null 
           : <div style={{width: '100%'}}>
-            <Divider contentPosition='left'>Способ доставки</Divider>
-            <Selector 
+            <p 
+              style={{
+                fontFamily: 'Roboto',
+                fontSize: '18px',
+                fontWeight: '700',
+                lineHeight: '21px',
+                letterSpacing: '0em',
+                textAlign: 'left', 
+                margin: '17px'
+              }}
+            >
+              Способ полученя заказа
+            </p>
+            <Selectable
+              options={cart.deliveryOptions}
+              value={[cart.receptionType]}
+              onChange={selected => cart.setReceptionType(selected)}
+            />
+            {/* <Selector
               style={{display: 'flex', justifyContent: 'center'}}
               options={cart.deliveryOptions}
               value={[cart.receptionType]}
               onChange={(arr) => cart.setReceptionType(arr[0])}
-            />
+            /> */}
             {cart.receptionType === 'pickup' 
               ? null
               : <>
@@ -508,56 +538,69 @@ export const CartPage: React.FC = observer(
                 </Form>
               </>
             }
-            <Divider contentPosition='left'>Контактный телефон</Divider>
-            <Input 
-              style={{ 
-                '--text-align': 'center', 
-                border: validationPhoneErr()?.length ?'1px solid var(--adm-color-warning)' : '', 
-                borderRadius: '100px'
+            <div 
+              style={{
+                margin: '30px 1rem 30px 1rem', 
+                width: 'calc(100% - 2rem)', 
+                display: 'grid', 
+                gridAutoColumns: '1fr', 
+                gridTemplateColumns: '1fr 1fr',  
+                gridTemplateRows: '1fr 1fr',  
+                gap: '18px 10px',  
+                gridTemplateAreas: `
+                  "contactsPhone phone"
+                  "orderTime time"
+                `
               }}
-              placeholder='Введите ваш номер'
-              onChange={(str) => setContactPhone(str)}
-              value={contactPhone}
-              type='tel'
-            />
-            {!validationPhoneErr()?.length 
-              ? null
-              : <span style={{color: 'var(--adm-color-warning)'}}>Введите номер телефона</span>
-            }
-          </div>
-        }
-        {cart.isEmpty 
-          ? null 
-          : <Form layout='horizontal' style={{width: '100%'}}>
-            <Form.Item 
-              label='Приготовить заказ ко времени:' 
-              childElementPosition='right' 
-              style={{"--align-items": 'center'}}
             >
-              <Space style={{"--gap": '1.25rem', fontSize: '20px'}}>
-                <span onClick={() => setVisibleDate(true)}>
-                  {moment(date).format('DD-MM-YYYY')}
-                </span>
-                <span onClick={() => setVisibleTime(true)}>
-                  {time}
-                </span>
-              </Space>
-            </Form.Item>
-          </Form>
+              <div style={{ gridArea: 'contactsPhone', alignSelf: 'center', fontSize: '16px', fontWeight: '500', color: 'var(--тихий-текст)' }}>Контактный телефон</div>
+              <div style={{ gridArea: 'phone', alignSelf: 'center', fontSize: '18px', fontWeight: '400', color: 'var(--громкий-текст)' }}>
+                <Input 
+                  style={{ 
+                    '--text-align': 'center', 
+                    border: validationPhoneErr()?.length ?'1px solid var(--adm-color-warning)' : '', 
+                    borderRadius: '100px'
+                  }}
+                  placeholder='Введите ваш номер'
+                  onChange={(str) => setContactPhone(str)}
+                  value={contactPhone}
+                  type='tel'
+                />
+                {!validationPhoneErr()?.length 
+                  ? null
+                  : <span style={{color: 'var(--adm-color-warning)'}}>Введите номер телефона</span>
+                }
+              </div>
+              <div style={{ gridArea: 'orderTime', alignSelf: 'center', fontSize: '16px', fontWeight: '500', color: 'var(--тихий-текст)' }}>Приготовить заказ ко времени:</div>
+              <div style={{ gridArea: 'time', alignSelf: 'center', fontSize: '18px', fontWeight: '400', color: 'var(--громкий-текст)' }}>
+                <Space style={{"--gap": '1.25rem', fontSize: '20px'}}>
+                  <span onClick={() => setVisibleDate(true)}>
+                    {moment(date).format('DD-MM-YYYY')}
+                  </span>
+                  <span onClick={() => setVisibleTime(true)}>
+                    {time}
+                  </span>
+                </Space>
+              </div>
+            </div>
+            
+          </div>
         }
 
         <Space 
           style={{ 
             width: '100%', 
             marginTop: '0.75rem', 
+            marginLeft: '27px', 
+            marginRight: '1rem', 
             "--gap": '0' 
           }} 
           justify='between' 
           align='center'
         >
-          <Space direction='vertical' style={{"--gap": '0'}}>
-            <span style={{fontSize: '14px'}}>Итого:</span>
-            <span style={{fontSize: '22px'}}>
+          <Space direction='vertical' style={{"--gap": '8px'}}>
+            <span style={{fontSize: '18px', color: 'var(--тихий-текст)', fontWeight: '700'}}>Итого:</span>
+            <span style={{fontSize: '20px', color: 'var(--громкий-текст)', fontWeight: '600'}}>
               {`${Math.ceil(cart.totalPrice * 10) / 10} ₽`}
             </span>
           </Space>
@@ -597,4 +640,56 @@ const skeletonStyle = {
   height: '100px', 
   borderRadius: '8px', 
   marginTop: '1rem'
+}
+
+const Selectable: React.FC<{
+  onChange: (selected: ReceptionType) => void,
+  value: ReceptionType[] | undefined, 
+  options: SelectorOption<ReceptionType>[]
+}> = ({ onChange, options, value }) => {
+
+  const [val, setVal] = React.useState<ReceptionType>(options[0].value)
+  return(
+    <div 
+      style={{ display: 'flex', justifyContent: 'center' }}
+    >
+      <div 
+        style={{
+          borderRadius: '100px',
+          overflow: 'hidden',
+          display: 'inline-flex',
+        }}
+      >
+        {options.map((option, index) => 
+          <div 
+            key={option.value}
+            style={{ 
+              fontSize: '12px',
+              fontWeight: '700',
+              lineHeight: '1',
+              padding: '13px 21px',
+              background: option.value === val ? '#017DC5' : 'none',
+              color: option.value === val ? 'white' : 'var(--tg-theme-text-color)', 
+              borderTopLeftRadius: index === 0 ? '100px' : '0',
+              borderBottomLeftRadius: index === 0 ? '100px' : '0',
+              borderTopRightRadius: index === options.length - 1 ? '100px' : '0',
+              borderBottomRightRadius: index === options.length - 1 ? '100px' : '0',
+              border: option.value !== val ? '1px solid #F2F2F2' : 'none', 
+              cursor: option.disabled ? 'not-allowed' : 'default', 
+              opacity: option.disabled ? '0.4' : '1'
+            }}
+            onClick={() => {
+              if(!option.disabled) {
+                setVal(option.value)
+                onChange(option.value)
+              }
+            }}
+
+          >
+            {option.label}
+          </div>
+        )}
+      </div>
+    </div>
+  )
 }
