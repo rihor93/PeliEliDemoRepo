@@ -351,53 +351,58 @@ export const CartPage: React.FC = observer(
           : null
         }
         <Страничка.Тело>
-        <p 
-          style={{
-            fontFamily: 'Roboto',
-            fontSize: '18px',
-            fontWeight: '700',
-            lineHeight: '21px',
-            letterSpacing: '0em',
-            textAlign: 'left', 
-            margin: '17px 17px 0 17px'
-          }}
-        >
-          Ждём тебя в предприятии:
-        </p>
-        <Dropdown>
-          <Dropdown.Item 
-            className='hui'
-            arrow={null}
-            style={{ justifyContent: 'left', margin: '10px 10px 0 10px' }}
-            key='sorter' 
-            title={
-              <div style={{ padding: '0 2.5vw 0 2.5vw', width: '92vw', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid var(--adm-border-color)', borderRadius: '8px' }}>
-                <span style={{fontSize: '18px', color: 'var(--громкий-текст)', margin: '10px', fontWeight: '400'}}>
-                  {userStore.currentOrganizaion?.Name}
-                </span>
-                <LocationFill style={{ color: 'var(--gurmag-accent-color)', fontSize: '20px' }} />
-              </div>
-            }
-          >
-            <div style={{ padding: 12 }}>
-              <Radio.Group 
-                defaultValue={userStore.currentOrg}
-                onChange={e => {
-                  userStore.currentOrg = e as number
-                  userStore.saveCurrentOrg(e as number)
-                }}
+        {cart.isEmpty 
+          ? null
+          : <>
+             <p 
+              style={{
+                fontFamily: 'Roboto',
+                fontSize: '18px',
+                fontWeight: '700',
+                lineHeight: '21px',
+                letterSpacing: '0em',
+                textAlign: 'left', 
+                margin: '17px 17px 0 17px'
+              }}
+            >
+              Ждём тебя в предприятии:
+            </p>
+            <Dropdown>
+              <Dropdown.Item 
+                className='hui'
+                arrow={null}
+                style={{ justifyContent: 'left', margin: '10px 10px 0 10px' }}
+                key='sorter' 
+                title={
+                  <div style={{ padding: '0 2.5vw 0 2.5vw', width: '92vw', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid var(--adm-border-color)', borderRadius: '8px' }}>
+                    <span style={{fontSize: '18px', color: 'var(--громкий-текст)', margin: '10px', fontWeight: '400'}}>
+                      {userStore.currentOrganizaion?.Name}
+                    </span>
+                    <LocationFill style={{ color: 'var(--gurmag-accent-color)', fontSize: '20px' }} />
+                  </div>
+                }
               >
-                <Space direction='vertical' block>
-                  {userStore.organizations.map((org) => 
-                    <Radio block value={org.Id} key={org.Id}>
-                      {org.Name}
-                    </Radio>
-                  )}
-                </Space>
-              </Radio.Group>
-            </div>
-          </Dropdown.Item>
-        </Dropdown>
+                <div style={{ padding: 12 }}>
+                  <Radio.Group 
+                    defaultValue={userStore.currentOrg}
+                    onChange={e => {
+                      userStore.currentOrg = e as number
+                      userStore.saveCurrentOrg(e as number)
+                    }}
+                  >
+                    <Space direction='vertical' block>
+                      {userStore.organizations.map((org) => 
+                        <Radio block value={org.Id} key={org.Id}>
+                          {org.Name}
+                        </Radio>
+                      )}
+                    </Space>
+                  </Radio.Group>
+                </div>
+              </Dropdown.Item>
+            </Dropdown>
+          </>
+        }
         {mainPage.isLoading && mainPage.cookIsLoading 
           ? preloader()
           : <>
