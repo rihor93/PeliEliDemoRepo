@@ -119,7 +119,10 @@ const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
                       </NavLink> */}
                       <p onClick={() => {
                         const course = mainPage.getDishByID(dish.VCode)
-                        if (course) mainPage.watchCourse(course)
+                        if (course) {
+                          mainPage.watchCourse(course)
+                          actionsPage.selectedAction = null;
+                        }
                       }} className='dish_link'>
                         {`👉 ${dish.Name}`}
                       </p>
