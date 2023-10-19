@@ -8,11 +8,9 @@ import { Modal } from "./MainPageStore";
 
 export class UserInfoStore {
   /** состояние запроса */
-  state: LoadStatesType = LoadStates.INITIAL;
-
-  get isLoading() { return this.state === 'LOADING' }
-  get isFailed() { return this.state === 'FAILED' }
-  get isDone() { return this.state === 'COMPLETED' }
+  orgstate: LoadStatesType = LoadStates.INITIAL;
+  userLoad: LoadStatesType = LoadStates.INITIAL;
+  saveOrgLoad: LoadStatesType = LoadStates.INITIAL;
 
 
   userState: UserInfoState = {
@@ -43,7 +41,7 @@ export class UserInfoStore {
   }
 
   async saveCurrentOrg(newOrgId: number) {
-    this.onStart();
+    this.saveOrgLoad = 'LOADING';
     const { userId } = useTelegram();
     try {
       const response: Undef<string> = await http.post(
@@ -52,10 +50,10 @@ export class UserInfoStore {
       )
       if(response) {
         logger.log('Организация успешно сменена', 'User-Info-Store');
-        this.onSuccess();
+        this.saveOrgLoad = 'COMPLETED'
       }
     } catch(err) {
-      this.onFailure()
+      this.saveOrgLoad = 'FAILED';
     }
   }
 
@@ -78,7 +76,7 @@ export class UserInfoStore {
     this: UserInfoStore,
     orgId: number
   ) {
-    this.onStart()
+    this.userLoad = 'LOADING'
     const { userId } = useTelegram();
     const response = yield http.get('/getUserInfo/' + userId + '/' + orgId)
 
@@ -116,36 +114,28 @@ export class UserInfoStore {
 
     // пересчитываем корзину 
     this.rootStore.cartStore.applyDiscountForCart(newState)
-    this.onSuccess()
+    this.userLoad = 'COMPLETED'
   })
 
   loadOrganizations = flow(function* (
     this: UserInfoStore
   ) {
-    this.onStart()
+    this.orgstate = 'LOADING';
     try {
       this.organizations = yield http.get('/GetOrgForWeb');
-      this.onSuccess();
+      this.orgstate = 'COMPLETED'
     } catch (err) {
-      this.onFailure('Не удалось сохранить домашнюю кухню(((((((((((((((');
+      const errStr = 'Не удалось загрузить организации'
+      logger.error(errStr, 'User-Info-Store')
+      Toast.show({
+        content: errStr, 
+        position: 'center'
+      })
     }
   })
 
-  onFailure(errStr?: string) {
-    logger.error(errStr, 'User-Info-Store')
-    Toast.show({
-      content: errStr, 
-      position: 'center'
-    })
-    this.state = 'FAILED';
-  }
 
-  onSuccess(successText?: string) {
-    if (successText) logger.log(successText, UserInfoStore.name);
-    this.state = 'COMPLETED';
-  }
 
-  onStart() { this.state = 'LOADING'; }
 
   get needAskAdress() {
     return this.selectedOrganizationID == 142 || this.selectedOrganizationID == 0

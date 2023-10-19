@@ -40,7 +40,7 @@ export class Store {
      * и взять сохраненную корзину
      */
     const whenAllReady = reaction(
-      () => [this.mainPage.state, this.mainPage.cookstate, this.userStore.state],
+      () => [this.mainPage.state, this.mainPage.cookstate, this.userStore.orgstate, this.userStore.userLoad],
       (vals, prevVals) => {
         if(!vals.map(val => val === 'COMPLETED').includes(false)) {
           // вспоминаем что сохранили в локал стораге
