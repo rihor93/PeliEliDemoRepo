@@ -9,6 +9,7 @@ import { Avatar, Divider, Ellipsis, Image, List, Popup, Rate, Result, Skeleton, 
 import { SmileOutline } from 'antd-mobile-icons';
 import moment from 'moment';
 import { CheckOutlined, PlusOutlined } from '@ant-design/icons';
+import * as uuid from 'uuid';
 
 
 export const Categories: React.FC = observer(() => {
@@ -180,7 +181,7 @@ export const CourseItemComponent: React.FC<{ course: CourseItem }> = observer(({
   return(
     <div className="course_item">
       <Image 
-        src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}&compression=true`} 
+        src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}&compression=true&random=${uuid.v4()}`} 
         onClick={() => mainPage.watchCourse(course)} 
         fallback={<img src={NoImageSmall} style={{objectFit: 'cover', width: '100%', height: '114px'}} onClick={() => mainPage.watchCourse(course)} />}
         placeholder={

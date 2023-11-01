@@ -7,6 +7,7 @@ import { Modal } from "../../../components"
 import { config } from "../../../configuration"
 import { useStore, useTheme } from "../../../hooks"
 import './ItemModal.css'
+import * as uuid from 'uuid';
 
 export const ItemModal: React.FC<{
   course: CourseItem
@@ -37,7 +38,7 @@ export const ItemModal: React.FC<{
       onHide={() => itemModal.close()}
     >
       <Image 
-        src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}`} 
+        src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}&random=${uuid.v4()}`} 
         fallback={<img src={NoImageBig} style={{objectFit: 'cover', width: '100%', height: '33vh'}} onClick={() => mainPage.watchCourse(course)} />}
         placeholder={
           <Space style={{ width: '100%', height: '33vh' }} justify='center' align='center'>

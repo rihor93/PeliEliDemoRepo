@@ -4,6 +4,7 @@ import { config } from "../../../configuration";
 import { replaceImgSrc } from "../../../helpers";
 import { useTheme } from "../../../hooks";
 import { Optional, Undef } from "../../../types";
+import * as uuid from 'uuid';
 
 const CartItem: React.FC<{
   courseInCart: CouseInCart,
@@ -33,7 +34,7 @@ const CartItem: React.FC<{
         }
       /> */}
       <img
-        src={`${config.apiURL}/api/v2/image/Material?vcode=${courseInCart.couse.VCode}&compression=true`}
+        src={`${config.apiURL}/api/v2/image/Material?vcode=${courseInCart.couse.VCode}&compression=true&random=${uuid.v4()}`}
         onError={replaceImgSrc(GurmagLogo)}
       />
       <div className='cartItemBody'>
