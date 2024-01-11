@@ -188,7 +188,12 @@ export const CartPage: React.FC = observer(
           (nowH * 60 + nowM) > 21 * 60 + 30 || 
           (nowH * 60 + nowM) < 9 * 60 + 30
         ) {
-          setDate(moment().add(1, 'day').toDate())
+          if((nowH * 60 + nowM) > 21 * 60 + 30) {
+            setDate(moment().add(1, 'day').toDate())
+          }
+          if((nowH * 60 + nowM) < 9 * 60 + 30) {
+            setDate(moment().toDate())
+          }
         }
         // сетаем оставшиеся раб часы
         fillHours(nowH, maxH)
