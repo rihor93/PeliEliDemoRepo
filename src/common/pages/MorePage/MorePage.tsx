@@ -10,7 +10,7 @@ import { EnvironmentOutlined, PhoneOutlined } from '@ant-design/icons';
 export const MorePage: React.FC = observer(() => {
   const tg = useTelegram();
   const navigate = useNavigate();
-  const { userStore } = useStore();
+  const { userStore, auth } = useStore();
   const [askedAddr, setAskedAddr] = React.useState(0)
   return (
     <Страничка>
@@ -63,6 +63,10 @@ export const MorePage: React.FC = observer(() => {
             </div>
           </Popup>
         : null
+      }
+      {auth.isFailed
+        ? <div style={{height: '58px'}} />
+        : null 
       }
       <ul className='moreList'>
         <li>

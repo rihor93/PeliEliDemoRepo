@@ -4,17 +4,15 @@ import React from 'react';
 import { useStore } from '../../hooks';
 import { food, gurmag_big } from '../../../assets';
 import { observer } from 'mobx-react-lite';
-import { ErrorPage } from '../../components';
 import { config } from '../../configuration';
 import { replaceImgSrc } from '../../helpers';
 import WatchCampaignModal from './modals/WatchCampaignModal';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Modals } from '../MenuPage/modals';
 import { Button, Divider, Popup, Radio, Space, Toast } from 'antd-mobile';
-import * as uuid from 'uuid'
 
 export const ActionsPage: React.FC = observer(() => {
-  const { actionsPage, userStore, auth, mainPage } = useStore();
+  const { actionsPage, userStore, auth, mainPage, session } = useStore();
   const { categories, visibleCategory, selectedAction, watchAction } = actionsPage;
 
   const { selectedCourse } = mainPage;
@@ -78,6 +76,10 @@ export const ActionsPage: React.FC = observer(() => {
   return (
     <Страничка>
       <div style={{height: '55px'}} />
+      {auth.isFailed
+        ? <div style={{height: '58px'}} />
+        : null 
+      }
       {userStore.needAskAdress 
         ? <Popup 
             visible={userStore.needAskAdress} 
@@ -158,18 +160,38 @@ export const ActionsPage: React.FC = observer(() => {
           <p style={{ marginTop: '15px', marginBottom: '10px' }}>{`Вам доступно ${userBonuses.toFixed(2)} бонусных балов!`}</p>
         </div>
       }
-      {!auth.isAuthorized
-        ? <ErrorPage text='Telegram идентификатор не был получен( Кажется вы зашли сюда не через телеграм' />
-        : <>
-          <section className='page_action_types'>
+      
+
+      <section className='page_action_types'>
+        <ul className="action_types_list">
+
+          {categories.map((category, index) => {
+            const isActive = index === 0;
+            return (
+              <li
+                className={`action_type ${isActive ? 'active' : ''}`}
+                key={`action_type_${index}`}
+                onClick={() => NavigateTo(category)}
+              >
+                {category}
+              </li>
+            )
+          })}
+        </ul>
+      </section>
+      {!isScrolled
+        ? null
+        : (
+          <section className='page_action_types overlayed2' style={{ top: auth.isFailed ? "103px": "45px" }}>
             <ul className="action_types_list">
 
               {categories.map((category, index) => {
-                const isActive = index === 0;
+                const isActive = actionsPage.visibleCategory == category;
+
                 return (
                   <li
                     className={`action_type ${isActive ? 'active' : ''}`}
-                    key={`action_type_${index}`}
+                    key={`fixed_action_type_${index}`}
                     onClick={() => NavigateTo(category)}
                   >
                     {category}
@@ -178,65 +200,48 @@ export const ActionsPage: React.FC = observer(() => {
               })}
             </ul>
           </section>
-          {!isScrolled
-            ? null
-            : (
-              <section className='page_action_types overlayed2'>
-                <ul className="action_types_list">
-
-                  {categories.map((category, index) => {
-                    const isActive = actionsPage.visibleCategory == category;
-
-                    return (
-                      <li
-                        className={`action_type ${isActive ? 'active' : ''}`}
-                        key={`fixed_action_type_${index}`}
-                        onClick={() => NavigateTo(category)}
-                      >
-                        {category}
-                      </li>
-                    )
-                  })}
-                </ul>
-              </section>
-            )
-          }
-          <section className='actions'>
-            {categories.map((category, index) =>
-              <div key={category + '-' + index} id={category}>
-                <h1>{category}</h1>
-                <div className="actions_list">
-                  {index === 0 &&
-                    <p style={{ marginLeft: '20px' }}>Персональных акций нет</p>
-                  }
-                  {index === 1 &&
-                    allCampaign.map((actia, index) =>
-                      <div
-                        className="action_item"
-                        key={`${category}-${actia.VCode}-${index}`}
-                      >
-                        <img
-                          className='action_img'
-                          src={config.apiURL + '/api/v2/image/Disount?vcode=' + actia.VCode + '&compression=true' + '&random=' + uuid.v4()}
-                          onError={replaceImgSrc(gurmag_big)}
-                          onClick={() => {
-                            watchAction(actia)
-                            navigate('/actions/' + actia.VCode)
-                          }}
-                        />
-                        <h3>{actia.Name.replace(/ *\{[^}]*\} */g, "")}!</h3>
-                        <p>{actia.Description.replace(/ *\{[^}]*\} */g, "")}</p>
-                      </div>
-                    )
-                  }
-                </div>
-              </div>
-            )}
-
-            <div style={{ height: '70px' }} />
-          </section>
-        </>
+        )
       }
+      <section className='actions'>
+        {categories.map((category, index) =>
+          <div key={category + '-' + index} id={category}>
+            <h1>{category}</h1>
+            <div className="actions_list">
+              {index === 0 &&
+                <p style={{ marginLeft: '20px' }}>Персональных акций нет</p>
+              }
+              {index === 1 &&
+                allCampaign.map((actia, index) =>
+                  <div
+                    className="action_item"
+                    key={`${category}-${actia.VCode}-${index}`}
+                  >
+                    <img
+                      className='action_img'
+                      src={config.apiURL 
+                        + '/api/v2/image/Disount?vcode=' 
+                        + actia.VCode 
+                        + '&compression=true' 
+                        + '&random=' 
+                        + session
+                      }
+                      onError={replaceImgSrc(gurmag_big)}
+                      onClick={() => {
+                        watchAction(actia)
+                        navigate('/actions/' + actia.VCode)
+                      }}
+                    />
+                    <h3>{actia.Name.replace(/ *\{[^}]*\} */g, "")}!</h3>
+                    <p>{actia.Description.replace(/ *\{[^}]*\} */g, "")}</p>
+                  </div>
+                )
+              }
+            </div>
+          </div>
+        )}
+
+        <div style={{ height: '70px' }} />
+      </section>
     </Страничка>
   )
 })

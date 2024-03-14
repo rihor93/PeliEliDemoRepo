@@ -25,7 +25,7 @@ export const CartPage: React.FC = observer(
     const handler = React.useRef<ToastHandler>()
     const { userId } = useTelegram();
     const navigate = useNavigate();
-    const { cartStore: cart, userStore, mainPage } = useStore();
+    const { cartStore: cart, userStore, mainPage, auth } = useStore();
     /** Если надо спросить домашнюю кухню */
     const [askedAddr, setAskedAddr] = React.useState(0);
 
@@ -355,7 +355,12 @@ export const CartPage: React.FC = observer(
             </Popup>
           : null
         }
+        {auth.isFailed
+          ? <div style={{height: '58px'}} />
+          : null 
+        }
         <Страничка.Тело>
+        
         {cart.isEmpty 
           ? null
           : <>

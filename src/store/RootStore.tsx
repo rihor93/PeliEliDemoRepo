@@ -5,8 +5,15 @@ import { UserInfoStore } from "./stores/UserInfoStore";
 import { getItem, logger } from "../common/features";
 import { ActionsPageStore } from "./stores/ActionsStore";
 import { useTelegram } from "../common/hooks";
+import * as uuid from 'uuid';
 
 export class Store {
+  /**
+   * просто рандом который генерируется при каждом входе
+   * в приложение, чтобы картинки кэшировались только 
+   * в рамках одной сессии приложения 
+   */
+  session = uuid.v4()
   /** видна ли поисковая строка в навбаре */
   searchInputVisible = false
   /** показываем или скрываем поисковую строку */
@@ -25,15 +32,39 @@ export class Store {
   constructor() { 
     makeAutoObservable(this);
     /** подписка на авторизацию  */
-    const dispose = reaction(
+    const disposeToAuth = reaction(
       () => this.auth.isAuthorized,
       (value, prevValue) => {
+        // действия выполнятся только если мы авторизовались
         if (value === true && prevValue === false) {
-          this.afterAuthorized()
-          this.userStore.loadUserInfo(0)
+          const { userId } = useTelegram()
+          this.userStore.loadOrdersHistory(userId)
         }
       }
     );
+
+    /** подписка при не прошедшей авторизации */
+    const disposeToFailedAuth = reaction(
+      () => this.auth.isFailed,
+      (val, prev) => {
+        if(val === true && prev === false) {
+          const first = this.userStore.organizations[0]
+          if(first) {
+            this.userStore.currentOrg = first.Id
+            this.mainPage.loadCooks(first.Id);
+            this.mainPage.loadMenu(first.Id);
+            const { userId } = useTelegram()
+            if(userId) {
+              this.userStore.loadUserInfo(first.Id, userId)
+            } else {
+              this.userStore.loadUserInfo(first.Id, "0")
+            }
+          } else {
+            logger.log("Список организаций пустой!!!", "root-store")
+          }
+        }
+      }
+    )
     /**
      * Когда все загрузится можем
      * зайти в localstorage
@@ -66,32 +97,30 @@ export class Store {
     const whenUsersOrgHasBeenSaved = reaction(
       () => this.userStore.currentOrg,
       (value, prevValue) => {
-        logger.log('Org_id изменился - загружаем другие скидки loadUserInfo', 'rootStore')
-        if(prevValue !== value) {
-          this.mainPage.loadCooks(value);
-          this.mainPage.loadMenu(value);
-          this.userStore.loadUserInfo(value);
+        // если мы авторизованы спокойно грузим все остальное
+        if(this.auth.isAuthorized) {
+          logger.log('Org_id изменился - загружаем другие скидки loadUserInfo', 'rootStore')
+          if(prevValue !== value) {
+            this.mainPage.loadCooks(value);
+            this.mainPage.loadMenu(value);
+            this.userStore.loadUserInfo(value, this.auth.tg_user_ID);
+          }
         }
       }
     )
     
-    this.subscriptions.push(dispose);
+    this.subscriptions.push(disposeToAuth);
+    this.subscriptions.push(disposeToFailedAuth);
     this.subscriptions.push(whenAllReady);
     this.subscriptions.push(whenUsersOrgHasBeenSaved);
     this.afterLoaded()
   }
-  // Загружаются данные связаные с учеткой
-  afterAuthorized() {
-    const { userId } = useTelegram()
-    this.userStore.loadOrdersHistory(userId)
-    logger.log('мы авторизовались', "root-store");
-  }
 
   // Загружаются общие данные, главные страницы и т.д.
-  afterLoaded() {
+  async afterLoaded() {
     logger.log('страница загружена', "root-store")
-    this.userStore.loadOrganizations();
-    this.auth.authorize();
+    await this.userStore.loadOrganizations();
+    await this.auth.authorize();
   }
 
   onDestroy() {

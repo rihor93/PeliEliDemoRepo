@@ -74,10 +74,10 @@ export class UserInfoStore {
 
   loadUserInfo = flow(function* (
     this: UserInfoStore,
-    orgId: number
+    orgId: number,
+    userId: any
   ) {
     this.userLoad = 'LOADING'
-    const { userId } = useTelegram();
     const response = yield http.get('/getUserInfo/' + userId + '/' + orgId)
 
     const {
@@ -115,6 +115,7 @@ export class UserInfoStore {
     // пересчитываем корзину 
     this.rootStore.cartStore.applyDiscountForCart(newState)
     this.userLoad = 'COMPLETED'
+    return response?.UserInfo || null
   })
 
   loadOrganizations = flow(function* (

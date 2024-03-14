@@ -7,13 +7,15 @@ import { Checker } from './AuthChecker';
 import { 
   ActionsPage, 
   CartPage, 
+  LoginPage, 
   MainPage, 
   MenuPage, 
   MorePage, 
   OrdersPage, 
-  ProfilePage 
+  ProfilePage, 
+  RegistrationPage
 } from '../../pages';
-import { FC } from 'react';
+import { CSSProperties, FC } from 'react';
 
 const routes: Array<{
   path: string,
@@ -74,14 +76,23 @@ const routes: Array<{
       path: '/addrs',
       private: true,
       element: <AddrsPage />
+    },
+    {
+      path: '/login',
+      private: false,
+      element: <LoginPage />
+    },
+    {
+      path: '/registration',
+      private: false,
+      element: <RegistrationPage />
     }
   ]
 
 export const Router: FC = () => 
   <BrowserRouter>
     <div style={styles.app}>
-      {/* @ts-ignore */}
-      <div style={styles.top}>
+      <div style={styles.top as CSSProperties}>
         <Top />
       </div>
       <div style={styles.body}>
@@ -98,8 +109,7 @@ export const Router: FC = () =>
           )}
         </Routes>
       </div>
-      {/* @ts-ignore */}
-      <div style={styles.bottom}>
+      <div style={styles.bottom as CSSProperties}>
         <Bottom />
       </div>
     </div>
@@ -150,6 +160,7 @@ import { observer } from 'mobx-react-lite';
 import { AddrsPage } from '../../pages/AddrsPage/AddrsPage';
 import { WatchOrderDetailModal } from '../../pages/OrdersPage/WatchOrderHistory';
 import { HomeOutlined, ShoppingCartOutlined } from '@ant-design/icons';
+import { AuthRequired } from '../ui/authRecuredBtn';
 
 const tabs = {
   top: [
@@ -180,6 +191,14 @@ const tabs = {
     {
       key: '/profile',
       title: 'Профиль',
+    },
+    {
+      key: '/login',
+      title: 'Вход',
+    },
+    {
+      key: '/registration',
+      title: 'Регистрация',
     }
   ], 
 }
@@ -345,6 +364,7 @@ const Top: FC = observer(() => {
           : currentTab?.title ?? 'Корзина'
         }
       </NavBar>
+      <AuthRequired show={stor.auth.isFailed}/>
     </>
 })
 

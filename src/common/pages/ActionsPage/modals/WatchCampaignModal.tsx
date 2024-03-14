@@ -5,12 +5,11 @@ import { config } from "../../../configuration";
 import { useStore } from "../../../hooks";
 import { Optional, Undef } from "../../../types";
 import './WatchCampaignModal.css';
-import * as uuid from 'uuid'
 import { Image, Popup, Space, SpinLoading } from 'antd-mobile';
 interface CampaignProp { campaign: AllCampaignUser };
 const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
 
-  const { actionsPage, userStore, mainPage } = useStore();
+  const { actionsPage, userStore, mainPage, session } = useStore();
   const { watchActionModal } = actionsPage;
 
   /** ищем детали для этой скидки в скидках на блюда */
@@ -78,7 +77,13 @@ const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
         {`🎁${campaign.Name.replace(/ *\{[^}]*\} */g, "")}!!!`}
       </h3>
       <Image 
-        src={config.apiURL + '/api/v2/image/Disount?vcode=' + campaign.VCode + '&compression=true'  + '&random=' + uuid.v4()}
+        src={config.apiURL 
+          + '/api/v2/image/Disount?vcode=' 
+          + campaign.VCode 
+          + '&compression=true'  
+          + '&random=' 
+          + session
+        }
         fallback={<img src={gurmag_big} style={{
           width: 'calc(100%)', 
           minHeight: 'auto', 

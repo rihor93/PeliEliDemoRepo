@@ -2,9 +2,10 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '../../../../hooks';
 import React from 'react';
 import './FilterBar.css';
+import { Skeleton } from 'antd-mobile';
 
 export const Filter: React.FC = observer(() => {
-  const { mainPage } = useStore();
+  const { mainPage, auth } = useStore();
   const {
     categories,
     visibleCategory, 
@@ -61,26 +62,40 @@ export const Filter: React.FC = observer(() => {
       <>
         <section className='filter page_filter'>
           <ul className="filter_list">
-  
-            {categories.map((category, index) => {
-              const isActive = mainPage.visibleCategory == String(category.VCode);
-  
-              return (
-                <li
-                  className={`filter_item ${isActive ? 'active' : ''}`}
-                  key={`filter_item_${index}`}
-                  onClick={() => NavigateTo(String(category.VCode))}
-                >
-                  {category.Name}
-                </li>
+            {mainPage.state === 'COMPLETED'
+              ? categories.map((category, index) => {
+                const isActive = mainPage.visibleCategory == String(category.VCode);
+    
+                return (
+                  <li
+                    className={`filter_item ${isActive ? 'active' : ''}`}
+                    key={`filter_item_${index}`}
+                    onClick={() => NavigateTo(String(category.VCode))}
+                  >
+                    {category.Name}
+                  </li>
+                )
+              })
+              : new Array(8).fill(null).map((_, index)=> 
+                <Skeleton 
+                  key={index}
+                  animated
+                  style={{
+                    width: `${Math.random() * (150 - 70) + 70}px`,
+                    height: "35px", 
+                    borderRadius: "24px",
+                    marginBottom: "8px",
+                    marginRight: "8px",
+                  }} 
+                />
               )
-            })}
+            }
           </ul>
         </section>
         {!isScrolled
           ? null
           : (
-            <section className='filter page_filter overlayed'>
+            <section className='filter page_filter overlayed' style={{ top: auth.isFailed ? "103px": "45px" }}>
               <ul className="filter_list">
   
                 {categories.map((category, index) => {
@@ -121,11 +136,11 @@ function NavigateTo(categoryID: string) {
   if (el && body) {
     // смещение по высоте, которое надо добавить 
     // из-за фиксированного меню
-    let FILTERBAR_OFFSET = 90
+    let FILTERBAR_OFFSET = 120
 
     window.scrollTo({
       top: (el.top - body.top) - FILTERBAR_OFFSET,
-      behavior: 'smooth'
+      behavior: 'auto'
     })
   }
 }

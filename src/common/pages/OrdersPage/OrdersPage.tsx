@@ -7,7 +7,6 @@ import { GurmagLogo } from "../../../assets";
 import { config } from "../../configuration";
 import { replaceImgSrc } from "../../helpers";
 import { useStore } from "../../hooks";
-import * as uuid from 'uuid';
 
 const OrderStatusColors = {
   'Создан': 'default',
@@ -25,7 +24,7 @@ const PaymentStatusColors = {
 
 const W100 = {width: '100%'}
 export const OrdersPage: FC = observer(() => {
-  const { userStore } = useStore()
+  const { userStore, session } = useStore()
   const navigate = useNavigate()
   const onBack = () => {navigate(-1)}
   return(
@@ -104,7 +103,7 @@ export const OrdersPage: FC = observer(() => {
                     borderRadius: '8px',
                     marginRight: '0.25rem'
                   }}
-                  src={`${config.apiURL}/api/v2/image/Material?vcode=${item.CourseCode}&compression=true&random=${uuid.v4()}`}
+                  src={`${config.apiURL}/api/v2/image/Material?vcode=${item.CourseCode}&compression=true&random=${session}`}
                   onError={replaceImgSrc(GurmagLogo)}
                 />
               )}

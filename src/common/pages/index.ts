@@ -6,3 +6,5 @@ export * from './ActionsPage/ActionsPage';
 export * from './MainPage/MainPage';
 export * from './MorePage/MorePage';
 export * from './OrdersPage/OrdersPage';
+export * from './LoginPage/LoginPage';
+export * from "./RegistrationPage/RegistrationPage";

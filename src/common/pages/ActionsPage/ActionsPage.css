@@ -2,17 +2,16 @@
   width: 100%;
   position: relative;
   padding: 0 10px;
+  background: var(--tg-theme-bg-color); 
 }
 
 .overlayed2 {
   top: 45px;
   z-index: 1;
   position: fixed;
-  animation-name: Aaaaa;
+  animation-name: fadeIn;
   animation-duration: 0.5s;
-  background: var(--tg-theme-bg-color);
   border-bottom: solid 1px var(--adm-color-border);
-  z-index: 2;
 }
 
 .overlayed>.action_types {
@@ -75,12 +74,12 @@
 }
 
 
-@keyframes Aaaaa {
+@keyframes fadeIn {
   from {
     opacity: 0;
-    top: 0px;
+    top: -50px;
   }
-
+  
   to {
     opacity: 1;
     top: 45px;

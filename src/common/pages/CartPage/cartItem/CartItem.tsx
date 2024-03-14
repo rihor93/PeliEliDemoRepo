@@ -1,10 +1,9 @@
 import { observer } from "mobx-react-lite";
-import { CrossLight, CrossDark, GurmagLogo, LightMinus, DarkMinus, LightPlus, DarkPlus } from "../../../../assets";
+import { GurmagLogo, LightMinus, DarkMinus, LightPlus, DarkPlus } from "../../../../assets";
 import { config } from "../../../configuration";
 import { replaceImgSrc } from "../../../helpers";
-import { useTheme } from "../../../hooks";
+import { useStore, useTheme } from "../../../hooks";
 import { Optional, Undef } from "../../../types";
-import * as uuid from 'uuid';
 
 const CartItem: React.FC<{
   courseInCart: CouseInCart,
@@ -13,28 +12,16 @@ const CartItem: React.FC<{
   campaignAllInfo: Undef<AllCampaignUser>,
   text: Optional<string>
 }> = observer(({ courseInCart, add, remove, ...rest }) => {
+  const { session } = useStore()
   const { theme } = useTheme();
   const isDarkMode = theme === 'dark';
-  // const onClose = () => {
-  //   for (let i = 0; i < courseInCart.quantity; i++) {
-  //     remove()
-  //   }
-  // }
 
   const { campaignAllInfo, text } = rest
   
   return (
     <div className='cartItem'>
-      {/* <img
-        onClick={onClose}
-        className='closeButton'
-        src={isDarkMode
-          ? CrossLight
-          : CrossDark
-        }
-      /> */}
       <img
-        src={`${config.apiURL}/api/v2/image/Material?vcode=${courseInCart.couse.VCode}&compression=true&random=${uuid.v4()}`}
+        src={`${config.apiURL}/api/v2/image/Material?vcode=${courseInCart.couse.VCode}&compression=true&random=${session}`}
         onError={replaceImgSrc(GurmagLogo)}
       />
       <div className='cartItemBody'>

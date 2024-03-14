@@ -1,4 +1,5 @@
 import { makeAutoObservable } from "mobx";
+import { logger } from "../../common/features";
 import { useTelegram } from "../../common/hooks";
 import { Optional } from "../../common/types";
 import { Store } from "../RootStore";
@@ -33,6 +34,9 @@ export class AuthStore {
   get isAuthorized() {
     return this.state === AuthStates.AUTHORIZED;
   }
+  get isFailed() {
+    return this.state === AuthStates.NOT_AUTHORIZED;
+  }
 
   get isAuthorizing() {
     return this.state === AuthStates.AUTHORIZING;
@@ -43,14 +47,24 @@ export class AuthStore {
   }
 
   /** тут мы авторизуемся */
-  authorize() {
+  async authorize() {
     this.setState('AUTHORIZING')
     const { userId } = useTelegram();
     if(!userId) {
+      logger.log("Мы в браузере", "auth-store")
+      logger.log("Мы не авторизованы", "auth-store")
       this.setState('NOT_AUTHORIZED')
     } else {
-      this.setState('AUTHORIZED')
-      this.tg_user_ID = userId
+      logger.log("Мы в телеграме", "auth-store")
+      const UserInfo = await this.rootStore.userStore.loadUserInfo(0, userId)
+      if(UserInfo) {
+        this.setState('AUTHORIZED')
+        logger.log("Мы авторизованы", "auth-store")
+        this.tg_user_ID = userId
+      } else {
+        logger.log("Мы не авторизованы", "auth-store")
+        this.setState('NOT_AUTHORIZED')
+      }
     }
   }
 }

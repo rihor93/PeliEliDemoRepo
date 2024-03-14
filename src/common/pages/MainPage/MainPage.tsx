@@ -1,208 +1,51 @@
 import { 
-  Toast, 
-  Swiper, 
   Divider, 
   Skeleton, 
   Footer, 
   Avatar, 
   Space, 
   Rate, 
-  Dropdown, 
-  Radio, 
-  Popup, 
-  Button, 
+  Popup,  
   Result, 
   Ellipsis, 
   List,
-  Image,
 } from "antd-mobile"
 import { observer } from "mobx-react-lite"
-import { useState } from "react";
-import { gurmag_big } from '../../../assets';
-import { Page } from "../../components";
+import React from "react";
+import { AuthRequiredButton, Carusel, ChangeLocation, Page, SelectLocationPopup } from "../../components";
 import { config } from '../../configuration';
-import { replaceImgSrc } from '../../helpers';
 import { useStore } from '../../hooks';
 import { ItemModal } from "../MenuPage/modals/ItemModal";
 import './MainPage.css';
 import { FC } from 'react';
 import moment from "moment";
-import { ClockCircleOutline, LocationFill } from "antd-mobile-icons";
-import * as uuid from 'uuid'
+import { ClockCircleOutline } from "antd-mobile-icons";
 import { CourseItemComponent } from "../MenuPage/sections/Categories";
 import WatchCampaignModal from "../ActionsPage/modals/WatchCampaignModal";
 
 
 export const MainPage: FC = observer(() => { 
-  const { userStore, actionsPage, mainPage } = useStore();
+  const { userStore, actionsPage, mainPage, auth } = useStore();
 
   const { selectedCourse, state, cookstate } = mainPage;
 
-
-  const { allCampaign } = userStore.userState; 
-
-  // const navigate = useNavigate();
-
-  const [askedAddr, setAskedAddr] = useState(0)
   return(
     <Page>
       {selectedCourse 
         ? <ItemModal course={selectedCourse} />
         : null
       }
-      {userStore.orgstate === 'COMPLETED' && userStore.needAskAdress 
-        ? <Popup 
-            visible={userStore.needAskAdress} 
-            onMaskClick={() => {
-              Toast.show({
-                content: 'Пожалуйста, выберите местоположение',
-                position: 'center',
-              })
-            }}
-            bodyStyle={{
-              borderTopLeftRadius: '8px',
-              borderTopRightRadius: '8px',
-              padding:'0 0.5rem 0.5rem 0.5rem'
-            }}
-          >
-            <div>
-              <Divider>Выберите вашу домашнюю кухню:</Divider>
-              <Radio.Group 
-                onChange={e => setAskedAddr(e as number)}
-              >
-                <Space direction='vertical' block>
-                  {userStore.organizations.map((org) => 
-                    <Radio block value={org.Id} key={org.Id}>
-                      {org.Name}
-                    </Radio>
-                  )}
-                </Space>
-              </Radio.Group>
-              <Button 
-                block 
-                color='primary' 
-                size='large'
-                className="mt-1"
-                onClick={() => {
-                  if(askedAddr == 142 || askedAddr == 0) {
-                    Toast.show({
-                      content: 'Выберите местоположение',
-                      position: 'center',
-                    })
-                  } else {
-                    userStore.currentOrg = askedAddr;
-                    userStore.saveCurrentOrg(askedAddr)
-                  }
-                }}
-              >
-                Сохранить
-              </Button>
-            </div>
-          </Popup>
-        : (
-          <Dropdown>
-            <Dropdown.Item 
-              key='sorter' 
-              arrow={null}
-              style={{ justifyContent: 'left', margin: '10px 10px 0 10px' }}
-              title={
-                <>
-                  {userStore.orgstate === 'COMPLETED' 
-                    ? <> 
-                      <p style={{ fontSize: '18px', color: 'var(--громкий-текст)', fontWeight: '500' }}>Добрый день!</p>
-                      <br />
-                      <p style={{ fontSize: '15px', color: 'var(--тихий-текст)', fontWeight: '500' }} >Ваша домашняя кухня:</p>
-                      <br />
-                      <div style={{ padding: '0 2.5vw 0 2.5vw', width: '86vw', display: 'flex', justifyContent: 'space-between', alignItems: 'center', border: '1px solid var(--adm-border-color)', borderRadius: '8px' }}>
-                        <span style={{fontSize: '18px', color: 'var(--громкий-текст)', margin: '10px', fontWeight: '400'}}>
-                          {userStore.currentOrganizaion?.Name}
-                        </span>
-                        <LocationFill style={{ color: 'var(--gurmag-accent-color)', fontSize: '20px' }} />
-                      </div>
-                    </> 
-                    : <>
-                      <Skeleton animated style={{ marginTop: '0', marginLeft: '0', height: '18px', width: '150px' }} />
-                      <br />
-                      <Skeleton animated style={{ marginTop: '0', marginLeft: '0', height: '15px', width: '200px' }} />
-                      <br />
-                      <div
-                        style={{
-                          height: '40px', 
-                          width: '86vw', 
-                          display: 'flex',
-                          justifyContent: 'space-between',
-                          alignItems: 'center',
-                          border: '1px solid var(--adm-border-color)',
-                          borderRadius: '8px',
-                        }}
-                      >
-                        <Skeleton animated style={{ height: '18px', width: '200px', margin: '10px' }} />
-                        <Skeleton animated style={{ height: '18px', width: '18px', margin: '10px' }} />
-                      </div>
-                    </>
-                  }
-                </>
-              }
-            >
-              <div style={{ padding: 12 }}>
-                <Radio.Group 
-                  defaultValue={userStore.currentOrg}
-                  onChange={e => {
-                    userStore.currentOrg = e as number
-                    userStore.saveCurrentOrg(e as number)
-                  }}
-                >
-                  <Space direction='vertical' block>
-                    {userStore.organizations.map((org) => 
-                      <Radio block value={org.Id} key={org.Id}>
-                        {org.Name}
-                      </Radio>
-                    )}
-                  </Space>
-                </Radio.Group>
-              </div>
-            </Dropdown.Item>
-          </Dropdown>
-        )
+      <AuthRequiredButton show={auth.isFailed} />
+      {userStore.orgstate === 'COMPLETED'
+        && userStore.userLoad === 'COMPLETED' 
+        && userStore.needAskAdress 
+        ? <SelectLocationPopup />
+        : <ChangeLocation />
       }
-      {actionsPage.selectedAction && <WatchCampaignModal campaign={actionsPage.selectedAction} />}
-        <Swiper 
-          loop
-          autoplay
-          style={{
-            borderRadius: '8px', 
-            margin: '0.5rem',
-            width: 'calc(100% - 1rem)'
-          }}
-        >
-          {userStore.userLoad === 'COMPLETED' 
-            ? allCampaign.map((campaign, index) => 
-              <Swiper.Item key={index}>
-                <Image 
-                  src={config.apiURL + '/api/v2/image/Disount?vcode=' + campaign.VCode + '&random=' + uuid.v4()} 
-                  onClick={() => {
-                    actionsPage.watchAction(campaign)
-                  }} 
-                  placeholder={<Skeleton animated style={{ width: '100%', height: '204px' }} />}
-                  fallback={
-                    <img src={gurmag_big} style={{objectFit: 'cover', width: '100%', height: 'auto'}}/>
-                  }
-                  alt={campaign.Name} 
-                  fit='contain'
-                  style={{
-                    objectFit: 'contain',
-                    "--width": '100%',  
-                    "--height": 'auto',
-                    display: 'flex'
-                  }}
-                />
-              </Swiper.Item>
-            )
-            : <Swiper.Item>
-              <Skeleton animated style={{ width: '100%', height: '204px' }} />
-            </Swiper.Item>
-          }
-        </Swiper>
+      {actionsPage.selectedAction 
+        && <WatchCampaignModal campaign={actionsPage.selectedAction} />
+      }
+        <Carusel />
         
         {cookstate === 'COMPLETED'
           ? <>
@@ -497,9 +340,26 @@ export const MainPage: FC = observer(() => {
 
 const Cook: FC<{ cook: Cook }> = observer(({ cook }) => {
   const { mainPage } = useStore();
+
+  const wrapperStyle = { 
+    width: '33%', 
+    margin: '0 0.25rem', 
+    '--gap': '3px', 
+  }
+  const avatarStyle = {
+    width: '70px', 
+    height: '70px', 
+    borderRadius: '35px', 
+    objectFit: 'cover',
+    border: '2px solid var(--tg-theme-text-color)'
+  }
+  const cookNameStyle = {
+    color: 'var(--громкий-текст)', 
+    fontSize: '18px'
+  }
   return(
     <Space 
-      style={{ '--gap': '3px', width: '33%', margin: '0 0.25rem' }}
+      style={wrapperStyle}
       direction="vertical" 
       justify="center" 
       align="center" 
@@ -508,15 +368,9 @@ const Cook: FC<{ cook: Cook }> = observer(({ cook }) => {
     >
       <Avatar 
         src={config.apiURL + '/api/v2/image/Cook?vcode=' + cook.UserId} 
-        style={{
-          width: '70px', 
-          height: '70px', 
-          borderRadius: '35px', 
-          objectFit: 'cover',
-          border: '2px solid var(--tg-theme-text-color)'
-        }}
+        style={avatarStyle as React.CSSProperties}
       />
-      <span style={{color: 'var(--громкий-текст)', fontSize: '18px'}}>{cook.FirstName}</span>
+      <span style={cookNameStyle}>{cook.FirstName}</span>
       <Ellipsis 
         content={cook.NameWork} 
         style={{
