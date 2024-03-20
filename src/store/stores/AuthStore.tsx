@@ -1,5 +1,5 @@
 import { Dialog } from "antd-mobile";
-import { ExclamationCircleFill } from "antd-mobile-icons";
+import { ExclamationCircleFill, GiftOutline } from "antd-mobile-icons";
 import { makeAutoObservable } from "mobx";
 import { http, logger } from "../../common/features";
 import { useTelegram } from "../../common/hooks";
@@ -221,9 +221,22 @@ export class AuthStore {
     if(result?.Status === 'complite') {
       this.setState('AUTHORIZED')
       this.setCurrentStage('authorized_successfully')
+      Dialog.alert({
+        header: (<GiftOutline style={{ fontSize: 64, color: 'var(--adm-color-success)' }}/>),
+        title: 'Вы зарегестрированы',
+        content: <p>{result?.Message}</p>,
+        confirmText: 'Отлично',
+      })
+      const COrg = this.rootStore.userStore.currentOrg
+      this.rootStore.userStore.loadUserInfo(COrg, userId)
     } else {
-      // ... try again, something went wrong
+      Dialog.alert({
+        header: (<ExclamationCircleFill style={{ fontSize: 64, color: 'var(--adm-color-warning)' }}/>),
+        title: 'Не удалось зарегестрироваться',
+        confirmText: 'Понятно',
+      })
       this.setCurrentStage('input_tel_number') 
+      throw new Error("Не удалось зарегестрироваться")
     }
   }
 

@@ -1,10 +1,11 @@
-import { Button, Dropdown, PasscodeInput, Radio, Space, SpinLoading } from 'antd-mobile';
+import { Button, Dropdown, PasscodeInput, Radio, Space, SpinLoading, Toast } from 'antd-mobile';
 import { Input } from 'antd-mobile/es/components/input/input';
 import { observer } from 'mobx-react-lite';
 import { useState, FC } from "react";
 import {getFormattedNumber, useMask} from "react-phone-hooks";
 import { useStore } from '../../hooks';
 import React from 'react';
+import { useNavigate } from 'react-router';
 
 const defaultMask = "+7 ... ... .. .."
 const defaultPrefix = "+7"
@@ -141,6 +142,7 @@ const genderLabels = {
 }
 
 const RegistrationFormComponent: FC = observer(() => {
+  const navigate = useNavigate()
   const { auth } = useStore()
   const [name, setName] = useState('')
   const [birthday, setBirthDay] = useState('')
@@ -154,13 +156,16 @@ const RegistrationFormComponent: FC = observer(() => {
   }, [name, birthday, gender])
 
   function submit() {
-    console.log({ name, birthday, gender })
-    // const preparedBirthday
-    // auth.registration({
-    //   name, 
-    //   birthday: preparedBirthday, 
-    //   gender,
-    // })
+    const preparedBirthday = birthday.replace("-", "")
+    auth.registration({
+      name, 
+      birthday: preparedBirthday, 
+      gender,
+    }).then(() => {
+      navigate("/")
+    }).catch(() => {
+      navigate("/")
+    })
   }
   return <>
     <p style={style.hello as React.CSSProperties}>
