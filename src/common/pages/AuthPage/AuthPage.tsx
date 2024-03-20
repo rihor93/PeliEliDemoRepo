@@ -119,7 +119,7 @@ const InputNumberComponent: FC = observer(() => {
 })
 
 const InputSmsCodeComponent: FC = observer(() => {
-  const LENGHT = 6
+  const LENGHT = 4
 
   const { auth } = useStore()
   function onFill(val: string) {
