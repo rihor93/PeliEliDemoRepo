@@ -1,7 +1,7 @@
 import { CSSProperties } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 export const AuthRequiredButton: React.FC<{ show: boolean }> = ({ show }) => {
-  const { pathname } = useLocation();
+  // const { pathname } = useLocation();
   const navigate = useNavigate()
   return !show
     ? null
@@ -12,7 +12,7 @@ export const AuthRequiredButton: React.FC<{ show: boolean }> = ({ show }) => {
             Требуется регистрация
         </button>
         <button 
-          onClick={() => { navigate("/registration") }}
+          onClick={() => { navigate("/authorize") }}
           style={{ 
             ...styles.authRequired, 
             marginTop: "0.75rem",
@@ -44,12 +44,13 @@ const styles = {
 export const AuthRequired: React.FC<{ show: boolean }> = ({ show }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate()
-  const isRegistrationPage = pathname.split('/').includes('registration')
-  const isLoginPage = pathname.split('/').includes('login')
-  return !show || isRegistrationPage || isLoginPage
+  const isAuthPage = pathname
+    .split('/')
+    .includes('authorize')
+  return !show || isAuthPage
     ? null
     : <button 
-        onClick={() => { navigate("/registration") }}
+        onClick={() => { navigate("/authorize") }}
         style={styles.authRequired as CSSProperties}
       >
         Требуется регистрация

@@ -7,15 +7,21 @@ import { Checker } from './AuthChecker';
 import { 
   ActionsPage, 
   CartPage, 
-  LoginPage, 
   MainPage, 
   MenuPage, 
   MorePage, 
   OrdersPage, 
   ProfilePage, 
-  RegistrationPage
+  AuthPage
 } from '../../pages';
 import { CSSProperties, FC } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useStore } from '../../hooks';
+import { observer } from 'mobx-react-lite';
+import { AddrsPage } from '../../pages/AddrsPage/AddrsPage';
+import { WatchOrderDetailModal } from '../../pages/OrdersPage/WatchOrderHistory';
+import { HomeOutlined, ShoppingCartOutlined } from '@ant-design/icons';
+import { AuthRequired } from '../ui/authRecuredBtn';
 
 const routes: Array<{
   path: string,
@@ -78,14 +84,9 @@ const routes: Array<{
       element: <AddrsPage />
     },
     {
-      path: '/login',
+      path: '/authorize',
       private: false,
-      element: <LoginPage />
-    },
-    {
-      path: '/registration',
-      private: false,
-      element: <RegistrationPage />
+      element: <AuthPage />
     }
   ]
 
@@ -154,13 +155,7 @@ import {
   UnorderedListOutline,
 } from 'antd-mobile-icons';
 
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useStore } from '../../hooks';
-import { observer } from 'mobx-react-lite';
-import { AddrsPage } from '../../pages/AddrsPage/AddrsPage';
-import { WatchOrderDetailModal } from '../../pages/OrdersPage/WatchOrderHistory';
-import { HomeOutlined, ShoppingCartOutlined } from '@ant-design/icons';
-import { AuthRequired } from '../ui/authRecuredBtn';
+
 
 const tabs = {
   top: [
@@ -197,8 +192,8 @@ const tabs = {
       title: 'Вход',
     },
     {
-      key: '/registration',
-      title: 'Регистрация',
+      key: '/authorize',
+      title: 'Вход',
     }
   ], 
 }
