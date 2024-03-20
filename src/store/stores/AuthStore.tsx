@@ -60,17 +60,7 @@ export class AuthStore {
     } else {
       logger.log("Мы в телеграме", "auth-store")
       logger.log("Делаем первый loadUserInfo с точкой 0 и userId " + userId, "auth-store")
-      const UserInfo = await this.rootStore.userStore.loadUserInfo(0, userId)
-      if(UserInfo) {
-        this.setState('AUTHORIZED')
-        this.setCurrentStage('authorized_successfully')
-        logger.log("Мы авторизованы в Гурмаге", "auth-store")
-        this.tg_user_ID = userId
-      } else {
-        logger.log("Мы не авторизованы в Гурмаге", "auth-store")
-        this.setCurrentStage('input_tel_number')
-        this.setState('NOT_AUTHORIZED')
-      }
+      await this.rootStore.userStore.loadUserInfo(0, userId)
     }
   }
 

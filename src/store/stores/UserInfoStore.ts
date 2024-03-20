@@ -91,8 +91,16 @@ export class UserInfoStore {
     const COrg = response?.UserInfo?.COrg ?? 0;
     const Phone = response?.UserInfo?.Phone ?? '';
 
-    if(!response?.UserInfo) {
+    if(response?.UserInfo) {
+      this.rootStore.auth.setState('AUTHORIZED')
+      this.rootStore.auth.setCurrentStage('authorized_successfully')
+      logger.log("Мы авторизованы в Гурмаге", "GET /loadUserInfo")
+      this.rootStore.auth.tg_user_ID = userId
+    } else {
       logger.log('Похоже пользователь не зареган в ГУРМАГ', 'GET /loadUserInfo')
+      logger.log("Мы не авторизованы в Гурмаге", "GET /loadUserInfo")
+      this.rootStore.auth.setCurrentStage('input_tel_number')
+      this.rootStore.auth.setState('NOT_AUTHORIZED')
     }
 
     const newState = {
@@ -110,7 +118,7 @@ export class UserInfoStore {
 
     // сохраняем текущую организацию 
     // если грузим первый раз
-    if(orgId === 0) {
+    if(orgId === 0 && COrg !== 0) {
       this.selectedOrganizationID = COrg
       logger.log("получили и засетали новый OrgId " + COrg, "GET /loadUserInfo")
     };
