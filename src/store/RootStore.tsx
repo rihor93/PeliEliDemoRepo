@@ -63,11 +63,9 @@ export class Store {
             const { userId } = useTelegram()
             if(userId) {
               logger.log(
-                "Грузим инфу о пользователе " + userId +
-                ", с точкой " + first.Id, 
+                "TG UserId есть" + userId, 
                 "Root-store: dispose to failed auth"
               )
-              this.userStore.loadUserInfo(first.Id, userId)
             } else {
               logger.log(
                 "Грузим только скидки т к нет userId, подставили 0", 
@@ -126,10 +124,10 @@ export class Store {
             logger.log('this.auth.tg_user_ID не существует', 'rootStore')
             logger.log('    но все равно надо обновить акции (loadUserInfo)', 'rootStore')
             if(isInTelegram()) {
-              logger.log('    - calling loadUserInfo with tg userId', 'rootStore')
+              logger.log('    - calling loadUserInfo with tg userId' + userId + " & orgId " + value, 'rootStore')
               this.userStore.loadUserInfo(value, userId)
             } else {
-              logger.log('    - calling loadUserInfo with 0', 'rootStore')
+              logger.log('    - calling loadUserInfo with 0 & orgId ' + value, 'rootStore')
               this.userStore.loadUserInfo(value, 0)
             }
           }
