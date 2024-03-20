@@ -60,19 +60,6 @@ export class Store {
               "Root-store: dispose to failed auth"
             )
             this.userStore.currentOrg = first.Id
-            const { userId } = useTelegram()
-            if(userId) {
-              logger.log(
-                "TG UserId есть" + userId, 
-                "Root-store: dispose to failed auth"
-              )
-            } else {
-              logger.log(
-                "Грузим только скидки т к нет userId, подставили 0", 
-                "Root-store: dispose to failed auth"
-              )
-              this.userStore.loadUserInfo(first.Id, "0")
-            }
           } else {
             logger.log("Список организаций пустой!!!", "root-store")
           }

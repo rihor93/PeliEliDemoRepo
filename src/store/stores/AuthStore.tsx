@@ -86,6 +86,7 @@ export class AuthStore {
    * @param userId 
    */
   login = async (phone: string) => {
+    logger.log("Ввели следующий номер " + phone, "Auth-Store: login()")
     const { userId } = useTelegram()
     if(!userId) {
       this.onlyTelegramAlert()
@@ -101,14 +102,39 @@ export class AuthStore {
      * будем заводить карту, так же отправили смс
      */
     this.setPhoneNumber(phone)
+    logger.log("call /checkUserPhone with " + phone + " & userId " + userId, "Auth-Store: login()")
     const result = await http.post<any, clientStateType>(
       '/checkUserPhone', 
       { phone, userId }
     )
+    logger.log("result: " + result, "POST /checkUserPhone")
     switch (result) {
       case 'no_client':
         this.setClientState(result)
         logger.error('прилетел NO_CLIENT', "auth-store")
+        Dialog.alert({
+          header: (<ExclamationCircleFill style={{ fontSize: 64, color: 'var(--adm-color-warning)' }}/>),
+          title: 'Обратитесь к администратору',
+          content: <>
+            <p>Произошла ошибка при проверке номера телефона</p>
+            <pre style={{
+              background: "var(--adm-color-danger)",
+              color: 'white',
+              padding: 10, marginBottom: 15, marginTop: 15
+            }}>
+              Status: - no_client
+            </pre>
+          </>,
+          confirmText: 'Хорошо',
+          onConfirm() {
+            const tg = useTelegram()
+            if(tg.isInTelegram()) {
+              tg.tg.openTelegramLink('https://t.me/Elipeli_operator');
+            } else {
+              window.open('https://t.me/Elipeli_operator'); 
+            }
+          },
+        })
         break;
       /**
        * ну и regNewUser, если был статус new_user
@@ -119,6 +145,7 @@ export class AuthStore {
        * вернёт опять таки статус, если complite, то всё ок
        */
       case 'new_user':
+        logger.log('прилетел Status new_user', "auth-store")
         this.setCurrentStage('input_sms_code')
         this.setClientState(result)
         break;
@@ -131,6 +158,7 @@ export class AuthStore {
        * вернёт Status, если complite, то всё ок
        */
       case 'old_user':
+        logger.log('прилетел Status old_user', "auth-store")
         this.setCurrentStage('input_sms_code')
         this.setClientState(result)
         break;
