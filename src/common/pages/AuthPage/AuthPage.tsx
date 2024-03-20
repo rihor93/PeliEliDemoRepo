@@ -167,6 +167,8 @@ const RegistrationFormComponent: FC = observer(() => {
       name, 
       birthday: preparedBirthday, 
       gender,
+    }).finally(() => {
+      navigate(-1)
     })
   }
   return <>
