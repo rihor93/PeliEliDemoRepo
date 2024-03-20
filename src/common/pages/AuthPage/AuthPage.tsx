@@ -42,9 +42,13 @@ const style = {
 }
 
 export const AuthPage: FC = observer(() => {
+  const navigate = useNavigate()
   const { auth } = useStore()
   function getContent() {
     switch (auth.currentStage) {
+      case 'authorized_successfully':
+        navigate(-1)
+        return null
       case 'input_tel_number':
         return <InputNumberComponent />
       case 'input_sms_code':
@@ -167,8 +171,6 @@ const RegistrationFormComponent: FC = observer(() => {
       name, 
       birthday: preparedBirthday, 
       gender,
-    }).finally(() => {
-      navigate(-1)
     })
   }
   return <>
