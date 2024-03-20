@@ -58,7 +58,9 @@ export const ChangeLocation = observer(() => {
                 <br />
                 <div style={styles.select}>
                   <span style={styles.selectText}>
-                    {userStore.currentOrganizaion?.Name || "Выберите адрес"}
+                    {userStore.currentOrganizaion?.Name ||
+                      <Skeleton animated style={{ height: '18px', width: '200px', margin: '10px' }} /> 
+                    }
                   </span>
                   <LocationFill style={styles.selectIcon} />
                 </div>

@@ -56,12 +56,10 @@ export class Store {
           const first = this.userStore.organizations[0]
           if(first) {
             logger.log(
-              "Грузим меню и поваров для точки " + first.Id, 
+              "Обновляем userStore.currentOrg на " + first.Id, 
               "Root-store: dispose to failed auth"
             )
             this.userStore.currentOrg = first.Id
-            this.mainPage.loadCooks(first.Id);
-            this.mainPage.loadMenu(first.Id);
             const { userId } = useTelegram()
             if(userId) {
               logger.log(
