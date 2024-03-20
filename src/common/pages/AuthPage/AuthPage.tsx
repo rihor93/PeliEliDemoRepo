@@ -85,12 +85,13 @@ const InputNumberComponent: FC = observer(() => {
     const clearNumber = number.replace(/\D/g, '')
     auth.login(clearNumber)
   }
-  return <>
+  return <div style={{ width: "100%" }}>
     <p style={style.hello as React.CSSProperties}>
       Введите номер телефона, чтобы войти или зарегестироваться
     </p>
     <Space style={{ padding: "0.5rem" }}>
       <Input 
+        type={"tel"}
         value={number} 
         onChange={onChange} 
         { ...useMask(defaultMask) } 
@@ -116,7 +117,7 @@ const InputNumberComponent: FC = observer(() => {
         Номер введен не корректно
       </pre>
     }
-  </>
+  </div>
 })
 
 const InputSmsCodeComponent: FC = observer(() => {
