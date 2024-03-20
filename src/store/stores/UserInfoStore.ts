@@ -110,7 +110,10 @@ export class UserInfoStore {
 
     // сохраняем текущую организацию 
     // если грузим первый раз
-    if(orgId === 0) this.selectedOrganizationID = COrg;
+    if(orgId === 0) {
+      this.selectedOrganizationID = COrg
+      logger.log("получили и засетали новый OrgId " + COrg, "GET /loadUserInfo")
+    };
 
     // пересчитываем корзину 
     this.rootStore.cartStore.applyDiscountForCart(newState)
