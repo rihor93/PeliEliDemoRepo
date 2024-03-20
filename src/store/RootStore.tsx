@@ -97,13 +97,15 @@ export class Store {
     const whenUsersOrgHasBeenSaved = reaction(
       () => this.userStore.currentOrg,
       (value, prevValue) => {
-        // если мы авторизованы спокойно грузим все остальное
-        if(this.auth.isAuthorized) {
-          logger.log('Org_id изменился - загружаем другие скидки loadUserInfo', 'rootStore')
-          if(prevValue !== value) {
-            this.mainPage.loadCooks(value);
-            this.mainPage.loadMenu(value);
+        logger.log('Org_id изменился - загружаем другие скидки loadUserInfo', 'rootStore')
+        if(prevValue !== value) {
+          this.mainPage.loadCooks(value);
+          this.mainPage.loadMenu(value);
+          if(this.auth.tg_user_ID) {
             this.userStore.loadUserInfo(value, this.auth.tg_user_ID);
+            logger.log('this.auth.tg_user_ID = ' + this.auth.tg_user_ID, 'rootStore')
+          } else {
+            logger.log('this.auth.tg_user_ID не существует', 'rootStore')
           }
         }
       }
