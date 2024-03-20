@@ -114,6 +114,7 @@ export class Store {
       () => this.userStore.currentOrg,
       (value, prevValue) => {
         if(prevValue !== value) {
+          const { isInTelegram, userId } = useTelegram()
           logger.log(`Org_id изменился c ${prevValue} на ${value} - загружаем других поваров, меню `, 'root-Store')
           this.mainPage.loadCooks(value);
           this.mainPage.loadMenu(value);   
@@ -123,6 +124,14 @@ export class Store {
             logger.log('this.auth.tg_user_ID = ' + this.auth.tg_user_ID, 'rootStore')
           } else {
             logger.log('this.auth.tg_user_ID не существует', 'rootStore')
+            logger.log('    но все равно надо обновить акции (loadUserInfo)', 'rootStore')
+            if(isInTelegram()) {
+              logger.log('    - calling loadUserInfo with tg userId', 'rootStore')
+              this.userStore.loadUserInfo(value, userId)
+            } else {
+              logger.log('    - calling loadUserInfo with 0', 'rootStore')
+              this.userStore.loadUserInfo(value, 0)
+            }
           }
         }
       }
