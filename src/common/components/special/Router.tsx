@@ -87,6 +87,11 @@ const routes: Array<{
       path: '/authorize',
       private: false,
       element: <AuthPage />
+    },
+    {
+      path: '/authorize/:tel',
+      private: false,
+      element: <AuthPage />
     }
   ]
 

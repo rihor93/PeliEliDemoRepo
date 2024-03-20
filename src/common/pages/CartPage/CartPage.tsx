@@ -15,8 +15,11 @@ import { isDevelopment } from '../../helpers';
 import { useNavigate } from 'react-router-dom';
 import { LocationFill, RightOutline } from 'antd-mobile-icons';
 import { ReceptionType } from '../../../store/stores';
+import {getFormattedNumber, useMask} from "react-phone-hooks";
 
-
+const defaultMask = "+7 ... ... .. .."
+const defaultPrefix = "+7"
+const phoneRegex = /^((\+8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/
 
 
 export const CartPage: React.FC = observer(
@@ -56,11 +59,11 @@ export const CartPage: React.FC = observer(
     const [
       contactPhone, 
       setContactPhone
-    ] = React.useState<string>(userStore.userState.Phone);
+    ] = React.useState<string>(userStore.userState.Phone ?? defaultPrefix);
 
     const validationPhoneErr = React.useCallback(() => {
       if(!contactPhone.length) return 'Введите номер телефона'
-      if(contactPhone.length !== 11 ) return 'Номер телефона указан неверно!'
+      if(!phoneRegex.test(contactPhone)) return 'Номер телефона указан неверно!'
       return null
     }, [contactPhone.length])
 
@@ -131,23 +134,27 @@ export const CartPage: React.FC = observer(
         })
         
       } else {
-        cart.postOrder({
-          itemsInCart: toJS(cart.items),
-          userId, 
-          currentOrg: String(isDevelopment() ? 146 : userStore.currentOrg),
-          contactPhone,
-          orderDate: outputDate
-        }, handler)
-          .then(() => {
-            Modal.confirm({
-              content: 'Поздравляем! Заказ оформлен!',
-              cancelText: 'Закрыть',
-              confirmText: 'Перейти в заказы',
-              onConfirm: () => {
-                navigate('/orders')
-              },
+        if(auth.isFailed) {
+          navigate('/authorize/' + contactPhone.replace(/\D/g, ''))
+        } else {
+          cart.postOrder({
+            itemsInCart: toJS(cart.items),
+            userId, 
+            currentOrg: String(isDevelopment() ? 146 : userStore.currentOrg),
+            contactPhone: contactPhone.replace(/\D/g, ''),
+            orderDate: outputDate
+          }, handler)
+            .then(() => {
+              Modal.confirm({
+                content: 'Поздравляем! Заказ оформлен!',
+                cancelText: 'Закрыть',
+                confirmText: 'Перейти в заказы',
+                onConfirm: () => {
+                  navigate('/orders')
+                },
+              })
             })
-          })
+        }
       }
     }
 
@@ -571,19 +578,31 @@ export const CartPage: React.FC = observer(
               <div style={{ gridArea: 'contactsPhone', alignSelf: 'center', fontSize: '16px', fontWeight: '500', color: 'var(--тихий-текст)' }}>Контактный телефон</div>
               <div style={{ gridArea: 'phone', alignSelf: 'center', fontSize: '18px', fontWeight: '400', color: 'var(--громкий-текст)' }}>
                 <Input 
-                  style={{ 
-                    '--text-align': 'center', 
-                    border: validationPhoneErr()?.length ?'1px solid var(--adm-color-warning)' : '', 
-                    borderRadius: '100px'
-                  }}
+                  type="tel"
                   placeholder='Введите ваш номер'
-                  onChange={(str) => setContactPhone(str)}
+                  onChange={str => {
+                    setContactPhone(getFormattedNumber(str, defaultMask))
+                  }}
                   value={contactPhone}
-                  type='tel'
+                  { ...useMask(defaultMask) } 
+                  style={{
+                    '--text-align': 'center',
+                    width: "100%",
+                    borderRadius: "100px", 
+                    padding: "0.5rem 1rem",
+                    fontSize: "18px",
+                    border: validationPhoneErr()?.length
+                      ? '1px solid var(--adm-color-danger)'
+                      : "1px solid var(--громкий-текст)"
+                  }}
                 />
                 {!validationPhoneErr()?.length 
                   ? null
-                  : <span style={{color: 'var(--adm-color-warning)'}}>Введите номер телефона</span>
+                  : <span style={{
+                      color: 'var(--adm-color-danger)', fontSize: 12
+                    }}>
+                      {validationPhoneErr()}
+                    </span>
                 }
               </div>
               <div style={{ gridArea: 'orderTime', alignSelf: 'center', fontSize: '16px', fontWeight: '500', color: 'var(--тихий-текст)' }}>Приготовить заказ ко времени:</div>

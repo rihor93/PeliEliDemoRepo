@@ -1,11 +1,11 @@
-import { Button, Dropdown, PasscodeInput, Radio, Space, SpinLoading, Toast } from 'antd-mobile';
+import { Button, Dropdown, PasscodeInput, Radio, Space, SpinLoading } from 'antd-mobile';
 import { Input } from 'antd-mobile/es/components/input/input';
 import { observer } from 'mobx-react-lite';
 import { useState, FC } from "react";
 import {getFormattedNumber, useMask} from "react-phone-hooks";
 import { useStore } from '../../hooks';
 import React from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 const defaultMask = "+7 ... ... .. .."
 const defaultPrefix = "+7"
@@ -71,6 +71,7 @@ export const AuthPage: FC = observer(() => {
 
 const InputNumberComponent: FC = observer(() => {
   const { auth } = useStore()
+  const { tel } = useParams()
   const [number, setNumber] = useState(defaultPrefix)
   const [errored, setErrored] = useState(false)
 
@@ -85,6 +86,10 @@ const InputNumberComponent: FC = observer(() => {
     const clearNumber = number.replace(/\D/g, '')
     auth.login(clearNumber)
   }
+
+  React.useEffect(function() {
+    if(tel?.length)setNumber(getFormattedNumber(tel, defaultMask))
+  }, [])
   return <div style={{ width: "100%" }}>
     <p style={style.hello as React.CSSProperties}>
       Введите номер телефона, чтобы войти или зарегестироваться
@@ -162,10 +167,6 @@ const RegistrationFormComponent: FC = observer(() => {
       name, 
       birthday: preparedBirthday, 
       gender,
-    }).then(() => {
-      navigate("/")
-    }).catch(() => {
-      navigate("/")
     })
   }
   return <>
