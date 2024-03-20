@@ -37,6 +37,7 @@ export class Store {
       (value, prevValue) => {
         // действия выполнятся только если мы авторизовались
         if (value === true && prevValue === false) {
+          logger.log("Сработала подписка на авторизацию", "Root-store: dispose to auth")
           const { userId } = useTelegram()
           this.userStore.loadOrdersHistory(userId)
         }
@@ -48,15 +49,32 @@ export class Store {
       () => this.auth.isFailed,
       (val, prev) => {
         if(val === true && prev === false) {
+          logger.log(
+            "Сработала подписка failed авторизацию", 
+            "Root-store: dispose to failed auth"
+          )
           const first = this.userStore.organizations[0]
           if(first) {
+            logger.log(
+              "Грузим меню и поваров для точки " + first.Id, 
+              "Root-store: dispose to failed auth"
+            )
             this.userStore.currentOrg = first.Id
             this.mainPage.loadCooks(first.Id);
             this.mainPage.loadMenu(first.Id);
             const { userId } = useTelegram()
             if(userId) {
+              logger.log(
+                "Грузим инфу о пользователе " + userId +
+                ", с точкой " + first.Id, 
+                "Root-store: dispose to failed auth"
+              )
               this.userStore.loadUserInfo(first.Id, userId)
             } else {
+              logger.log(
+                "Грузим только скидки т к нет userId, подставили 0", 
+                "Root-store: dispose to failed auth"
+              )
               this.userStore.loadUserInfo(first.Id, "0")
             }
           } else {
@@ -97,12 +115,13 @@ export class Store {
     const whenUsersOrgHasBeenSaved = reaction(
       () => this.userStore.currentOrg,
       (value, prevValue) => {
-        logger.log('Org_id изменился - загружаем другие скидки loadUserInfo', 'rootStore')
         if(prevValue !== value) {
+          logger.log('Org_id изменился - загружаем других поваров, меню ', 'root-Store')
           this.mainPage.loadCooks(value);
           this.mainPage.loadMenu(value);
           if(this.auth.tg_user_ID) {
             this.userStore.loadUserInfo(value, this.auth.tg_user_ID);
+            logger.log("Org_id изменился - обновляем инфу об акциях loadUserInfo", 'rootStore')
             logger.log('this.auth.tg_user_ID = ' + this.auth.tg_user_ID, 'rootStore')
           } else {
             logger.log('this.auth.tg_user_ID не существует', 'rootStore')
@@ -120,8 +139,9 @@ export class Store {
 
   // Загружаются общие данные, главные страницы и т.д.
   async afterLoaded() {
-    logger.log('страница загружена', "root-store")
+    logger.log('страница загружена', "root-store: afterLoaded")
     await this.userStore.loadOrganizations();
+    logger.log('организации загружены', "root-store: afterLoaded")
     await this.auth.authorize();
   }
 
