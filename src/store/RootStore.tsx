@@ -116,7 +116,7 @@ export class Store {
         if(prevValue !== value) {
           logger.log(`Org_id изменился c ${prevValue} на ${value} - загружаем других поваров, меню `, 'root-Store')
           this.mainPage.loadCooks(value);
-          this.mainPage.loadMenu(value);
+          this.mainPage.loadMenu(value);   
           if(this.auth.tg_user_ID) {
             this.userStore.loadUserInfo(value, this.auth.tg_user_ID);
             logger.log("Org_id изменился - обновляем инфу об акциях loadUserInfo", 'rootStore')
