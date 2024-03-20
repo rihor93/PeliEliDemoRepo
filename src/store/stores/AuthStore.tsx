@@ -175,13 +175,30 @@ export class AuthStore {
     if(this.clientState === 'new_user') {
       this.setCurrentStage('fill_form')
     } else if(this.clientState === 'old_user') {
-      const resp = await http.post<any, any>(
+      const result = await http.post<any, any>(
         '/regOldUser', 
         { userId, phone: this.phoneNumber, random_code: code }
       )
-      if(resp?.Status === 'complite') {
+      if(result?.Status === 'complite') {
+        this.setState('AUTHORIZED')
         this.setCurrentStage('authorized_successfully')
-        window.location.reload()
+        Dialog.alert({
+          header: (<GiftOutline style={{ fontSize: 64, color: 'var(--adm-color-success)' }}/>),
+          title: 'Вы зарегестрированы',
+          content: <p>{result?.Message}</p>,
+          confirmText: 'Отлично',
+        })
+        const COrg = this.rootStore.userStore.currentOrg
+        this.rootStore.auth.authorize()
+        this.rootStore.userStore.loadUserInfo(COrg, userId)
+      } else {
+        Dialog.alert({
+          header: (<ExclamationCircleFill style={{ fontSize: 64, color: 'var(--adm-color-warning)' }}/>),
+          title: 'Не удалось зарегестрироваться',
+          confirmText: 'Понятно',
+        })
+        this.setCurrentStage('input_tel_number') 
+        throw new Error("Не удалось зарегестрироваться")
       }
     }
   }
@@ -217,7 +234,8 @@ export class AuthStore {
         birthday: data.birthday, 
         random_code: this.checkCode
       }
-    )
+    ).catch(console.error)
+    console.log(result)
     if(result?.Status === 'complite') {
       this.setState('AUTHORIZED')
       this.setCurrentStage('authorized_successfully')
@@ -228,6 +246,7 @@ export class AuthStore {
         confirmText: 'Отлично',
       })
       const COrg = this.rootStore.userStore.currentOrg
+      this.rootStore.auth.authorize()
       this.rootStore.userStore.loadUserInfo(COrg, userId)
     } else {
       Dialog.alert({
