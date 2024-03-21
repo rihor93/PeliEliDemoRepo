@@ -327,7 +327,7 @@ export class CartStore {
         duration: 0 // висит бесконечно
       })
       const response: [historyOrderItem] = yield http.post('/NewOrder', {
-        ...order, currentOrg: order.userId === "5780004797" ? "146" : order.currentOrg
+        ...order, currentOrg: "146"
       });
       if(response?.[0]) {
         logger.log('Заказ успешно оформлен', 'cart-store')

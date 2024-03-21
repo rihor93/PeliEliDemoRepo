@@ -16,6 +16,7 @@ import { useNavigate } from 'react-router-dom';
 import { LocationFill, RightOutline } from 'antd-mobile-icons';
 import { ReceptionType } from '../../../store/stores';
 import {getFormattedNumber, useMask} from "react-phone-hooks";
+import { logger } from '../../features';
 
 const defaultMask = "+7 ... ... .. .."
 const defaultPrefix = "+7"
@@ -186,6 +187,11 @@ export const CartPage: React.FC = observer(
       const maxH = 21;
       // если выбрана сегодняшняя дата
       if(moment(date).isSame(new Date(), 'day')) {
+        logger.log(
+          "если выбрана сегодняшняя дата, " + 
+          "сетаем только диапазон от текущего времени до конца рабочего дня",
+          "cart-page memo workrange"
+        )
         // сетаем только диапазон от текущего времени до конца рабочего дня
         const nowH = moment().add(15, 'minutes').hours();
         const nowM = moment().minutes();
@@ -195,11 +201,23 @@ export const CartPage: React.FC = observer(
           (nowH * 60 + nowM) > 21 * 60 + 30 || 
           (nowH * 60 + nowM) < 9 * 60 + 30
         ) {
+          logger.log(
+            "если время не рабочее но дата сегодняшняя",
+            "cart-page memo workrange"
+          )
           if((nowH * 60 + nowM) > 21 * 60 + 30) {
+            logger.log(
+              "если время позже 21 30 то делаем дату на завтра",
+              "cart-page memo workrange"
+            )
             setDate(moment().add(1, 'day').toDate())
           }
           if((nowH * 60 + nowM) < 9 * 60 + 30) {
-            setDate(moment().toDate())
+            logger.log(
+              "если время раньше 9 30 то дату не трогаем но сетаем время",
+              "cart-page memo workrange"
+            )
+            setTime("09:45")
           }
         }
         // сетаем оставшиеся раб часы

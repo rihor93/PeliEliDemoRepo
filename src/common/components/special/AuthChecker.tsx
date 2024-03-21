@@ -34,7 +34,7 @@ export const Checker = observer(({
   return (
     <Navigate
       replace
-      to="/login" // todo вопрос создавать ли логин страницу?
+      to="/authorize" // todo вопрос создавать ли логин страницу?
     />
   );
 })
