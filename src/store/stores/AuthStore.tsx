@@ -121,13 +121,14 @@ export class AuthStore {
             <p>Вам нужно зайти в <a href={src}>@Gurmagbot</a> и нажать кнопку "Запустить"</p>
           </>,
           confirmText: 'Перейти и запустить',
-          onConfirm() {
+          onConfirm: () => {
             const tg = useTelegram()
             if(tg.isInTelegram()) {
               tg.tg.openTelegramLink(src);
             } else {
               window.open(src); 
             }
+            this.setCurrentStage('input_tel_number')
           },
         })
         break;
