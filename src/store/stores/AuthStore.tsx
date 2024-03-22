@@ -1,3 +1,4 @@
+import { InfoOutlined } from "@ant-design/icons";
 import { Dialog } from "antd-mobile";
 import { ExclamationCircleFill, GiftOutline } from "antd-mobile-icons";
 import { makeAutoObservable } from "mobx";
@@ -112,26 +113,20 @@ export class AuthStore {
       case 'no_client':
         this.setClientState(result)
         logger.error('прилетел NO_CLIENT', "auth-store")
+        const src = 'https://t.me/Gurmagbot?start=start'
         Dialog.alert({
-          header: (<ExclamationCircleFill style={{ fontSize: 64, color: 'var(--adm-color-warning)' }}/>),
-          title: 'Обратитесь к администратору',
+          header: (<InfoOutlined  style={{ fontSize: 64, color: 'var(--adm-color-warning)' }}/>),
+          title: 'Упс... Кажется вы забыли запустить GURMAG бот?',
           content: <>
-            <p>Произошла ошибка при проверке номера телефона</p>
-            <pre style={{
-              background: "var(--adm-color-danger)",
-              color: 'white',
-              padding: 10, marginBottom: 15, marginTop: 15
-            }}>
-              Status: - no_client
-            </pre>
+            <p>Вам нужно зайти в <a href={src}>@Gurmagbot</a> и нажать кнопку "Запустить"</p>
           </>,
-          confirmText: 'Хорошо',
+          confirmText: 'Перейти и запустить',
           onConfirm() {
             const tg = useTelegram()
             if(tg.isInTelegram()) {
-              tg.tg.openTelegramLink('https://t.me/Elipeli_operator');
+              tg.tg.openTelegramLink(src);
             } else {
-              window.open('https://t.me/Elipeli_operator'); 
+              window.open(src); 
             }
           },
         })
