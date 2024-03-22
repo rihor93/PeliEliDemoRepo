@@ -94,11 +94,11 @@ const InputNumberComponent: FC = observer(() => {
   React.useEffect(function() {
     if(tel?.length)setNumber(getFormattedNumber(tel, defaultMask))
   }, [])
-  return <div style={{ width: "100%" }}>
+  return <div>
     <p style={style.hello as React.CSSProperties}>
       Введите номер телефона, чтобы войти или зарегестироваться
     </p>
-    <Space style={{ padding: "0.5rem" }}>
+    <Space style={{ padding: '0.5rem', boxSizing: 'border-box'}}>
       <Input 
         type={"tel"}
         value={number} 

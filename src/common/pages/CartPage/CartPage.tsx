@@ -431,7 +431,7 @@ const skeletonStyle = {
 const Selectable: React.FC<{
   onChange: (selected: ReceptionType) => void,
   value: ReceptionType[] | undefined, 
-  options: SelectorOption<ReceptionType>[]
+  options:any
 }> = ({ onChange, options, value }) => {
 
   const [val, setVal] = React.useState<ReceptionType>(options[0].value)
@@ -446,7 +446,7 @@ const Selectable: React.FC<{
           display: 'inline-flex',
         }}
       >
-        {options.map((option, index) => 
+        {options.map((option: any , index: any) => 
           <div 
             key={option.value}
             style={{ 
