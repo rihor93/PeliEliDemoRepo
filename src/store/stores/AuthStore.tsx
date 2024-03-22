@@ -125,6 +125,7 @@ export class AuthStore {
             const tg = useTelegram()
             if(tg.isInTelegram()) {
               tg.tg.openTelegramLink(src);
+              tg.tg.close()
             } else {
               window.open(src); 
             }
