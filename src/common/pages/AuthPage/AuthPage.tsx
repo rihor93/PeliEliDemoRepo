@@ -1,4 +1,4 @@
-import { Button, Dropdown, PasscodeInput, Radio, Space, SpinLoading } from 'antd-mobile';
+import { Button, Dropdown, PasscodeInput, Radio, Space, SpinLoading, Toast } from 'antd-mobile';
 import { Input } from 'antd-mobile/es/components/input/input';
 import { observer } from 'mobx-react-lite';
 import { useState, FC } from "react";
@@ -103,6 +103,7 @@ const InputNumberComponent: FC = observer(() => {
         type={"tel"}
         value={number} 
         onChange={onChange} 
+        onClick={() => Toast.show('clicked')}
         { ...useMask(defaultMask) } 
         style={style.input}
       />
