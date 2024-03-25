@@ -103,7 +103,6 @@ const InputNumberComponent: FC = observer(() => {
         type={"tel"}
         value={number} 
         onChange={onChange} 
-        onClick={() => Toast.show('clicked')}
         { ...useMask(defaultMask) } 
         style={style.input}
       />
