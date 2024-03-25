@@ -222,6 +222,7 @@ export class AuthStore {
       this.onlyTelegramAlert()
       return;
     }
+    this.setCurrentStage('verify_number')
     const result = await http.post<any, any>(
       '/regNewUser', 
       {
@@ -232,7 +233,6 @@ export class AuthStore {
         random_code: this.checkCode
       }
     ).catch(console.error)
-    console.log(result)
     if(result?.Status === 'complite') {
       this.setState('AUTHORIZED')
       this.setCurrentStage('authorized_successfully')
