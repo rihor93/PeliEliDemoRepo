@@ -113,7 +113,7 @@ export const MenuPage: React.FC = observer(() => {
       <Carusel />
       <Sections.filter />
       <Sections.categories />
-      <Footer content='@ 2023 Gurmag All rights reserved'></Footer>
+      <Footer content='@ 2024 Gurmag All rights reserved'></Footer>
       <div style={{height: '55px'}} />
     </Page>
   )

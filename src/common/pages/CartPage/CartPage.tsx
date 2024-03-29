@@ -1,4 +1,4 @@
-import { Popup, Toast, Divider, Radio, Space, Skeleton, Dropdown, Selector, Input, DatePicker, Form, Collapse, Modal, Dialog, Picker, SelectorOption } from 'antd-mobile';
+import { Toast, Radio, Space, Skeleton, Dropdown, Input, DatePicker, Modal, Dialog, Picker } from 'antd-mobile';
 import Button from 'antd-mobile/es/components/button';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
@@ -12,11 +12,11 @@ import { toJS } from 'mobx';
 import { ToastHandler } from 'antd-mobile/es/components/toast';
 import { isDevelopment } from '../../helpers';
 import { useNavigate } from 'react-router-dom';
-import { LocationFill, RightOutline } from 'antd-mobile-icons';
+import { LocationFill } from 'antd-mobile-icons';
 import { ReceptionType } from '../../../store/stores';
 import {getFormattedNumber, useMask} from "react-phone-hooks";
 import { logger } from '../../features';
-import { FC, useState, useMemo, useCallback, CSSProperties } from "react"
+import { FC, useState, useMemo, CSSProperties } from "react"
 import { SelectLocationPopup } from '../../components';
 
 const defaultMask = "+7 ... ... .. .."
@@ -63,12 +63,19 @@ export const CartPage: React.FC = observer(
       contactPhone, 
       setContactPhone
     ] = useState<string>(userStore.userState.Phone ?? defaultPrefix);
+
+    const [address, setAddress] = useState('')
   
     const errored = useMemo(() => {
       if(!contactPhone.length) return 'Введите номер телефона'
       if(!phoneRegex.test(contactPhone)) return 'Номер телефона указан неверно!'
       return null
     }, [contactPhone.length])
+
+    const adrErrored = useMemo(() => {
+      if(!address.length) return 'Введите адрес'
+      return null
+    }, [address.length])
     
 
     function postOrder() { 
@@ -192,6 +199,7 @@ export const CartPage: React.FC = observer(
           setTime={setTime}
           currentDate={date}
           setDate={setDate}
+          receptionType={cart.receptionType}
         />
         <DateSelector 
           visible={visibleDate}
@@ -341,25 +349,24 @@ export const CartPage: React.FC = observer(
               value={[cart.receptionType]}
               onChange={selected => cart.setReceptionType(selected)}
             />
-            {/* <Selector
-              style={{display: 'flex', justifyContent: 'center'}}
-              options={cart.deliveryOptions}
-              value={[cart.receptionType]}
-              onChange={(arr) => cart.setReceptionType(arr[0])}
-            /> */}
             {cart.receptionType === 'pickup' 
               ? null
               : <>
-                <Divider contentPosition='left'>Введите адрес доставки</Divider>
-                <Form>
-                  <Form.Item label='Ваш адрес, чтобы доставщик мог вас найти'>
-                    <Input 
-                      placeholder='Ул. Пушикна, Дом Колотушшкина 273819237'
-                    />
-                  </Form.Item>
-                </Form>
+              <Alert>
+              <p>Доставка осуществляется каждый день с <strong>17-00</strong> до <strong>21-00</strong>.</p>
+              <p style={{ marginTop: '8px' }}>Пока что НЕ СМОЖЕМ привезти в: <strong>Дему, Затон, Шакшу, пригороды</strong>.</p>
+              <p style={{ marginTop: '8px' }}>Оператор в течение 20 минут свяжется с вами и уточнит адрес доставки!</p>
+              <p style={{ marginTop: '8px' }}>Доставка работает в тестовом режиме, возможны заминки</p>
+              <p style={{ marginTop: '8px' }}>Но мы улучшаем работу каждый день.</p>
+              </Alert>
+              <AddrInput
+                errored={adrErrored}
+                setAddress={setAddress}
+                address={address} 
+              />
               </>
             }
+            
             <DetailForm 
               showDateSelector={setVisibleDate}
               showTimeSelector={setVisibleTime}
@@ -487,13 +494,15 @@ interface TimeSelectorProps {
   currentDate: Date
   setDate: (date: Date) => void
   currentTime: string
-  setTime: (time: string) => void
+  setTime: (time: string) => void,
+  receptionType: ReceptionType
 }
 const TimeSelector: FC<TimeSelectorProps> = props => {
   const { 
     visible, setVisible, 
     currentDate, setDate, 
-    currentTime, setTime
+    currentTime, setTime,
+    receptionType
   } = props
 
   const initialTime = moment().add(15, 'minutes')
@@ -503,23 +512,29 @@ const TimeSelector: FC<TimeSelectorProps> = props => {
 
   type pic = { label: string, value: string }
   const workrange = useMemo(() => {
-    
+
     let hours: pic[] = [];
     let minutes: pic[] = [];
     function fillMinutes(start: number, end: number) {
       for(let i = start; i <= end; i++) {
+        minutes = []
         const value = i < 10 ? `0${i}` : `${i}`
         minutes.push({ label: value, value })
       }
     }
     function fillHours(start: number, end: number) {
+      hours = []
       for(let i = start; i <= end; i++) { 
         const value = i < 10 ? `0${i}` : `${i}`
         hours.push({ label: value, value })
       }
     }
-    const minH = 9;
+    const minH = receptionType === 'delivery'
+      ? 17 
+      : 9
+    
     const maxH = 21;
+
     // если выбрана сегодняшняя дата
     if(moment(currentDate).isSame(new Date(), 'day')) {
       logger.log(
@@ -533,26 +548,28 @@ const TimeSelector: FC<TimeSelectorProps> = props => {
 
       // если время не рабочее но дата сегодняшняя
       if(
-        (nowH * 60 + nowM) > 21 * 60 + 30 || 
-        (nowH * 60 + nowM) < 9 * 60 + 30
+        (nowH * 60 + nowM) > maxH * 60 + 30 || 
+        (nowH * 60 + nowM) < minH * 60 + 30
       ) {
         logger.log(
           "если время не рабочее но дата сегодняшняя",
           "cart-page memo workrange"
         )
-        if((nowH * 60 + nowM) > 21 * 60 + 30) {
+        if((nowH * 60 + nowM) > maxH * 60 + 30) {
           logger.log(
             "если время позже 21 30 то делаем дату на завтра",
             "cart-page memo workrange"
           )
           setDate(moment().add(1, 'day').toDate())
         }
-        if((nowH * 60 + nowM) < 9 * 60 + 30) {
+        if((nowH * 60 + nowM) < minH * 60 + 30) {
           logger.log(
             "если время раньше 9 30 то дату не трогаем но сетаем время",
             "cart-page memo workrange"
           )
-          setTime("09:45")
+          receptionType === 'delivery' 
+            ? setTime("17:00")
+            : setTime("09:45")
         }
       }
       // сетаем оставшиеся раб часы
@@ -560,11 +577,11 @@ const TimeSelector: FC<TimeSelectorProps> = props => {
       // если это текущий час
       // то мы не должны выбрать минуты раньше чем текущие минуты
       if(pickerH === hours[0]?.value) {
-        if(pickerH === '21') {
+        if(pickerH === String(maxH)) {
           if(nowM <= 15) {
             fillMinutes(nowM + 15, 30)
           }
-        } else if(pickerH === '09') {
+        } else if(pickerH === String(minH)) {
           if(nowM >= 15) {
             fillMinutes(nowM, 59)
           }
@@ -576,10 +593,10 @@ const TimeSelector: FC<TimeSelectorProps> = props => {
           }
         }
       } else {
-        if(pickerH === '21') {
+        if(pickerH === String(maxH)) {
           fillMinutes(0, 30)
           // с 8:30
-        } else if (pickerH === '09') {
+        } else if (pickerH === String(minH)) {
           fillMinutes(30, 59)
           // в остальных случаях полный час минуток
         } else {
@@ -591,10 +608,10 @@ const TimeSelector: FC<TimeSelectorProps> = props => {
       // сетаем раб часы с 9 до 21
       fillHours(minH, maxH);
       // до 21:30
-      if(pickerH === '21') {
+      if(pickerH === String(maxH)) {
         fillMinutes(0, 30)
         // с 8:30
-      } else if (pickerH === '09') {
+      } else if (pickerH === String(minH)) {
         fillMinutes(30, 59)
         // в остальных случаях полный час минуток
       } else {
@@ -606,7 +623,7 @@ const TimeSelector: FC<TimeSelectorProps> = props => {
       hours, 
       minutes 
     ]
-  }, [currentDate, currentTime, pickerH, pickerM])
+  }, [currentDate, currentTime, pickerH, pickerM, receptionType])
   return(
     <Picker
       columns={workrange}
@@ -847,3 +864,61 @@ const DetailForm: FC<DetailFormProps> = observer(properties => {
     </div>
   )
 })
+
+
+const alertStyle = {
+  width: "100%",
+  fontSize: "16px", 
+  lineHeight: "20px", 
+  fontWeight: "400", 
+  padding: "18px", 
+  background: "#FFF100", 
+  borderRadius: "8px",
+  color: 'black',
+  marginTop: '1.5rem'
+}
+const Alert: FC<WithChildren> = props => 
+  <div style={alertStyle}>
+    {props.children}
+  </div>
+
+
+interface AddrInputProps {
+  address: string
+  setAddress: (addr: string) => void
+  errored: Optional<string>
+}
+const AddrInput: FC<AddrInputProps> = props => {
+  const { errored, address, setAddress } = props
+  return(
+    <Space 
+      style={{ 
+        width: '100%', 
+        padding: '10px 14px 0 14px' 
+      }} 
+      justify='between' 
+      align='center'
+    >
+      <span style={detailFormStyle.phoneLabel}>Адрес доставки</span>
+      <Space direction='vertical'>
+        <Input 
+          value={address}
+          onChange={val => { setAddress(val) }} 
+          placeholder='Куда доставить?'
+          style={{
+            border: errored
+              ? '1px solid var(--adm-color-danger)'
+              : "1px solid var(--громкий-текст)",
+            ...detailFormStyle.phoneInput,
+            marginRight: -10
+          }}
+        />
+        {errored &&
+          <span style={detailFormStyle.errSpan}>
+            {errored}
+          </span>
+        }
+      </Space>
+    </Space>
+  )
+}

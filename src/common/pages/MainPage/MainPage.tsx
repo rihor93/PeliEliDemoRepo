@@ -11,7 +11,7 @@ import {
   List,
 } from "antd-mobile"
 import { observer } from "mobx-react-lite"
-import React from "react";
+import React, { useState } from "react";
 import { AuthRequiredButton, Carusel, ChangeLocation, Page, SelectLocationPopup } from "../../components";
 import { config } from '../../configuration';
 import { useStore } from '../../hooks';
@@ -22,13 +22,15 @@ import moment from "moment";
 import { ClockCircleOutline } from "antd-mobile-icons";
 import { CourseItemComponent } from "../MenuPage/sections/Categories";
 import WatchCampaignModal from "../ActionsPage/modals/WatchCampaignModal";
+import { TempBanner } from "../../components/ui/Banner";
+import { WatchLotteryPopup } from "../../components/ui/watchLotteryPopup";
 
 
 export const MainPage: FC = observer(() => { 
   const { userStore, actionsPage, mainPage, auth } = useStore();
 
   const { selectedCourse, state, cookstate } = mainPage;
-
+  const [watchLottery, setWatchLottery] = useState(false)
   return(
     <Page>
       {selectedCourse 
@@ -36,6 +38,9 @@ export const MainPage: FC = observer(() => {
         : null
       }
       <AuthRequiredButton show={auth.isFailed} />
+      <br />
+      <WatchLotteryPopup show={watchLottery} close={() => setWatchLottery(false)} />
+        <TempBanner onClick={() => setWatchLottery(true)}></TempBanner>
       {userStore.orgstate === 'COMPLETED'
         && userStore.userLoad === 'COMPLETED' 
         && userStore.needAskAdress 
@@ -45,6 +50,7 @@ export const MainPage: FC = observer(() => {
       {actionsPage.selectedAction 
         && <WatchCampaignModal campaign={actionsPage.selectedAction} />
       }
+        
         <Carusel />
         
         {cookstate === 'COMPLETED'
@@ -331,7 +337,7 @@ export const MainPage: FC = observer(() => {
         }
         
         
-        <Footer content='@ 2023 Gurmag All rights reserved'></Footer>
+        <Footer content='@ 2024 Gurmag All rights reserved'></Footer>
         <div style={{height: '50px', width: '100%'}}></div> 
     </Page>
   )

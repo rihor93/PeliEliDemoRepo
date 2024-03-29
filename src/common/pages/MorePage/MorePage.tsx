@@ -1,19 +1,24 @@
 import './MorePage.css';
 import Страничка from '../../components/layout/Page';
 import { useStore, useTelegram } from '../../hooks';
-import { Popup, Toast, Divider, Radio, Space, Button } from 'antd-mobile';
-import React from 'react';
+import { Popup, Toast, Divider, Radio, Space, Button  } from 'antd-mobile';
+import React, { FC, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
 import { LocationFill, MessageOutline, RedoOutline, UserCircleOutline } from 'antd-mobile-icons';
 import { EnvironmentOutlined, PhoneOutlined } from '@ant-design/icons';
+import { WatchLotteryPopup } from '../../components/ui/watchLotteryPopup';
+import { TempBanner } from '../../components/ui/Banner';
 export const MorePage: React.FC = observer(() => {
   const tg = useTelegram();
   const navigate = useNavigate();
   const { userStore, auth } = useStore();
-  const [askedAddr, setAskedAddr] = React.useState(0)
+  const [askedAddr, setAskedAddr] = useState(0)
+
+  const [watchLottery, setWatchLottery] = useState(false)
   return (
     <Страничка>
+    
       {userStore.needAskAdress 
         ? <Popup 
             visible={userStore.needAskAdress} 
@@ -68,7 +73,9 @@ export const MorePage: React.FC = observer(() => {
         ? <div style={{height: '58px'}} />
         : null 
       }
+      <WatchLotteryPopup show={watchLottery} close={() => setWatchLottery(false)} />
       <ul className='moreList'>
+        <TempBanner onClick={() => setWatchLottery(true)}></TempBanner>
         <li>
           <LocationFill { ...icoProps } />
           <span>Уфа</span>

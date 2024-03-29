@@ -286,21 +286,19 @@ const Bottom: FC = observer(() => {
 
   const condition = false // todo я забыл что хотел тут доделать
 
-  return condition
-    ? null
-    : state === 'COMPLETED' && cookstate === 'COMPLETED'
-      ? <TabBar 
-        activeKey={currentTab?.key} 
-        onChange={value => {
-          setRouteActive(value)
-          window.scrollTo({top: 0 })
-        }}
-      >
-        {bottom.map(tab => 
-          <TabBar.Item key={tab.key} icon={tab.icon} title={tab.title} />
-        )}
-      </TabBar> 
-      : preloader()
+  return state === 'COMPLETED'
+    ? <TabBar 
+      activeKey={currentTab?.key} 
+      onChange={value => {
+        setRouteActive(value)
+        window.scrollTo({top: 0 })
+      }}
+    >
+      {bottom.map(tab => 
+        <TabBar.Item key={tab.key} icon={tab.icon} title={tab.title} />
+      )}
+    </TabBar> 
+    : preloader()
 })
 
 const Top: FC = observer(() => {
