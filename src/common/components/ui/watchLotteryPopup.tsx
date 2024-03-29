@@ -14,8 +14,9 @@ export const WatchLotteryPopup: FC<{ show: boolean, close: () => void }> = ({ sh
       onClose={hide}
       onMaskClick={hide}
       style={{ zIndex: 5 }}
-      bodyStyle={{ width: '100vw', height: '70vh', borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
+      bodyStyle={{ width: '100vw',  borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
     >
+      <h3 style={{ margin: '2rem 0 0 2rem' }}>Эта форма станет активной <strong style={{ background: 'rgb(255, 241, 0)' }}>31 марта в 12-00</strong>.</h3>
       <h2 style={{ margin: '2rem 0 0 2rem' }}>Для того чтобы учавствовать:</h2>
       <Steps direction='vertical'>
         <Step
@@ -23,6 +24,7 @@ export const WatchLotteryPopup: FC<{ show: boolean, close: () => void }> = ({ sh
           status='wait'
           description={
             <Button 
+            disabled
               block 
               color='primary' 
               fill='none'
@@ -36,6 +38,7 @@ export const WatchLotteryPopup: FC<{ show: boolean, close: () => void }> = ({ sh
           status='wait'
           description={
             <Button 
+            disabled
               color='primary' 
               fill='none'
             >
@@ -51,6 +54,7 @@ export const WatchLotteryPopup: FC<{ show: boolean, close: () => void }> = ({ sh
             <br />
             <Space>
               <Input 
+              disabled
                 style={{
                   width: "100%",
                   borderRadius: "100px", 
@@ -62,6 +66,7 @@ export const WatchLotteryPopup: FC<{ show: boolean, close: () => void }> = ({ sh
                 placeholder='Введите секретный шифр'
               />
               <Button 
+              disabled
                 style={{
                   borderRadius: "100px", 
                   padding: "0.5rem 1rem",
@@ -81,6 +86,7 @@ export const WatchLotteryPopup: FC<{ show: boolean, close: () => void }> = ({ sh
           status='wait'
           description={
             <Button 
+            disabled
               color='primary' 
               fill='none'
             >
