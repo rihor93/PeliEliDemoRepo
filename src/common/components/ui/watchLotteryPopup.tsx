@@ -16,7 +16,7 @@ export const WatchLotteryPopup: FC<{ show: boolean, close: () => void }> = ({ sh
       style={{ zIndex: 5 }}
       bodyStyle={{ width: '100vw',  borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
     >
-      <h3 style={{ margin: '2rem 0 0 2rem' }}>Эта форма станет активной <strong style={{ background: 'rgb(255, 241, 0)' }}>31 марта в 12-00</strong>.</h3>
+      <h3 style={{ margin: '2rem 0 0 2rem' }}>Эта форма станет активной <strong style={{ background: 'rgb(255, 241, 0)', color: 'black' }}>4 апреля в 12-00</strong>.</h3>
       <h2 style={{ margin: '2rem 0 0 2rem' }}>Для того чтобы учавствовать:</h2>
       <Steps direction='vertical'>
         <Step
@@ -88,7 +88,7 @@ export const WatchLotteryPopup: FC<{ show: boolean, close: () => void }> = ({ sh
             <Button 
             disabled
               color='primary' 
-              fill='none'
+              fill='solid'
             >
               Получите номер участника розыгрыша
             </Button>
