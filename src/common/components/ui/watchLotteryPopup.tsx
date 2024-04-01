@@ -225,12 +225,14 @@ export const WatchLotteryPopup: FC = observer(() => {
                   <br />
                   <center>
                   <input 
+                    id="zaE8caA"
                     key='input_UniqueKey227'
                     onChange={e => Toast.show(`onChange ${e.currentTarget.value}`)} 
                     placeholder="asasas"
                     onClick={e => {
                       Toast.show(`onClick ${e.currentTarget.value}`)
                       passCodeRef.current?.focus()
+                      document.getElementById('zaE8caA')?.focus()
                     }} 
                   />
                   <br />
