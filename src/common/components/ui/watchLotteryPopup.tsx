@@ -221,6 +221,8 @@ export const WatchLotteryPopup: FC = observer(() => {
                   </center></h3>
                   <br />
                   <center>
+                  <input onChange={e => Toast.show(e.currentTarget.value)} placeholder="asasas" />
+                  <br />
                   <PasscodeInput 
                     plain
                     value={passCode}
