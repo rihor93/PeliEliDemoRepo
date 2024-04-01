@@ -1,11 +1,34 @@
-import { Popup, Steps, Button, Input, Space } from "antd-mobile"
+import { Popup, Steps, Button, Input, Space, Toast } from "antd-mobile"
 import { Step } from "antd-mobile/es/components/steps/step"
-import { FC } from "react"
+import { FC, useState } from "react"
+import { http } from "../../features"
+import { useTelegram } from "../../hooks"
+import { LotteryDescriptionPopup } from "./LotteryDescriptionPopup"
 
 
 
 export const WatchLotteryPopup: FC<{ show: boolean, close: () => void }> = ({ show, close }) => {
   const hide = () => close()
+  const { userId, tg, isInTelegram } = useTelegram()
+  const [showDescription, setShowDescription] = useState(false)
+
+  function sendVideo() {
+    if(userId) {
+      http.post("/SendVideo", { userId }).then(() => {
+        const src = 'https://t.me/Gurmagbot'
+        if(isInTelegram()) {
+          tg.openTelegramLink(src);
+        } else {
+          window.open(src); 
+        }
+      })
+    } else { 
+      Toast.show({
+        content: 'Не удалось отправить видео',
+        position: 'center',
+      })
+    }
+  }
   return(
     <Popup
       position='bottom'
@@ -16,6 +39,10 @@ export const WatchLotteryPopup: FC<{ show: boolean, close: () => void }> = ({ sh
       style={{ zIndex: 5 }}
       bodyStyle={{ width: '100vw',  borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
     >
+      <LotteryDescriptionPopup 
+        close={() => { setShowDescription(false) }}
+        show={showDescription}
+      />
       <h3 style={{ margin: '2rem 0 0 2rem' }}>Эта форма станет активной <strong style={{ background: 'rgb(255, 241, 0)', color: 'black' }}>4 апреля в 12-00</strong>.</h3>
       <h2 style={{ margin: '2rem 0 0 2rem' }}>Для того чтобы учавствовать:</h2>
       <Steps direction='vertical'>
@@ -24,7 +51,7 @@ export const WatchLotteryPopup: FC<{ show: boolean, close: () => void }> = ({ sh
           status='wait'
           description={
             <Button 
-            disabled
+              onClick={() => { setShowDescription(true) }}
               block 
               color='primary' 
               fill='none'
@@ -38,7 +65,7 @@ export const WatchLotteryPopup: FC<{ show: boolean, close: () => void }> = ({ sh
           status='wait'
           description={
             <Button 
-            disabled
+              onClick={() => { sendVideo() }}
               color='primary' 
               fill='none'
             >
