@@ -65,6 +65,7 @@ export const WatchLotteryPopup: FC = observer(() => {
   }
 
   function sendSecretCode(code: string) {
+    passCodeRef.current?.blur()
     setErroredSecretCode('')
     function onerror() {
       toastRef.current?.close()
