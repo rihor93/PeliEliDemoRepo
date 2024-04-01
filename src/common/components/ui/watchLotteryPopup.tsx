@@ -1,4 +1,4 @@
-import { Popup, Steps, Button, Toast, PasscodeInput, AutoCenter, Result } from "antd-mobile"
+import { Popup, Steps, Button, Toast, PasscodeInput, AutoCenter, Result, PasscodeInputRef } from "antd-mobile"
 import { CheckCircleFill, CheckCircleOutline, ClockCircleFill, CloseCircleFill } from "antd-mobile-icons"
 import { Step } from "antd-mobile/es/components/steps/step"
 import { ToastHandler } from "antd-mobile/es/components/toast"
@@ -24,6 +24,7 @@ export const WatchLotteryPopup: FC = observer(() => {
   const [showDescription, setShowDescription] = useState(false)
   /** тост с загрузкой */
   const toastRef = useRef<ToastHandler>()
+  const passCodeRef = useRef<PasscodeInputRef>(null)
 
   const [passCode, setPassCode] = useState('')
   const [erroredSecretCode, setErroredSecretCode] = useState('')
@@ -226,10 +227,14 @@ export const WatchLotteryPopup: FC = observer(() => {
                   <input 
                     onChange={e => Toast.show(`onChange ${e.currentTarget.value}`)} 
                     placeholder="asasas"
-                    onClick={e => Toast.show(`onClick ${e.currentTarget.value}`)} 
+                    onClick={e => {
+                      Toast.show(`onClick ${e.currentTarget.value}`)
+                      passCodeRef.current?.focus()
+                    }} 
                   />
                   <br />
                   <PasscodeInput 
+                    ref={passCodeRef}
                     plain
                     value={passCode}
                     onChange={val => setPassCode(val)}
