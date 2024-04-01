@@ -1,12 +1,15 @@
 import { WaterMark } from 'antd-mobile'
+import { observer } from 'mobx-react-lite'
 import { FC } from 'react'
+import { useStore } from '../../hooks'
 // @ts-ignore
 import Iphone15Logo from './iphone15.png'
 
-export const TempBanner: FC<{ onClick: () => void }> = ({ onClick }) => {
+export const TempBanner: FC = observer(() => {
+  const { iPhone15Lottery } = useStore()
   return(
     <div
-      onClick={onClick}
+      onClick={() => iPhone15Lottery.watchLotteryPopup.open()}
       style={{ 
         cursor: 'pointer', 
         borderRadius: 8, 
@@ -37,4 +40,4 @@ export const TempBanner: FC<{ onClick: () => void }> = ({ onClick }) => {
       </p>
     </div>
   )
-}
+})

@@ -11,10 +11,10 @@ import {
   List,
 } from "antd-mobile"
 import { observer } from "mobx-react-lite"
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AuthRequiredButton, Carusel, ChangeLocation, Page, SelectLocationPopup } from "../../components";
 import { config } from '../../configuration';
-import { useStore } from '../../hooks';
+import { useStore, useTelegram } from '../../hooks';
 import { ItemModal } from "../MenuPage/modals/ItemModal";
 import './MainPage.css';
 import { FC } from 'react';
@@ -24,13 +24,14 @@ import { CourseItemComponent } from "../MenuPage/sections/Categories";
 import WatchCampaignModal from "../ActionsPage/modals/WatchCampaignModal";
 import { TempBanner } from "../../components/ui/Banner";
 import { WatchLotteryPopup } from "../../components/ui/watchLotteryPopup";
+import { http } from "../../features";
 
 
 export const MainPage: FC = observer(() => { 
-  const { userStore, actionsPage, mainPage, auth } = useStore();
+  const { userStore, actionsPage, mainPage, auth, iPhone15Lottery } = useStore();
+  const telegram = useTelegram()
 
   const { selectedCourse, state, cookstate } = mainPage;
-  const [watchLottery, setWatchLottery] = useState(false)
   return(
     <Page>
       {selectedCourse 
@@ -39,8 +40,8 @@ export const MainPage: FC = observer(() => {
       }
       <AuthRequiredButton show={auth.isFailed} />
       <br />
-      <WatchLotteryPopup show={watchLottery} close={() => setWatchLottery(false)} />
-        <TempBanner onClick={() => setWatchLottery(true)}></TempBanner>
+      <WatchLotteryPopup />
+      <TempBanner />
       {userStore.orgstate === 'COMPLETED'
         && userStore.userLoad === 'COMPLETED' 
         && userStore.needAskAdress 

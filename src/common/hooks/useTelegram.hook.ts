@@ -16,6 +16,14 @@ export function useTelegram() {
     secondary_bg_color: tg.themeParams.secondary_bg_color as string,
   }
   const isInTelegram = () => Boolean(tg?.initDataUnsafe?.user?.id)
+  const CloudStorage = {
+    setItem(key: string, value: string) {
+      return tg.CloudStorage.setItem(key, value)
+    },
+    getItem(key: string) {
+      return tg.CloudStorage.getItem(key) as string
+    },
+  }
   return {
     tg, 
     colors,
@@ -24,6 +32,7 @@ export function useTelegram() {
     queryId: tg?.initDataUnsafe?.query_id, 
     isInTelegram, 
     colorScheme: tg?.colorScheme,
+    CloudStorage,
   }
 }
 // tg.initDataUnsafe?.user?.id

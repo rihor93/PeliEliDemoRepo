@@ -1,11 +1,13 @@
 import React from "react";
 import { makeAutoObservable, reaction } from "mobx";
-import { AuthStore, CartStore, MainPageStore } from "./stores";
+import { AuthStore, CartStore, MainPageStore, Modal } from "./stores";
 import { UserInfoStore } from "./stores/UserInfoStore";
-import { getItem, logger } from "../common/features";
+import { getItem, http, logger } from "../common/features";
 import { ActionsPageStore } from "./stores/ActionsStore";
 import { useTelegram } from "../common/hooks";
 import * as uuid from 'uuid';
+import { LoadStatesType, Optional } from "../common/types";
+import { Toast } from "antd-mobile";
 
 export class Store {
   /**
@@ -26,6 +28,7 @@ export class Store {
   cartStore = new CartStore(this);
   userStore = new UserInfoStore(this);
   actionsPage = new ActionsPageStore(this)
+  iPhone15Lottery = new iPhone15Lottery(this)
 
   subscriptions: (() => void)[] = [];
 
@@ -145,3 +148,92 @@ export class Store {
 }
 const empty = null as unknown as Store
 export const StoreContext = React.createContext<Store>(empty);
+
+
+
+class iPhone15Lottery {
+  /**
+   * попап просмотра формы розыгрышка
+   */
+  watchLotteryPopup = new Modal()
+
+  /**
+   * страница просмотра условий розыгрышка
+   */
+  lotteryDescriptiomPage = new Modal()
+
+
+
+  state: LoadStatesType = 'INITIAL'
+  setState = (state: LoadStatesType) => {
+    this.state = state
+  }
+
+  /**
+   * номер участника в лотерее
+   *    null - initial state
+   *    >0 - значит пользователь учавствует и это его номер
+   *    -1 или <0 - пользователь не учавствует 
+   */
+  engageNumber: Optional<number> = null
+  setEngageNumber(number: number) {
+    this.engageNumber = number
+  }
+
+  /**
+   * учавствует ли пользователь в розыгрыше
+   *    null - initial state
+   *    true - yes
+   *    false - no
+   */
+  IsEngageInLottery: Optional<boolean> = null
+  setIsEngageInLottery = (value: boolean) => {
+    this.IsEngageInLottery = value
+  }
+
+  constructor(readonly rootStore: Store) {
+    makeAutoObservable(this)
+    this.getIsEngage()
+  }
+
+  getIsEngage() {
+    const { userId } = useTelegram()
+    this.setState('LOADING')
+    if(userId) {
+      http.post("/GetUserCode", { userId }).then((result: any) => {
+        if(Number(result?.Number ?? 0) > 0) {
+          this.setEngageNumber(Number(result.Number))
+          this.setIsEngageInLottery(true)
+        } else {
+          this.setEngageNumber(-1)
+          this.setIsEngageInLottery(false)
+        }
+        this.setState('COMPLETED')
+      })
+      .catch(this.onError)
+    } else {
+      this.onError()
+    }
+  }
+
+  onError = () => {
+    Toast.show({ 
+      content: 'Не удалось загрузить сведения об участии', 
+      position: 'center'
+    })
+  }
+
+  setPointComleted = (key: number, val: boolean) => {
+    //@ts-ignore
+    this.points[key] = val
+  }
+  /**
+   * выполнены ли пункты для розыгрыша
+   */
+  points = {
+    1: false,
+    2: false,
+    3: false,
+    4: false
+  }
+}

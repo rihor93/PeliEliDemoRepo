@@ -12,10 +12,8 @@ import { TempBanner } from '../../components/ui/Banner';
 export const MorePage: React.FC = observer(() => {
   const tg = useTelegram();
   const navigate = useNavigate();
-  const { userStore, auth } = useStore();
+  const { userStore, auth, iPhone15Lottery } = useStore();
   const [askedAddr, setAskedAddr] = useState(0)
-
-  const [watchLottery, setWatchLottery] = useState(false)
   return (
     <Страничка>
     
@@ -73,9 +71,9 @@ export const MorePage: React.FC = observer(() => {
         ? <div style={{height: '58px'}} />
         : null 
       }
-      <WatchLotteryPopup show={watchLottery} close={() => setWatchLottery(false)} />
+      <WatchLotteryPopup />
       <ul className='moreList'>
-        <TempBanner onClick={() => setWatchLottery(true)}></TempBanner>
+        <TempBanner />
         <li>
           <LocationFill { ...icoProps } />
           <span>Уфа</span>
