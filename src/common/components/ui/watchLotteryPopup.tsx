@@ -1,6 +1,7 @@
 import { Popup, Steps, Button, Input, Space, Toast } from "antd-mobile"
 import { Step } from "antd-mobile/es/components/steps/step"
-import { FC, useState } from "react"
+import { ToastHandler } from "antd-mobile/es/components/toast"
+import { FC, useRef, useState } from "react"
 import { http } from "../../features"
 import { useTelegram } from "../../hooks"
 import { LotteryDescriptionPopup } from "./LotteryDescriptionPopup"
@@ -11,20 +12,35 @@ export const WatchLotteryPopup: FC<{ show: boolean, close: () => void }> = ({ sh
   const hide = () => close()
   const { userId, tg, isInTelegram } = useTelegram()
   const [showDescription, setShowDescription] = useState(false)
+  /** тост с загрузкой */
+  const toastRef = useRef<ToastHandler>()
 
   function sendVideo() {
+    toastRef.current = Toast.show({
+      icon: 'loading',
+      content: 'Загрузка',
+      position: 'center', 
+      duration: 0 // висит бесконечно
+    })
     if(userId) {
       http.post("/SendVideo", { userId }).then(() => {
         const src = 'https://t.me/Gurmagbot'
+        toastRef.current?.close()
         if(isInTelegram()) {
           tg.openTelegramLink(src);
         } else {
           window.open(src); 
         }
+      }).catch(() => {
+        Toast.show({
+          content: 'Не удалось получить видео',
+          position: 'center',
+        })
       })
     } else { 
+      toastRef.current?.close()
       Toast.show({
-        content: 'Не удалось отправить видео',
+        content: 'Не удалось получить видео',
         position: 'center',
       })
     }
