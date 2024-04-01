@@ -231,8 +231,8 @@ export const WatchLotteryPopup: FC = observer(() => {
                     placeholder="asasas"
                     onClick={e => {
                       Toast.show(`onClick ${e.currentTarget.value}`)
+                      passCodeRef.current?.blur()
                       passCodeRef.current?.focus()
-                      document.getElementById('zaE8caA')?.focus()
                     }} 
                   />
                   <br />
