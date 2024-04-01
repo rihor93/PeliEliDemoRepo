@@ -47,7 +47,7 @@ const TestUpdater = ({ children }: { children: React.ReactNode }) => {
   return(
     <div style={{ position: 'relative' }} className={`ddssd${tick}`}>
       <button onClick={handle} style={{ position: 'absolute', padding: '2rem', zIndex: 1000 }}>Update Tree</button>
-      {children}
+      {tick % 2 === 0 ? children : null}
     </div>
   )
 }
