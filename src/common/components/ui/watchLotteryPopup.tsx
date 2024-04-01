@@ -42,12 +42,12 @@ export const WatchLotteryPopup: FC = observer(() => {
         const src = 'https://t.me/Gurmagbot'
         toastRef.current?.close()
         if(isInTelegram()) {
-          setPointComleted(2, true)
           tg.openTelegramLink(src);
         } else {
-          setPointComleted(2, true)
           window.open(src); 
         }
+        setPointComleted(1, true)
+        setPointComleted(2, true)
       }).catch(() => {
         Toast.show({
           content: 'Не удалось получить видео',
@@ -86,6 +86,8 @@ export const WatchLotteryPopup: FC = observer(() => {
           if(result?.Number && result.Number > 0) {
             iPhone15Lottery.setIsEngageInLottery(true)
             iPhone15Lottery.setEngageNumber(result.Number)
+            setPointComleted(1, true)
+            setPointComleted(2, true)
             setPointComleted(3, true)
           } else {
             if(result?.Status === "Сумма покупок недостаточна") {
@@ -221,7 +223,11 @@ export const WatchLotteryPopup: FC = observer(() => {
                   </center></h3>
                   <br />
                   <center>
-                  <input onChange={e => Toast.show(e.currentTarget.value)} placeholder="asasas" />
+                  <input 
+                    onChange={e => Toast.show(`onChange ${e.currentTarget.value}`)} 
+                    placeholder="asasas"
+                    onClick={e => Toast.show(`onClick ${e.currentTarget.value}`)} 
+                  />
                   <br />
                   <PasscodeInput 
                     plain
