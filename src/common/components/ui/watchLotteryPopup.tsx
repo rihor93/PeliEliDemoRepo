@@ -44,6 +44,7 @@ export const WatchLotteryPopup: FC = observer(() => {
         toastRef.current?.close()
         if(isInTelegram()) {
           tg.openTelegramLink(src);
+          tg.close()
         } else {
           window.open(src); 
         }
@@ -233,7 +234,7 @@ export const WatchLotteryPopup: FC = observer(() => {
                       plain
                       value={passCode}
                       onChange={val => setPassCode(val)}
-                      length={4}
+                      length={5}
                       style={{ 
                         borderColor: 'var(--tg-theme-text-color)', 
                         "--border-color": 'var(--tg-theme-text-color)'

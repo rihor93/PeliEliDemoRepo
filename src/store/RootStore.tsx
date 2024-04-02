@@ -1,5 +1,5 @@
 import React from "react";
-import { makeAutoObservable, reaction } from "mobx";
+import { makeAutoObservable, reaction, toJS } from "mobx";
 import { AuthStore, CartStore, MainPageStore, Modal } from "./stores";
 import { UserInfoStore } from "./stores/UserInfoStore";
 import { getItem, http, logger } from "../common/features";
@@ -194,6 +194,8 @@ class iPhone15Lottery {
   constructor(readonly rootStore: Store) {
     makeAutoObservable(this)
     this.getIsEngage()
+    this.points = JSON.parse(localStorage.getItem('iPhone15lottery') 
+    ?? '{"1":false,"2":false,"3":false,"4":false}')
   }
 
   getIsEngage() {
@@ -226,6 +228,7 @@ class iPhone15Lottery {
   setPointComleted = (key: number, val: boolean) => {
     //@ts-ignore
     this.points[key] = val
+    localStorage.setItem('iPhone15lottery', JSON.stringify(toJS(this.points)))
   }
   /**
    * выполнены ли пункты для розыгрыша
