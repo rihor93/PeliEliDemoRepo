@@ -106,7 +106,7 @@ export const WatchLotteryPopup: FC = observer(() => {
               iPhone15Lottery.setIsEngageInLottery(false)
               setPassCode('')
             } else {
-              setErroredSecretCode("Что-то пошло не так(")
+              setErroredSecretCode(result?.Status ?? "Что-то пошло не так(")
               iPhone15Lottery.setIsEngageInLottery(false)
               setPassCode('')
             }
