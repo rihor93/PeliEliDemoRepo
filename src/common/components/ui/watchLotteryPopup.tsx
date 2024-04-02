@@ -92,6 +92,7 @@ export const WatchLotteryPopup: FC = observer(() => {
         .post("/RegActionNumber", { userId, code })
         .then((result: any) => {
           if(result?.Number && result.Number > 0) {
+            toastRef.current?.close()
             iPhone15Lottery.setIsEngageInLottery(true)
             iPhone15Lottery.setEngageNumber(result.Number)
             setPointComleted(1, true)
@@ -99,13 +100,16 @@ export const WatchLotteryPopup: FC = observer(() => {
             setPointComleted(3, true)
           } else {
             if(result?.Status === "Сумма покупок недостаточна") {
+              toastRef.current?.close()
               setErroredSecretCode("Сумма покупок недостаточна")
               iPhone15Lottery.setIsEngageInLottery(false)
             } else if(result?.Status === "Код введён неверно") {
+              toastRef.current?.close()
               setErroredSecretCode("Код введён неверно")
               iPhone15Lottery.setIsEngageInLottery(false)
               setPassCode('')
             } else {
+              toastRef.current?.close()
               setErroredSecretCode(result?.Status ?? "Что-то пошло не так(")
               iPhone15Lottery.setIsEngageInLottery(false)
               setPassCode('')
@@ -147,11 +151,10 @@ export const WatchLotteryPopup: FC = observer(() => {
             icon={<CheckCircleOutline style={{ fontSize: 64 }} />}
             status='success'
             title={<>
-              <p>Ваш номер: <strong style={{ color: 'var(--gurmag-accent-color)', fontSize: '30px' }}>{12}</strong>.</p>
+              <p>Ваш номер: <strong style={{ color: 'var(--gurmag-accent-color)', fontSize: '30px' }}>{engageNumber}</strong>.</p>
               <p>Осталось дождаться результатов розыгрыша</p>
             </>}
           />
-          <p>{engageNumber}</p>
         </>
         : <> 
           <h2 style={{ margin: '2rem 0 0 2rem' }}>Для того чтобы учавствовать:</h2>
