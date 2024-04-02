@@ -220,36 +220,26 @@ export const WatchLotteryPopup: FC = observer(() => {
               }
               description={<>
                 <AutoCenter>
-                  <h3><center>
-                  Введите секретный шифр и получите номер участника розыгрыша
-                  </center></h3>
+                  <h3>
+                    <center>
+                      Введите секретный шифр и получите номер участника розыгрыша
+                    </center>
+                  </h3>
                   <br />
                   <center>
-                  <input 
-                    id="zaE8caA"
-                    key='input_UniqueKey227'
-                    onChange={e => Toast.show(`onChange ${e.currentTarget.value}`)} 
-                    placeholder="asasas"
-                    onClick={e => {
-                      Toast.show(`onClick ${e.currentTarget.value}`)
-                      passCodeRef.current?.blur()
-                      passCodeRef.current?.focus()
-                    }} 
-                  />
-                  <br />
-                  <PasscodeInput 
-                    key='PasscodeInput_UniqueKey228'
-                    ref={passCodeRef}
-                    plain
-                    value={passCode}
-                    onChange={val => setPassCode(val)}
-                    length={4}
-                    style={{ 
-                      borderColor: 'var(--tg-theme-text-color)', 
-                      "--border-color": 'var(--tg-theme-text-color)'
-                    }} 
-                    onFill={sendSecretCode}
-                  />
+                    <PasscodeInput 
+                      key='PasscodeInput_UniqueKey228'
+                      ref={passCodeRef}
+                      plain
+                      value={passCode}
+                      onChange={val => setPassCode(val)}
+                      length={4}
+                      style={{ 
+                        borderColor: 'var(--tg-theme-text-color)', 
+                        "--border-color": 'var(--tg-theme-text-color)'
+                      }} 
+                      onFill={sendSecretCode}
+                    />
                   </center>
                 </AutoCenter>
                 {!erroredSecretCode.length 
