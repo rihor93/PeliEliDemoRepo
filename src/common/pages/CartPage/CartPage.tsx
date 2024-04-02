@@ -813,6 +813,7 @@ interface DetailFormProps {
   errored: Optional<string>
 }
 const DetailForm: FC<DetailFormProps> = observer(properties => {
+  const { cartStore: cart } = useStore()
   const { 
     showDateSelector, 
     showTimeSelector, 
@@ -856,9 +857,17 @@ const DetailForm: FC<DetailFormProps> = observer(properties => {
           <span onClick={() => showDateSelector(true)}>
             {moment(selectedDate).format('DD-MM-YYYY')}
           </span>
-          <span onClick={() => showTimeSelector(true)}>
-            {selectedTime}
-          </span>
+          {cart.receptionType === 'pickup' 
+            ? (
+              <span onClick={() => showTimeSelector(true)}>
+                {selectedTime}
+              </span>
+            )
+            : (
+              <span>17 - 21</span>
+            )
+          }
+          
         </Space>
       </div>
     </div>
