@@ -1,4 +1,4 @@
-import { Popup } from "antd-mobile"
+import { AutoCenter, Button, Checkbox, Popup } from "antd-mobile"
 import { Step } from "antd-mobile/es/components/steps/step"
 import { Steps } from "antd-mobile/es/components/steps/steps"
 import { CSSProperties, FC } from "react"
@@ -13,8 +13,13 @@ const Pstyle: CSSProperties = {
   fontStyle: 'italic'
 }
 
-
-export const LotteryDescriptionPopup: FC<{ show: boolean, close: () => void }> = ({ show, close }) => {
+interface Props { 
+  show: boolean, 
+  close: () => void, 
+  setIsAgree: (bool: boolean) => void, 
+  agree: boolean
+}
+export const LotteryDescriptionPopup: FC<Props> = ({ show, close, agree, setIsAgree }) => {
   const hide = () => close()
   return(
     <Popup
@@ -75,7 +80,21 @@ export const LotteryDescriptionPopup: FC<{ show: boolean, close: () => void }> =
           }
         />
       </Steps>
-      
+      <div 
+        style={{
+          background: 'var(--tg-theme-secondary-bg-color)',
+          borderRadius: 8,
+          border: "1px solid var(--adm-border-color)",
+          padding: '1rem',
+          margin: '0.5rem'
+        }}
+      >
+      <Checkbox checked={agree} onChange={val => setIsAgree(val)}>Я ознакомлен с условиями конкурса</Checkbox>
+      <AutoCenter>
+        <br />
+        <Button onClick={hide} color='primary' fill='solid'>Вернуться и продолжить</Button>
+      </AutoCenter>
+      </div>
       
       
       

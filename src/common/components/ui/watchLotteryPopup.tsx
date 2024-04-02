@@ -1,4 +1,4 @@
-import { Popup, Steps, Button, Toast, PasscodeInput, AutoCenter, Result, PasscodeInputRef } from "antd-mobile"
+import { Popup, Steps, Button, Toast, PasscodeInput, AutoCenter, Result, PasscodeInputRef, Input, Checkbox } from "antd-mobile"
 import { CheckCircleFill, CheckCircleOutline, ClockCircleFill, CloseCircleFill } from "antd-mobile-icons"
 import { Step } from "antd-mobile/es/components/steps/step"
 import { ToastHandler } from "antd-mobile/es/components/toast"
@@ -28,6 +28,7 @@ export const WatchLotteryPopup: FC = observer(() => {
 
   const [passCode, setPassCode] = useState('')
   const [erroredSecretCode, setErroredSecretCode] = useState('')
+  const [isAgree, setIsAgree] = useState(points[1])
 
   
 
@@ -66,6 +67,10 @@ export const WatchLotteryPopup: FC = observer(() => {
   }
 
   function sendSecretCode(code: string) {
+    if(!isAgree) {
+      setErroredSecretCode('Вы не прочитали условия!')
+      return
+    }
     passCodeRef.current?.blur()
     setErroredSecretCode('')
     function onerror() {
@@ -127,7 +132,11 @@ export const WatchLotteryPopup: FC = observer(() => {
       <LotteryDescriptionPopup 
         close={() => { 
           setShowDescription(false)
-          setPointComleted(1, true)
+        }}
+        agree={isAgree}
+        setIsAgree={bool => {
+          setIsAgree(bool)
+          setPointComleted(1, bool)
         }}
         show={showDescription}
       />
@@ -196,6 +205,7 @@ export const WatchLotteryPopup: FC = observer(() => {
               }
               description={
                 <Button 
+                  disabled={!isAgree}
                   onClick={sendVideo}
                   color='primary' 
                   fill='none'
