@@ -928,7 +928,11 @@ const DetailForm: FC<DetailFormProps> = observer(properties => {
         }
       </div>
       <div style={detailFormStyle.timeLabel}>
-        Приготовить заказ ко времени:
+        {cart.receptionType === 'pickup'
+          ? "Приготовить заказ ко времени:"
+          : "Дата доставки"
+        }
+        
       </div>
       <div style={detailFormStyle.timeValues}>
         <Space style={{"--gap": '1.25rem', fontSize: '20px'}}>
@@ -941,9 +945,7 @@ const DetailForm: FC<DetailFormProps> = observer(properties => {
                 {selectedTime}
               </span>
             )
-            : (
-              <span>17 - 21</span>
-            )
+            : (null)
           }
           
         </Space>

@@ -4,12 +4,14 @@ import { Step } from "antd-mobile/es/components/steps/step"
 import { ToastHandler } from "antd-mobile/es/components/toast"
 import { observer } from "mobx-react-lite"
 import { FC, useRef, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { http } from "../../features"
 import { useStore, useTelegram } from "../../hooks"
 import { LotteryDescriptionPopup } from "./LotteryDescriptionPopup"
 
 export const WatchLotteryPopup: FC = observer(() => {
-  const { iPhone15Lottery } = useStore()
+  const navigate = useNavigate()
+  const { iPhone15Lottery, auth } = useStore()
   const {
     IsEngageInLottery, 
     engageNumber, 
@@ -209,7 +211,13 @@ export const WatchLotteryPopup: FC = observer(() => {
               description={
                 <Button 
                   disabled={!isAgree}
-                  onClick={sendVideo}
+                  onClick={() => {
+                    if(auth.isFailed) {
+                      navigate('/authorize')
+                    } else {
+                      sendVideo()
+                    }
+                  }}
                   color='primary' 
                   fill='none'
                   block
