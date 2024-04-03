@@ -130,7 +130,10 @@ type Order = {
   /** phone number str - "79273067412" */ 
   contactPhone: string,
   /** ISOdate str - "2023-08-24T07:55:07.983Z" */
-  orderDate: string
+  orderDate: string,
+
+  fullAddress: string | null
+  orderType: number | null
 }
 
 type CourseOtzyv = {
@@ -164,7 +167,10 @@ type historyOrderItem = {
   OrgName: string,
   OrgCode: number,
   OrderCost: number,
-  Courses: historyOrderCouse[]
+  Courses: historyOrderCouse[],
+  /** "На вынос" или "С доставкой" */
+  OrderType: string,
+  FullAddress: null | string
 }
 
 type historyOrderCouse = {

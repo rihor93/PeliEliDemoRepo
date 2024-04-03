@@ -95,65 +95,142 @@ export const CartPage: React.FC = observer(
       const isOnToday = moment(outputDate).isSame(new Date(), 'day')
       
       if(isNotAllowToday && isOnToday) {
+        console.log(address)
+        debugger
         // показывем диалог если только
         // сегодня чего-то нет
         // а пользователь поставил сегодня
-        Dialog.show({
-          title: 'Такой заказ только завтра',
-          content: <div>
-            <p>{`Некоторые блюда, которые вы хотели заказать сегодня уже закончились(((`}</p>
-            <p>{`Вы сможете забрать заказ только завтра или позднее`}</p>
-          </div>,
-          closeOnAction: true, 
-          closeOnMaskClick: true, 
-          actions: [
-            {
-              key: 'tomorrow', 
-              text: `Забрать завтра (${moment(outputDate).add(1,'days').format('YYYY-MM-DD HH:mm')})`, 
-              onClick() {
-                const fixedDate = moment(outputDate).add(1,'days').toDate();
-                setDate(fixedDate);
-                cart.postOrder({
-                  itemsInCart: toJS(cart.items),
-                  userId, 
-                  currentOrg: String(isDevelopment() ? 146 : userStore.currentOrg),
-                  contactPhone,
-                  orderDate: fixedDate.toISOString()
-                }, handler)
-                  .then(() => {
-                    Modal.confirm({
-                      content: 'Поздравляем! Заказ оформлен!',
-                      cancelText: 'Закрыть',
-                      confirmText: 'Перейти в заказы',
-                      onConfirm: () => {
-                        navigate('/orders')
-                      },
+        if(cart.receptionType === 'pickup') {
+          Dialog.show({
+            title: 'Такой заказ только завтра',
+            content: <div>
+              <p>{`Некоторые блюда, которые вы хотели заказать сегодня уже закончились(((`}</p>
+              <p>{`Вы сможете забрать заказ только завтра или позднее`}</p>
+            </div>,
+            closeOnAction: true, 
+            closeOnMaskClick: true, 
+            actions: [
+              {
+                key: 'tomorrow', 
+                text: `Забрать завтра (${moment(outputDate).add(1,'days').format('YYYY-MM-DD HH:mm')})`, 
+                onClick() {
+                  const fixedDate = moment(outputDate).add(1,'days').toDate();
+                  setDate(fixedDate);
+                  cart.postOrder({
+                    itemsInCart: toJS(cart.items),
+                    userId, 
+                    currentOrg: String(isDevelopment() ? 146 : userStore.currentOrg),
+                    contactPhone,
+                    orderDate: fixedDate.toISOString(),
+                    fullAddress: null,
+                    orderType: 1
+                  }, handler)
+                    .then(() => {
+                      Modal.confirm({
+                        content: 'Поздравляем! Заказ оформлен!',
+                        cancelText: 'Закрыть',
+                        confirmText: 'Перейти в заказы',
+                        onConfirm: () => {
+                          navigate('/orders')
+                        },
+                      })
                     })
-                  })
+                },
               },
-            },
-            {
-              key: 'chooseAnother', 
-              text: 'Выбрать другое время', 
-              onClick() { setVisibleDate(true) },
-            },
-            {
-              key: 'backToCart', 
-              text: 'Вернуться к корзине'
-            }
-          ]
-        })
+              {
+                key: 'chooseAnother', 
+                text: 'Выбрать другое время', 
+                onClick() { setVisibleDate(true) },
+              },
+              {
+                key: 'backToCart', 
+                text: 'Вернуться к корзине'
+              }
+            ]
+          })
+        } else {
+          Dialog.show({
+            title: 'Такой заказ только завтра',
+            content: <div>
+              <p>{`Некоторые блюда, которые вы хотели заказать сегодня уже закончились(((`}</p>
+              <p>{`Вы сможете забрать заказ только завтра или позднее`}</p>
+            </div>,
+            closeOnAction: true, 
+            closeOnMaskClick: true, 
+            actions: [
+              {
+                key: 'tomorrow', 
+                text: `Забрать завтра (${moment(outputDate).add(1,'days').format('YYYY-MM-DD HH:mm')})`, 
+                onClick() {
+                  const fixedDate = moment(outputDate).add(1,'days').toDate();
+                  setDate(fixedDate);
+                  cart.postOrder({
+                    itemsInCart: toJS(cart.items),
+                    userId, 
+                    currentOrg: String(isDevelopment() ? 146 : userStore.currentOrg),
+                    contactPhone,
+                    orderDate: fixedDate.toISOString(),
+                    fullAddress: address,
+                    orderType: 2
+                  }, handler)
+                    .then(() => {
+                      Modal.confirm({
+                        content: 'Поздравляем! Заказ оформлен!',
+                        cancelText: 'Закрыть',
+                        confirmText: 'Перейти в заказы',
+                        onConfirm: () => {
+                          navigate('/orders')
+                        },
+                      })
+                    })
+                },
+              },
+              {
+                key: 'chooseAnother', 
+                text: 'Выбрать другое время', 
+                onClick() { setVisibleDate(true) },
+              },
+              {
+                key: 'backToCart', 
+                text: 'Вернуться к корзине'
+              }
+            ]
+          })
+        }
         
       } else {
         if(auth.isFailed) {
           navigate('/authorize/' + contactPhone.replace(/\D/g, ''))
         } else {
-          cart.postOrder({
+          if(cart.receptionType === 'pickup') {
+            cart.postOrder({
+              itemsInCart: toJS(cart.items),
+              userId, 
+              currentOrg: String(isDevelopment() ? 146 : userStore.currentOrg),
+              contactPhone: contactPhone.replace(/\D/g, ''),
+              orderDate: outputDate, 
+              fullAddress: null,
+              orderType: 1
+            }, handler)
+              .then(() => {
+                Modal.confirm({
+                  content: 'Поздравляем! Заказ оформлен!',
+                  cancelText: 'Закрыть',
+                  confirmText: 'Перейти в заказы',
+                  onConfirm: () => {
+                    navigate('/orders')
+                  },
+                })
+              })
+          } else {
+            cart.postOrder({
             itemsInCart: toJS(cart.items),
             userId, 
             currentOrg: String(isDevelopment() ? 146 : userStore.currentOrg),
             contactPhone: contactPhone.replace(/\D/g, ''),
-            orderDate: outputDate
+            orderDate: outputDate,
+            orderType: 2,
+            fullAddress: address
           }, handler)
             .then(() => {
               Modal.confirm({
@@ -165,6 +242,7 @@ export const CartPage: React.FC = observer(
                 },
               })
             })
+          }
         }
       }
     }
@@ -400,7 +478,7 @@ export const CartPage: React.FC = observer(
           <Button 
             block  
             size='large' 
-            disabled={cart.isEmpty}
+            disabled={cart.isEmpty || Boolean(errored?.length) || (Boolean(adrErrored?.length) && cart.receptionType === 'delivery' )}
             style={{
               borderRadius: '8px', 
               background: 'var(--gurmag-accent-color)', 

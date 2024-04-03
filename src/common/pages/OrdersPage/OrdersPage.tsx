@@ -83,10 +83,20 @@ export const OrdersPage: FC = observer(() => {
                 </Tag>
               </Group>
             </Space>
-            <Group>
-              <Span>Точка:</Span>
-              <P>{order.OrgName}</P>
-            </Group>
+            {order.FullAddress?.length && order.OrderType === 'С доставкой' 
+              ? (
+                <Group>
+                  <Span>Адрес доставки:</Span>
+                  <P>{order.FullAddress}</P>
+                </Group>
+              ) : (
+                <Group>
+                  <Span>Точка:</Span>
+                  <P>{order.OrgName}</P>
+                </Group>
+              )
+            }
+            
             <Group>
               <Span>Дата получения:</Span>
               <P>{moment(order.DeliveryTime).format('LLL')}</P>

@@ -85,10 +85,20 @@ export const WatchOrderDetailModal: FC = observer(() => {
               </Tag>
             </Group>
           </Space>
-          <Group>
-            <Span>Точка:</Span>
-            <P>{userStore.selectedHistoryOrder.OrgName}</P>
-          </Group>
+
+          {userStore.selectedHistoryOrder.FullAddress?.length && userStore.selectedHistoryOrder.OrderType === 'С доставкой' 
+            ? (
+              <Group>
+                <Span>Адрес доставки:</Span>
+                <P>{userStore.selectedHistoryOrder.FullAddress}</P>
+              </Group>
+            ) : (
+              <Group>
+                <Span>Точка:</Span>
+                <P>{userStore.selectedHistoryOrder.OrgName}</P>
+              </Group>
+            )
+          }
           <Group>
             <Span>Дата получения:</Span>
             <P>{moment(userStore.selectedHistoryOrder.DeliveryTime).format('LLL')}</P>
