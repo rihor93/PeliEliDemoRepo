@@ -38,7 +38,7 @@ export const TempBanner: FC = observer(() => {
       >
         Розыгрыш iPhone15!!!
       </p>
-      <p style={{ textAlign: 'center', marginLeft: '7rem' }}>(нажмите чтобы узнать подробнее)</p>
+      <p style={{ textAlign: 'center', marginLeft: '7rem' }}>(нажмите, чтобы узнать подробнее)</p>
     </div>
   )
 })
