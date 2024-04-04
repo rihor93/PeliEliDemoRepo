@@ -169,7 +169,7 @@ const RegistrationFormComponent: FC = observer(() => {
   }, [name, birthday, gender])
 
   function submit() {
-    const preparedBirthday = birthday.replace(/\D/g, '')
+    const preparedBirthday = moment(birthday).format('YYYYMMDD')
     auth.registration({
       name, 
       birthday: preparedBirthday, 
