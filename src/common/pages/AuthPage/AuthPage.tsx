@@ -1,4 +1,4 @@
-import { Button, Dropdown, PasscodeInput, Radio, Space, SpinLoading, Toast } from 'antd-mobile';
+import { Button, DatePicker, Dropdown, PasscodeInput, Radio, Space, SpinLoading, Toast } from 'antd-mobile';
 import { Input } from 'antd-mobile/es/components/input/input';
 import { observer } from 'mobx-react-lite';
 import { useState, FC } from "react";
@@ -6,6 +6,7 @@ import {getFormattedNumber, useMask} from "react-phone-hooks";
 import { useStore } from '../../hooks';
 import React from 'react';
 import { useNavigate, useParams } from 'react-router';
+import moment from 'moment';
 
 const defaultMask = "+7 ... ... .. .."
 const defaultPrefix = "+7"
@@ -159,6 +160,8 @@ const RegistrationFormComponent: FC = observer(() => {
   const [gender, setGender] = useState('')
   const [isDisabled, setIsDisabled] = useState(true)
 
+  const [showBirthdayInput, setShowBirthdayInput] = useState(false)
+
   React.useEffect(() => {
     name.length && birthday.length && gender.length
       ? setIsDisabled(false)
@@ -173,7 +176,19 @@ const RegistrationFormComponent: FC = observer(() => {
       gender,
     })
   }
+
+  const now = new Date()
   return <>
+    <DatePicker 
+      visible={showBirthdayInput}
+      onClose={() => setShowBirthdayInput(false)}
+      onConfirm={isoStr => setBirthDay(isoStr.toISOString())}
+      defaultValue={now}
+      max={now}
+      min={new Date("1924-01-01")}
+      confirmText='Сохранить'
+      cancelText='Закрыть' 
+    />
     <p style={style.hello as React.CSSProperties}>
       Расскажите о себе
     </p>
@@ -189,13 +204,15 @@ const RegistrationFormComponent: FC = observer(() => {
     <p style={style.label as React.CSSProperties}>
       Когда у вас день рождения?
     </p>
-    <Input 
-      type='date'
-      value={birthday}
-      placeholder='ДД-ММ-ГГГГ'
-      style={style.input}
-      onChange={val => { setBirthDay(val) }}
-    />
+    <p 
+      style={{ ...style.input, padding: '0.75rem 1rem' }}
+      onClick={() => setShowBirthdayInput(true)}
+    >
+      {birthday.length 
+        ? moment(birthday).format('DD-MM-YYYY')
+        : 'ДД-ММ-ГГГГ'
+      }
+    </p>
     <p style={style.label as React.CSSProperties}>
       Ваш пол:
     </p>
