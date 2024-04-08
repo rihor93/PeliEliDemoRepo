@@ -24,6 +24,9 @@ import NoImageBig from './no_image_big.jpg';
 // @ts-ignore
 import NoImageSmall from './no_image_small.jpg'
 
+// @ts-ignore
+import Iphone15Banner from './IMG_9021.JPG'
+
 
 export {
   GurmagLogo,
@@ -36,5 +39,6 @@ export {
   LightPlus,
   food,
   NoImageBig,
-  NoImageSmall
+  NoImageSmall,
+  Iphone15Banner
 }

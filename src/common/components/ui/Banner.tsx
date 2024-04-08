@@ -1,12 +1,18 @@
-import { WaterMark } from 'antd-mobile'
+import { Image, WaterMark } from 'antd-mobile'
 import { observer } from 'mobx-react-lite'
 import { FC } from 'react'
+import { Iphone15Banner } from '../../../assets'
 import { useStore } from '../../hooks'
 // @ts-ignore
 import Iphone15Logo from './iphone15.png'
 
 export const TempBanner: FC = observer(() => {
   const { iPhone15Lottery } = useStore()
+  return (
+    <Image 
+      src={Iphone15Banner} 
+    />
+  )
   return(
     <div
       onClick={() => iPhone15Lottery.watchLotteryPopup.open()}
