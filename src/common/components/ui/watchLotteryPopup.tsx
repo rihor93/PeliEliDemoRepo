@@ -225,7 +225,8 @@ export const WatchLotteryPopup: FC = observer(() => {
                   >
                     Получите видео, чтобы узнать секретный шифр!
                   </Button>
-                  <p style={{ lineHeight: '20px', textAlign: 'center' }}>(Если Вы уже посмотрели видео и собрали секретный код, можете сразу перейти к вводу кода👇👇👇)</p>
+                  <p style={{ lineHeight: '20px', textAlign: 'center' }}>(Если Вы уже посмотрели видео и собрали секретный код, можете сразу перейти к вводу кода)</p>
+                  <p style={{ lineHeight: '20px', textAlign: 'center' }}>👇👇👇</p>
                 </>
               }
             />
@@ -257,7 +258,11 @@ export const WatchLotteryPopup: FC = observer(() => {
                       ref={passCodeRef}
                       plain
                       value={passCode}
-                      onChange={val => setPassCode(val)}
+                      onChange={val => {
+                        setPointComleted(1, true)
+                        setPointComleted(2, true)
+                        setPassCode(val)
+                      }}
                       length={5}
                       style={{ 
                         borderColor: 'var(--tg-theme-text-color)', 
