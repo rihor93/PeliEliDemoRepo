@@ -209,21 +209,24 @@ export const WatchLotteryPopup: FC = observer(() => {
                   : <CloseCircleFill />
               }
               description={
-                <Button 
-                  disabled={!isAgree}
-                  onClick={() => {
-                    if(auth.isFailed) {
-                      navigate('/authorize')
-                    } else {
-                      sendVideo()
-                    }
-                  }}
-                  color='primary' 
-                  fill='none'
-                  block
-                >
-                  Получите видео, чтобы узнать секретный шифр!
-                </Button>
+                <>
+                  <Button 
+                    disabled={!isAgree}
+                    onClick={() => {
+                      if(auth.isFailed) {
+                        navigate('/authorize')
+                      } else {
+                        sendVideo()
+                      }
+                    }}
+                    color='primary' 
+                    fill='none'
+                    block
+                  >
+                    Получите видео, чтобы узнать секретный шифр!
+                  </Button>
+                  <p style={{ lineHeight: '20px', textAlign: 'center' }}>(Если Вы уже посмотрели видео и собрали секретный код, можете сразу перейти к вводу кода👇👇👇)</p>
+                </>
               }
             />
             <Step
