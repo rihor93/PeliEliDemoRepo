@@ -10,6 +10,7 @@ export const TempBanner: FC = observer(() => {
   const { iPhone15Lottery } = useStore()
   return (
     <Image 
+      onClick={() => iPhone15Lottery.watchLotteryPopup.open()}
       src={Iphone15Banner} 
     />
   )
