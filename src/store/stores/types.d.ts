@@ -71,7 +71,7 @@ type AllCampaignUser = {
 type Organization = {
   Id: number,
   Name: string,
-  isCK: number,
+  isCK: boolean,
 }
 
 type UserInfoState = {

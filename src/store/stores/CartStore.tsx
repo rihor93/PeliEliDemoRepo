@@ -1,4 +1,4 @@
-import { Toast } from "antd-mobile";
+import { Toast, Modal as Modalz } from "antd-mobile";
 import { ToastHandler } from "antd-mobile/es/components/toast";
 import { flow, makeAutoObservable, toJS } from "mobx";
 import { http, logger, setItem } from "../../common/features";
@@ -13,18 +13,18 @@ export const receptionTypes = {
 export type ReceptionType = typeof receptionTypes[keyof typeof receptionTypes];
 
 
-export class CartStore { 
+export class CartStore {
   /** состояние запросов */
   state: LoadStatesType = 'INITIAL';
   get isLoading() { return this.state === 'LOADING' }
   get isDone() { return this.state === 'COMPLETED' }
   get isFailed() { return this.state === 'FAILED' }
 
-  onStart() { 
-    this.state = 'LOADING' 
+  onStart() {
+    this.state = 'LOADING'
   }
   onSuccess(text?: string) {
-    if(text?.length) {
+    if (text?.length) {
       Toast.show({
         icon: 'success',
         content: text,
@@ -34,9 +34,9 @@ export class CartStore {
     this.state = 'COMPLETED'
   }
   onFailure(errStr: string) {
-    if(errStr.length) {
-      Toast.show({ 
-        icon: 'fail', 
+    if (errStr.length) {
+      Toast.show({
+        icon: 'fail',
         content: errStr,
         position: 'center',
       })
@@ -55,7 +55,7 @@ export class CartStore {
     makeAutoObservable(this);
   }
 
-  
+
   confirmOrderModal = new Modal();
 
   items: Array<CouseInCart> = [];
@@ -68,7 +68,7 @@ export class CartStore {
   }
 
   clearCousesById(vcode: number) {
-    this.items = this.items.filter(item => 
+    this.items = this.items.filter(item =>
       item.couse.VCode !== vcode
     )
   }
@@ -115,8 +115,8 @@ export class CartStore {
       // если блюда нет
       // добавляем его
       const newItemInCart: CouseInCart = {
-        couse, 
-        quantity: 1, 
+        couse,
+        quantity: 1,
         priceWithDiscount: couse.Price
       }
 
@@ -244,12 +244,12 @@ export class CartStore {
               // я не понимаю как оно работает 
               // но тут надо сделать так
               // если есть установленный прайс
-              if(dishDiscount.price){ 
+              if (dishDiscount.price) {
                 courseItem.priceWithDiscount = courseItem.quantity * dishDiscount.price;
               }
               // если нет прайса но есть скидочный процент
               // @ts-ignore
-              if(dishDiscount.discountPercent) {
+              if (dishDiscount.discountPercent) {
                 // @ts-ignore
                 courseItem.priceWithDiscount = (courseItem.couse.Price - (courseItem.couse.Price * dishDiscount.discountPercent / 100)) * courseItem.quantity;
               }
@@ -267,12 +267,12 @@ export class CartStore {
             if (dishInSet !== undefined) {
               courseItem.campaign = curDishSets[j].vcode;
               // если есть установленный прайс
-              if(dishInSet.price){ 
+              if (dishInSet.price) {
                 courseItem.priceWithDiscount = courseItem.quantity * dishInSet.price;
               }
               // если нет прайса но есть скидочный процент
               // @ts-ignore
-              if(dishInSet.discountPercent) {
+              if (dishInSet.discountPercent) {
                 // @ts-ignore
                 courseItem.priceWithDiscount = courseItem.quantity * (courseItem.couse.Price - (courseItem.couse.Price * dishInSet.discountPercent / 100));
               }
@@ -286,16 +286,16 @@ export class CartStore {
 
 
     this.items = new_state.items
-    this.totalPrice = new_state.items.reduce((acc, cur) => 
+    this.totalPrice = new_state.items.reduce((acc, cur) =>
       acc + cur.priceWithDiscount, 0
     )
 
-    
+
     // корзину запоминаем 
     // только когда все загрузилось,
     // иначе запомним пустой массив 
     const { state: load, cookstate } = this.rootStore.mainPage;
-    if(load === 'COMPLETED' && cookstate === 'COMPLETED') setItem('cartItems', state.items)
+    if (load === 'COMPLETED' && cookstate === 'COMPLETED') setItem('cartItems', state.items)
   }
 
   applyDiscountForCart(userInfo: UserInfoState) {
@@ -315,7 +315,7 @@ export class CartStore {
   /** апи оформления заказа */
   postOrder = flow(function* (
     this: CartStore,
-    order: Order, 
+    order: Order,
     handler: React.MutableRefObject<ToastHandler | undefined>
   ) {
     try {
@@ -323,18 +323,34 @@ export class CartStore {
       handler.current = Toast.show({
         icon: 'loading',
         content: 'Загрузка',
-        position: 'center', 
+        position: 'center',
         duration: 0 // висит бесконечно
       })
-      const response: [historyOrderItem] = yield http.post('/NewOrder', order);
-      if(response?.[0]) {
+      // // // // // // // == это убрать перед продом переделать todo // // // // 
+      if(order.orderType === 2) {
+        const resultOrg = yield this.deliveryForm.getNearestDeliveryPoint(order.fullAddress as string)
+        logger.log('Тестовый заказ выдать с ' + resultOrg.Name, 'cart-store')
+        handler.current?.close()
+        Modalz.confirm({
+          content: `ТЕСТ: заказ будет отправлен с ${resultOrg.Name}`,
+          cancelText: 'Закрыть',
+          confirmText: 'ok',
+        })
+        this.clearCart()
+        return
+      }
+      // // // // // // // // // // //
+      const response: [historyOrderItem] = yield http.post('/NewOrder', {
+        ...order, currentOrg: 146
+      });
+      if (response?.[0]) {
         logger.log('Заказ успешно оформлен', 'cart-store')
         handler.current?.close()
         this.onSuccess('Заказ успешно оформлен')
         this.clearCart()
         this.rootStore.userStore.orderHistory.push(response[0])
       };
-    } catch (e) { 
+    } catch (e) {
       logger.log('Заказ блин не оформился', 'cart-store')
       this.onFailure('Не удалось оформить заказ')
     }
@@ -350,5 +366,281 @@ export class CartStore {
       value: receptionTypes.delivery as ReceptionType,
     }
   ]
+
+  deliveryForm = new DeliveryForm(this)
 }
 
+class DeliveryForm {
+  constructor(readonly parrent: CartStore) {
+    makeAutoObservable(this)
+  }
+  /**
+   * точки с которых ведется доставка
+   */
+  deliveryPoints: Array<Organization> = [
+    {
+      Id: 2,
+      Name: "Рабкоров_20",
+      isCK: false
+    },
+    {
+      Id: 140,
+      Name: "Российская_43",
+      isCK: false
+    }
+  ]
+
+  private getCordinatesByAddr = async (address: string) => {
+    const result: YandexGeocodeResponse = await http.get('https://geocode-maps.yandex.ru/1.x/', {
+      apikey: this.apikey,
+      geocode: address,
+      format: 'json'
+    })
+    const cord = result?.response?.GeoObjectCollection?.featureMember[0]?.GeoObject?.Point?.pos ?? undefined
+    if (cord) {
+      const [dolgota, shirota] = cord.split(' ').map(str => Number(str))
+      logger.log(`Нашли кординаты d = ${dolgota} sh = ${shirota} для ${address}`)
+      return { dolgota, shirota }
+    } else {
+      logger.log('Не нашли кординаты((((')
+      return { dolgota: undefined, shirota: undefined }
+    }
+  }
+
+  getNearestDeliveryPoint = async (
+    inputAddress: string
+  ) => {
+    // сначала находим кординаты адреса для доставки
+    const { dolgota, shirota } = await this.getCordinatesByAddr(inputAddress)
+
+    let resultOrganization
+    let minDistance
+    // потом пробегаемся по всех доступным организациям 
+    // и ищем ту орг, которая ближе всех
+    for (const org of this.deliveryPoints) {
+      console.log(`========= ${org.Name} =========`)
+      // для каждой организации захардкодил кординаты 
+      // каждый раз их узнавать заного смысла нет
+      const isCordsKnown = this.addrsBindings
+        .find(o => o.Name === org.Name)
+        console.log(`========= isCordsKnown ${isCordsKnown?.Name} =========`)
+
+      let orgDolgota, orgShirota
+      // если организация есть в захардкоженных
+      // кординатах то берем кор-ты оттуда
+      if (isCordsKnown) {
+        [orgDolgota, orgShirota] = isCordsKnown.pos
+          .split(' ')
+          .map(str => Number(str))
+
+        /** расстояние */
+        const distance = this.getDistanceFromLatLonInKm(shirota, dolgota, orgShirota, orgDolgota)
+        console.log(`========= if isCordsKnown distance ${distance} =========`)
+        if(minDistance) {
+          if(distance < minDistance) {
+            minDistance = distance
+            resultOrganization = org
+          }
+        } else {
+          minDistance = distance
+          resultOrganization = org
+        }
+      } else {
+        
+        // если нет то 
+        // делаем запрос и узнаем кординаты
+        logger.log(`Кординаты для точки ${org.Name} придется загрузить`)
+        const orgPos = await this.getCordinatesByAddr('Уфа, ' + org.Name)
+        /** расстояние */
+        const distance = this.getDistanceFromLatLonInKm(shirota, dolgota, orgPos.shirota, orgPos.dolgota)
+        console.log(`========= else not isCordsKnown distance ${distance} =========`)
+        if(minDistance) {
+          if(distance < minDistance) {
+            minDistance = distance
+            resultOrganization = org
+          }
+        } else {
+          minDistance = distance
+          resultOrganization = org
+        }
+      }
+    }
+    return resultOrganization as Organization
+  }
+
+
+  /** расстояние между двумя точками по прямой */
+  private getDistanceFromLatLonInKm(lat1: any, lon1: any, lat2: any, lon2: any) {
+    const R = 6371;
+    let dLat = this.deg2rad(lat2 - lat1)
+    let dLon = this.deg2rad(lon2 - lon1)
+    let a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2)
+      ;
+    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    let d = R * c;
+    return d;
+  }
+
+  private deg2rad(deg: any) {
+    return deg * (Math.PI / 180)
+  }
+
+  private apikey = '33b1e7b5-85f4-446d-b160-5fc311c21b21'
+
+
+
+  /** известные кординаты точек выдачи */
+  addrsBindings = [
+    {
+      Id: 2,
+      isCK: false,
+      Name: "Рабкоров_20",
+      pos: "56.002691 54.70186"
+    },
+    {
+      Id: 115,
+      isCK: false,
+      Name: "Жукова_10",
+      pos: "56.059599 54.770162"
+    },
+    {
+      Id: 140,
+      isCK: false,
+      Name: "Российская_43",
+      pos: "55.958736 54.735152"
+    },
+    {
+      Id: 141,
+      isCK: false,
+      Name: "Гафури_4",
+      pos: "55.928068 54.723413"
+    },
+    {
+      Id: 144,
+      isCK: false,
+      Name: "Ферина_19",
+      pos: "56.131958 54.781597"
+    },
+    {
+      Id: 147,
+      isCK: false,
+      Name: "Первомайская_70",
+      pos: "56.099008 54.810361"
+    }
+  ]
+}
+
+type YandexGeocodeResponse = {
+  response: {
+    GeoObjectCollection: {
+      metaDataProperty: {
+        GeocoderResponseMetaData: {
+          Point: {
+            /** example "56.002691 54.70186" */
+            pos: string
+          },
+          /** example "56.002691,54.70186" */
+          request: string,
+          /** example "10" */
+          results: string,
+          /** example "10" */
+          found: string
+        }
+      },
+      featureMember: Array<GeoObject>
+    }
+  }
+}
+type GeoObject = {
+  GeoObject: {
+    metaDataProperty: {
+      GeocoderMetaData: {
+        /** example "exact" */
+        precision: string,
+        /** example "Россия, Республика Башкортостан, Уфа, улица Рабкоров, 20" */
+        text: string,
+        /** example "house" */
+        kind: string,
+        Address: {
+          /** example "RU" */
+          country_code: string,
+          /** example "Россия, Республика Башкортостан, Уфа, улица Рабкоров, 20" */
+          formatted: string,
+          /** example "450092" */
+          postal_code?: string,
+          Components: Array<{
+            /** example "house" */
+            kind: string,
+            /** example "20" */
+            name: string
+          }>
+        },
+        AddressDetails: {
+          Country: {
+            /** example "Россия, Республика Башкортостан, Уфа, улица Рабкоров, 20" */
+            AddressLine: string,
+            /** example "RU" */
+            CountryNameCode: string,
+            /** example "Россия" */
+            CountryName: string,
+            AdministrativeArea?: {
+              /** example "Республика Башкортостан" */
+              AdministrativeAreaName: string,
+              SubAdministrativeArea?: {
+                /** example "городской округ Уфа" */
+                SubAdministrativeAreaName?: string,
+                /** example "Республика Башкортостан" */
+                AdministrativeAreaName?: string,
+                Locality?: {
+                  /** example "Уфа" */
+                  LocalityName: string,
+                  Thoroughfare?: {
+                    /** example "улица Рабкоров" */
+                    ThoroughfareName: string,
+                    Premise?: {
+                      /** example "20" */
+                      PremiseNumber: string,
+                      PostalCode: {
+                        /** example "450092" */
+                        PostalCodeNumber: string
+                      }
+                    }
+                  },
+                  DependentLocality?: {
+                    /** example "Кировский район" */
+                    DependentLocalityName: string,
+                    DependentLocality?: {
+                      /** example "Кировский район" */
+                      DependentLocalityName: string,
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    /** example "улица Рабкоров, 20" */
+    name: string,
+    /** example "Уфа, Республика Башкортостан, Россия" */
+    description?: string,
+    boundedBy: {
+      Envelope: {
+        /** example "55.998585 54.699482" */
+        lowerCorner: string,
+        /** example "56.006796 54.704238" */
+        upperCorner: string,
+      }
+    },
+    /** example "ymapsbm1://geo?data=IgoNwQJgQhW0zlpC" */
+    uri: string,
+    Point: {
+      /** example "56.002691 54.70186" */
+      pos: string
+    }
+  }
+}
