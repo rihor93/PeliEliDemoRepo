@@ -328,7 +328,8 @@ export class CartStore {
       })
       let orgID = order.currentOrg
       if(order.orderType === 2) {
-        orgID = yield this.deliveryForm.getNearestDeliveryPoint(order.fullAddress as string)
+        const ResultBlyat = yield this.deliveryForm.getNearestDeliveryPoint(order.fullAddress as string)
+        orgID = ResultBlyat.Id
       }
       const response: [historyOrderItem] = yield http.post('/NewOrder', {
         ...order, currentOrg: orgID
