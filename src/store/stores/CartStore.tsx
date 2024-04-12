@@ -326,22 +326,12 @@ export class CartStore {
         position: 'center',
         duration: 0 // висит бесконечно
       })
-      // // // // // // // == это убрать перед продом переделать todo // // // // 
+      let orgID = order.currentOrg
       if(order.orderType === 2) {
-        const resultOrg = yield this.deliveryForm.getNearestDeliveryPoint(order.fullAddress as string)
-        logger.log('Тестовый заказ выдать с ' + resultOrg.Name, 'cart-store')
-        handler.current?.close()
-        Modalz.confirm({
-          content: `ТЕСТ: заказ будет отправлен с ${resultOrg.Name}`,
-          cancelText: 'Закрыть',
-          confirmText: 'ok',
-        })
-        this.clearCart()
-        return
+        orgID = yield this.deliveryForm.getNearestDeliveryPoint(order.fullAddress as string)
       }
-      // // // // // // // // // // //
       const response: [historyOrderItem] = yield http.post('/NewOrder', {
-        ...order, currentOrg: 146
+        ...order, currentOrg: orgID
       });
       if (response?.[0]) {
         logger.log('Заказ успешно оформлен', 'cart-store')
