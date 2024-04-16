@@ -401,20 +401,25 @@ class DeliveryForm {
   getNearestDeliveryPoint = async (
     inputAddress: string
   ) => {
+    // console.log(`///////////// - input address: ${inputAddress}`)
     // сначала находим кординаты адреса для доставки
-    const { dolgota, shirota } = await this.getCordinatesByAddr(inputAddress)
+    const { dolgota, shirota } = await this.getCordinatesByAddr('Уфа, ' + inputAddress)
+    // console.log(`///////////// - input addr dolgota and shirota: ${dolgota} & ${shirota}`)
+
 
     let resultOrganization
     let minDistance
     // потом пробегаемся по всех доступным организациям 
     // и ищем ту орг, которая ближе всех
     for (const org of this.deliveryPoints) {
-      console.log(`========= ${org.Name} =========`)
+      console.log(`/////////////: ${org.Name} in loop`)
+
       // для каждой организации захардкодил кординаты 
       // каждый раз их узнавать заного смысла нет
       const isCordsKnown = this.addrsBindings
         .find(o => o.Name === org.Name)
-        console.log(`========= isCordsKnown ${isCordsKnown?.Name} =========`)
+      console.log(`///////////// - is cords known for ${org.Name}: ${isCordsKnown?.pos}`)
+
 
       let orgDolgota, orgShirota
       // если организация есть в захардкоженных
@@ -425,10 +430,11 @@ class DeliveryForm {
           .map(str => Number(str))
 
         /** расстояние */
-        const distance = this.getDistanceFromLatLonInKm(shirota, dolgota, orgShirota, orgDolgota)
-        console.log(`========= if isCordsKnown distance ${distance} =========`)
-        if(minDistance) {
-          if(distance < minDistance) {
+        const distance = this.distance(shirota, dolgota, orgShirota, orgDolgota)
+        console.log(`///////: calced distance between ${inputAddress} and ${org.Name}: ${distance}`)
+        console.log(`///////: min distance curr: ${minDistance}`)
+        if (minDistance) {
+          if (distance < minDistance) {
             minDistance = distance
             resultOrganization = org
           }
@@ -437,16 +443,17 @@ class DeliveryForm {
           resultOrganization = org
         }
       } else {
-        
+
         // если нет то 
         // делаем запрос и узнаем кординаты
         logger.log(`Кординаты для точки ${org.Name} придется загрузить`)
         const orgPos = await this.getCordinatesByAddr('Уфа, ' + org.Name)
         /** расстояние */
-        const distance = this.getDistanceFromLatLonInKm(shirota, dolgota, orgPos.shirota, orgPos.dolgota)
-        console.log(`========= else not isCordsKnown distance ${distance} =========`)
-        if(minDistance) {
-          if(distance < minDistance) {
+        const distance = this.distance(shirota, dolgota, orgPos.shirota, orgPos.dolgota)
+        console.log(`///////: calced distance between ${inputAddress} and ${org.Name}: ${distance}`)
+        console.log(`///////: min distance curr: ${minDistance}`)
+        if (minDistance) {
+          if (distance < minDistance) {
             minDistance = distance
             resultOrganization = org
           }
@@ -459,24 +466,26 @@ class DeliveryForm {
     return resultOrganization as Organization
   }
 
-
-  /** расстояние между двумя точками по прямой */
-  private getDistanceFromLatLonInKm(lat1: any, lon1: any, lat2: any, lon2: any) {
-    const R = 6371;
-    let dLat = this.deg2rad(lat2 - lat1)
-    let dLon = this.deg2rad(lon2 - lon1)
-    let a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(this.deg2rad(lat1)) * Math.cos(this.deg2rad(lat2)) *
-      Math.sin(dLon / 2) * Math.sin(dLon / 2)
-      ;
-    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    let d = R * c;
-    return d;
-  }
-
-  private deg2rad(deg: any) {
-    return deg * (Math.PI / 180)
+  distance(lat1: any, lon1: any, lat2: any, lon2: any, unit: 'M' | 'K' | 'N' = 'K') {
+    if ((lat1 == lat2) && (lon1 == lon2)) {
+      return 0;
+    }
+    else {
+      var radlat1 = Math.PI * lat1 / 180;
+      var radlat2 = Math.PI * lat2 / 180;
+      var theta = lon1 - lon2;
+      var radtheta = Math.PI * theta / 180;
+      var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+      if (dist > 1) {
+        dist = 1;
+      }
+      dist = Math.acos(dist);
+      dist = dist * 180 / Math.PI;
+      dist = dist * 60 * 1.1515;
+      if (unit == "K") { dist = dist * 1.609344 }
+      if (unit == "N") { dist = dist * 0.8684 }
+      return dist;
+    }
   }
 
   private apikey = '33b1e7b5-85f4-446d-b160-5fc311c21b21'
@@ -501,7 +510,7 @@ class DeliveryForm {
       Id: 140,
       isCK: false,
       Name: "Российская_43",
-      pos: "55.958736 54.735152"
+      pos: "56.03653 54.77791"
     },
     {
       Id: 141,
