@@ -1,4 +1,5 @@
 import { Image, WaterMark } from 'antd-mobile'
+import { Skeleton } from 'antd-mobile/es/components/skeleton/skeleton'
 import { observer } from 'mobx-react-lite'
 import { FC } from 'react'
 import { Iphone15Banner } from '../../../assets'
@@ -8,10 +9,13 @@ import Iphone15Logo from './iphone15.png'
 
 export const TempBanner: FC = observer(() => {
   const { iPhone15Lottery } = useStore()
+  const placeholder = <Skeleton style={{ height: '85.7px', width: '100%' }}/>
   return (
     <Image 
       onClick={() => iPhone15Lottery.watchLotteryPopup.open()}
       src={Iphone15Banner} 
+      placeholder={placeholder}
+      fallback={placeholder}
     />
   )
   return(

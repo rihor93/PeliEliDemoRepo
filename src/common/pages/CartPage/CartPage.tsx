@@ -18,6 +18,7 @@ import { getFormattedNumber, useMask } from "react-phone-hooks";
 import { logger } from '../../features';
 import { FC, useState, useMemo, CSSProperties } from "react"
 import { SelectLocationPopup } from '../../components';
+import { SelectSlotPopup } from '../../components/ui/SelectSlotPopup';
 
 const defaultMask = "+7 ... ... .. .."
 const defaultPrefix = "+7"
@@ -922,11 +923,12 @@ const detailFormStyle = {
     display: 'grid',
     gridAutoColumns: '1fr',
     gridTemplateColumns: '1fr 1fr',
-    gridTemplateRows: '1fr 1fr',
+    gridTemplateRows: '1fr 1fr 1fr',
     gap: '18px 10px',
     gridTemplateAreas: `
       "contactsPhone phone"
       "orderTime time"
+      "timeslotlabel timeslotvalue"
     `
   },
   phoneLabel: {
@@ -967,7 +969,21 @@ const detailFormStyle = {
     fontSize: '18px',
     fontWeight: '400',
     color: 'var(--громкий-текст)'
-  }
+  },
+  timeslotlabel: {
+    gridArea: 'timeslotlabel',
+    alignSelf: 'center',
+    fontSize: '16px',
+    fontWeight: '500',
+    color: 'var(--тихий-текст)'
+  },
+  timeslotvalue: {
+    gridArea: 'timeslotvalue',
+    alignSelf: 'center',
+    fontSize: '18px',
+    fontWeight: '400',
+    color: 'var(--громкий-текст)'
+  },
 }
 interface DetailFormProps {
   showDateSelector: (bool: boolean) => void
@@ -989,9 +1005,12 @@ const DetailForm: FC<DetailFormProps> = observer(properties => {
     contactPhone,
     errored
   } = properties
+  const isToday = moment(selectedDate).isSame(new Date(), 'day')
+
 
   return (
     <div style={detailFormStyle.gridContainer}>
+    <SelectSlotPopup orderDate={selectedDate} />
       <div style={detailFormStyle.phoneLabel}>
         Контактный телефон
       </div>
@@ -1038,6 +1057,20 @@ const DetailForm: FC<DetailFormProps> = observer(properties => {
 
         </Space>
       </div>
+      {cart.receptionType === 'pickup'
+        ? null
+        : <>
+          <div style={detailFormStyle.timeslotlabel}>
+            Время заказа
+          </div>
+          <div style={detailFormStyle.timeslotvalue} onClick={() => { cart.selectSlotPopup.open() }}>
+            {cart.selectedSlot
+              ? `${cart.selectedSlot} ${isToday ? 'сегодня' : moment(selectedDate).format("DD-MM-YYYY")}`
+              : 'Выбрать время'
+            }
+          </div>
+        </>
+      }
     </div>
   )
 })

@@ -2,7 +2,7 @@ import { Toast, Modal as Modalz } from "antd-mobile";
 import { ToastHandler } from "antd-mobile/es/components/toast";
 import { flow, makeAutoObservable, toJS } from "mobx";
 import { http, logger, setItem } from "../../common/features";
-import { LoadStatesType, Undef } from "../../common/types";
+import { LoadStatesType, Optional, Undef } from "../../common/types";
 import { Store } from "../RootStore";
 import { Modal } from "./MainPageStore";
 
@@ -359,6 +359,17 @@ export class CartStore {
   ]
 
   deliveryForm = new DeliveryForm(this)
+  selectSlotPopup = new Modal()
+  selectedSlot: Optional<string> = null
+  setSelectedSlot = (slot:string) => { this.selectedSlot = slot }
+  slots = [
+    '16:00 — 17:00',
+    '17:00 — 18:00',
+    '18:00 — 19:00',
+    '19:00 — 20:00',
+    '20:00 — 21:00',
+    '21:00 — 21:30',
+  ]
 }
 
 class DeliveryForm {
