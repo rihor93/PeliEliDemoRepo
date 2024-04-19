@@ -1,20 +1,30 @@
 import { List, Popup } from "antd-mobile";
 import { observer } from "mobx-react-lite";
 import moment from "moment";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { useStore } from "../../hooks";
 
 
 export const SelectSlotPopup: FC<{ orderDate: Date }> = observer(function({ orderDate }) {
   const { cartStore } = useStore()
-  const { selectSlotPopup, setSelectedSlot, slots } = cartStore
+  const { 
+    selectSlotPopup, 
+    setSelectedSlot, 
+    availbaleSlots, 
+    getTimeString, 
+    getSlots,
+  } = cartStore
   const hide = () => selectSlotPopup.close()
   const isToday = moment(orderDate).isSame(new Date(), 'day')
 
-  function selectSlot(slot: string) {
+  function selectSlot(slot: Slot) {
     setSelectedSlot(slot)
     selectSlotPopup.close()
   }
+
+  useEffect(() => {
+    getSlots()
+  }, [])
   return(
     <Popup
       position='bottom'
@@ -28,9 +38,9 @@ export const SelectSlotPopup: FC<{ orderDate: Date }> = observer(function({ orde
       <h2 style={{ margin: '2rem 0 0 2rem' }}>Когда доставить?</h2>
       <p style={{ margin: '0.5rem 0 0 2rem', color: 'var(--adm-color-weak)' }}>От этого зависит ассортимент</p>
       <List style={{ padding:'1rem' }}>
-        {slots.map(slot => 
+        {availbaleSlots.map(slot => 
           <List.Item onClick={() => selectSlot(slot)}>
-            {`${slot} ${isToday ? 'сегодня' : moment(orderDate).format("DD-MM-YYYY")}`}
+            {`${getTimeString(slot)} ${isToday ? 'сегодня' : moment(orderDate).format("DD-MM-YYYY")}`}
           </List.Item>
         )}
       </List>

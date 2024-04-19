@@ -183,3 +183,18 @@ type historyOrderCouse = {
 
 type PaymentStatuses = 'Не оплачен' | 'Оплачен частично' | 'Оплачен'
 type OrderStatuses = 'Создан' | 'В работе' | 'Сборка заказа' | 'В пути' | 'Оплачен' | 'Отменён'
+
+type Slot = {
+  /** example "6" */
+  VCode: string,
+  /** example "Вечер" */
+  Name: string,
+  /** example "1970-01-01T18:00:12.024Z" */
+  Start: string,
+  /** example "1970-01-01T21:00:14.726Z" */
+  End: string,
+  /** example "1970-01-01T17:00:22.619Z" */
+  EndTimeOfWork: string,
+  /** example "1970-01-01T17:00:22.588Z" */
+  StartCook: string,
+}

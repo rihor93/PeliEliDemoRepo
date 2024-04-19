@@ -1065,7 +1065,7 @@ const DetailForm: FC<DetailFormProps> = observer(properties => {
           </div>
           <div style={detailFormStyle.timeslotvalue} onClick={() => { cart.selectSlotPopup.open() }}>
             {cart.selectedSlot
-              ? `${cart.selectedSlot} ${isToday ? 'сегодня' : moment(selectedDate).format("DD-MM-YYYY")}`
+              ? `${cart.getTimeString(cart.selectedSlot)} ${isToday ? 'сегодня' : moment(selectedDate).format("DD-MM-YYYY")}`
               : 'Выбрать время'
             }
           </div>

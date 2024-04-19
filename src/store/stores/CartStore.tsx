@@ -1,6 +1,7 @@
 import { Toast, Modal as Modalz } from "antd-mobile";
 import { ToastHandler } from "antd-mobile/es/components/toast";
 import { flow, makeAutoObservable, toJS } from "mobx";
+import moment from "moment";
 import { http, logger, setItem } from "../../common/features";
 import { LoadStatesType, Optional, Undef } from "../../common/types";
 import { Store } from "../RootStore";
@@ -53,6 +54,8 @@ export class CartStore {
   constructor(rootStore: Store) {
     this.rootStore = rootStore;
     makeAutoObservable(this);
+
+    this.availableSlotCheckerID = setInterval(this.checkAvailableSlot, 60000)
   }
 
 
@@ -330,6 +333,8 @@ export class CartStore {
       if(order.orderType === 2) {
         const ResultBlyat = yield this.deliveryForm.getNearestDeliveryPoint(order.fullAddress as string)
         orgID = ResultBlyat.Id
+        // @ts-ignore
+        order = { ...order, activeSlot: Number(this.selectedSlot?.VCode) }
       }
       const response: [historyOrderItem] = yield http.post('/NewOrder', {
         ...order, currentOrg: orgID
@@ -360,17 +365,49 @@ export class CartStore {
 
   deliveryForm = new DeliveryForm(this)
   selectSlotPopup = new Modal()
-  selectedSlot: Optional<string> = null
-  setSelectedSlot = (slot:string) => { this.selectedSlot = slot }
-  slots = [
-    '16:00 — 17:00',
-    '17:00 — 18:00',
-    '18:00 — 19:00',
-    '19:00 — 20:00',
-    '20:00 — 21:00',
-    '21:00 — 21:30',
-  ]
+
+  selectedSlot: Optional<Slot> = null
+  setSelectedSlot = (slot:Slot) => { this.selectedSlot = slot }
+  private slots: Slot[] = []
+
+  availbaleSlots: Slot[] = []
+
+  isSlotActive = function (slot: Slot) {
+    const [eHH, eMM] = moment(slot.EndTimeOfWork)
+      .format('HH:MM')
+      .split(':')
+      .map(toNumb)
+
+    const [nowHH, nowMM] = moment()
+      .format('HH:MM')
+      .split(':')
+      .map(toNumb)
+    
+    return (nowHH * 60 + nowMM) < (eHH * 60 + eMM)
+  }
+
+  getTimeString = (slot: Slot) => 
+    moment(slot.Start).format('HH:MM') +
+    ' - ' +
+    moment(slot.End).format('HH:MM')
+
+
+  getSlots = async () => {
+    const slots: Slot[] = await http.get('/getActiveSlots')
+    if(slots && Array.isArray(slots)) {
+      this.slots = slots
+      this.checkAvailableSlot()
+    } else {
+      logger.error('Не удалось получить слоты')
+    }
+  }
+  private availableSlotCheckerID: ReturnType<typeof setTimeout>
+  private checkAvailableSlot = () => {
+    this.availbaleSlots = this.slots.filter(this.isSlotActive)
+  }
 }
+
+function toNumb(str: string) { return Number(str) }
 
 class DeliveryForm {
   constructor(readonly parrent: CartStore) {
