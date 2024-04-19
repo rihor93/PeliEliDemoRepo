@@ -432,7 +432,7 @@ export const CartPage: React.FC = observer(
                 ? null
                 : <>
                   <Alert>
-                    <p>Доставка осуществляется каждый день с <strong>17-00</strong> до <strong>21-00</strong>.</p>
+                    {/* <p>Доставка осуществляется каждый день с <strong>17-00</strong> до <strong>21-00</strong>.</p> */}
                     <p style={{ marginTop: '8px' }}>Пока что НЕ СМОЖЕМ привезти в: <strong>Дему, Затон, Шакшу, пригороды</strong>.</p>
                     <p style={{ marginTop: '8px' }}>Оператор в течение 20 минут свяжется с вами и уточнит адрес доставки!</p>
                     <p style={{ marginTop: '8px' }}>Доставка работает в тестовом режиме, возможны заминки</p>
