@@ -336,7 +336,7 @@ export class CartStore {
         // @ts-ignore
         order = { ...order, activeSlot: Number(this.selectedSlot?.VCode) }
       }
-      const response: [historyOrderItem] = yield http.post('/NewOrder', {
+      const response: [historyOrderItem] = yield http.post('/NewOrderSlot', {
         ...order, currentOrg: orgID
       });
       if (response?.[0]) {
@@ -374,12 +374,12 @@ export class CartStore {
 
   isSlotActive = function (slot: Slot) {
     const [eHH, eMM] = moment(slot.EndTimeOfWork)
-      .format('HH:MM')
+      .format('HH:mm')
       .split(':')
       .map(toNumb)
 
     const [nowHH, nowMM] = moment()
-      .format('HH:MM')
+      .format('HH:mm')
       .split(':')
       .map(toNumb)
     
@@ -387,23 +387,30 @@ export class CartStore {
   }
 
   getTimeString = (slot: Slot) => 
-    moment(slot.Start).format('HH:MM') +
+    moment(slot.Start).format('HH:mm') +
     ' - ' +
-    moment(slot.End).format('HH:MM')
+    moment(slot.End).format('HH:mm')
 
+  slotloading: LoadStatesType = 'INITIAL'
 
   getSlots = async () => {
+    this.slotloading = 'LOADING'
     const slots: Slot[] = await http.get('/getActiveSlots')
     if(slots && Array.isArray(slots)) {
       this.slots = slots
       this.checkAvailableSlot()
+      this.slotloading = 'COMPLETED'
     } else {
+      this.slotloading = 'FAILED'
       logger.error('Не удалось получить слоты')
     }
   }
   private availableSlotCheckerID: ReturnType<typeof setTimeout>
   private checkAvailableSlot = () => {
     this.availbaleSlots = this.slots.filter(this.isSlotActive)
+    if(this.selectedSlot && !this.availbaleSlots.find(slot => slot.VCode === this.selectedSlot?.VCode)) {
+      this.selectedSlot = null
+    }
   }
 }
 
