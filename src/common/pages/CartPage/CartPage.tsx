@@ -623,7 +623,7 @@ const TimeSelector: FC<TimeSelectorProps> = props => {
           setDate(moment().add(1, 'day').toDate())
         }
         if ((nowH * 60 + nowM) < 9 * 60 + 30) {
-          setDate(moment().toDate())
+          // setDate(moment().toDate())
         }
       }
       // сетаем оставшиеся раб часы
