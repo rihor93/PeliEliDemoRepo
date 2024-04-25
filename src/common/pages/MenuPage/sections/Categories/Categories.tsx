@@ -231,7 +231,28 @@ const CardBodyComponent: React.FC<{ course: CourseItem }> = observer(({ course }
     })
   }
   return(
-    <div className='item_bady'>
+    <div className='item_bady' style={{ position: 'relative' }}>
+      {!course.NoResidue && course.EndingOcResidue
+        ? <div 
+          style={{
+            position:'absolute',
+            top: -9,
+            left: 0,
+            right: 0,
+            borderRadius: 8,
+            textAlign: 'center',
+            padding: '0.1rem 0.3rem',
+            background: 'var(--gurmag-accent-color)',
+            fontSize: '14px',
+            fontWeight: '700',
+            color: 'white',
+          }}
+        >
+          <p>{`сегодня осталось ${course.EndingOcResidue}`}</p>
+        </div>
+        : null
+      }
+      
       <h3 
         className='title'
         onClick={() => mainPage.watchCourse(course)}
