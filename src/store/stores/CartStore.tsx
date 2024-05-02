@@ -3,6 +3,7 @@ import { ToastHandler } from "antd-mobile/es/components/toast";
 import { flow, makeAutoObservable, toJS } from "mobx";
 import moment from "moment";
 import { http, logger, setItem } from "../../common/features";
+import { isDevelopment } from "../../common/helpers";
 import { LoadStatesType, Optional, Undef } from "../../common/types";
 import { Store } from "../RootStore";
 import { Modal } from "./MainPageStore";
@@ -335,6 +336,11 @@ export class CartStore {
         orgID = ResultBlyat.Id
         // @ts-ignore
         order = { ...order, activeSlot: Number(this.selectedSlot?.VCode) }
+      }
+
+      if(isDevelopment()) {
+        //@ts-ignore
+        orgID = 146
       }
       const response: [historyOrderItem] = yield http.post('/NewOrderSlot', {
         ...order, currentOrg: orgID

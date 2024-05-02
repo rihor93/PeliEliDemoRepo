@@ -73,7 +73,7 @@ export const MorePage: React.FC = observer(() => {
       }
       <WatchLotteryPopup />
       <ul className='moreList'>
-        <TempBanner />
+        {/* <TempBanner /> */}
         <li>
           <LocationFill { ...icoProps } />
           <span>Уфа</span>
