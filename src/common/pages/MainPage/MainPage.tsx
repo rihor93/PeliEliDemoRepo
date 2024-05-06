@@ -41,7 +41,7 @@ export const MainPage: FC = observer(() => {
       <AuthRequiredButton show={auth.isFailed} />
       <br />
       <WatchLotteryPopup />
-      {/* <TempBanner /> */}
+      <TempBanner />
       {userStore.orgstate === 'COMPLETED'
         && userStore.userLoad === 'COMPLETED' 
         && userStore.needAskAdress 

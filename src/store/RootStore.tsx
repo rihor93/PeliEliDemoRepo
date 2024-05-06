@@ -194,7 +194,7 @@ class iPhone15Lottery {
   constructor(readonly rootStore: Store) {
     makeAutoObservable(this)
     this.getIsEngage()
-    this.points = JSON.parse(localStorage.getItem('iPhone15lottery') 
+    this.points = JSON.parse(localStorage.getItem('iPhone15lottery_2') 
     ?? '{"1":false,"2":false,"3":false,"4":false}')
   }
 

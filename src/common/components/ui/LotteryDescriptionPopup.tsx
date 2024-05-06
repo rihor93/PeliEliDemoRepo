@@ -19,7 +19,7 @@ interface Props {
   setIsAgree: (bool: boolean) => void, 
   agree: boolean
 }
-export const LotteryDescriptionPopup: FC<Props> = ({ show, close, agree, setIsAgree }) => {
+export const LotteryDescriptionPopupOld: FC<Props> = ({ show, close, agree, setIsAgree }) => {
   const hide = () => close()
   return(
     <Popup
