@@ -332,12 +332,10 @@ export const WatchLotteryPopup: FC = observer(function() {
     }
     passCodeRef.current?.blur()
     setErroredSecretCode('')
-    function onerror() {
+    function onerror(text?: string) {
       toastRef.current?.close()
-      Toast.show({
-        content: 'Не удалось отправить секретный код',
-        position: 'center',
-      })
+      Toast.clear()
+      Toast.show(text ?? 'Ошибка')
     }
 
     toastRef.current = Toast.show({
@@ -379,7 +377,7 @@ export const WatchLotteryPopup: FC = observer(function() {
         .catch(onerror)
 
     } else {
-      onerror()
+      onerror('Вы не авторизованы')
     }
   }
   return(
