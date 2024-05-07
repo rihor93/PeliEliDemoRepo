@@ -327,6 +327,7 @@ export const WatchLotteryPopup: FC = observer(function() {
   function sendSecretCode(code: string) {
     if(!isAgree) {
       setErroredSecretCode('Вы не прочитали условия!')
+      Toast.show('Вы не приняли условия')
       return
     }
     passCodeRef.current?.blur()
@@ -465,7 +466,7 @@ export const WatchLotteryPopup: FC = observer(function() {
               status='wait'
               description={
                 <Button 
-                  onClick={() => { sendSecretCode('10000') }}
+                  onClick={() => {sendSecretCode('10000')}}
                   block 
                   color='primary' 
                   fill='none'
