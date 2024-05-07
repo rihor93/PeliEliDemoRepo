@@ -414,7 +414,7 @@ export const WatchLotteryPopup: FC = observer(function() {
           />
         </>
         : <> 
-          <h2 style={{ margin: '2rem 0 0 2rem' }}>Для того чтобы учавствовать:</h2>
+          <h2 style={{ margin: '2rem 0 0 2rem' }}>5 шагов чтобы учавствовать:</h2>
           <Steps 
             direction='vertical'
             style={{
@@ -427,27 +427,6 @@ export const WatchLotteryPopup: FC = observer(function() {
             <Step 
               title='1'
               status='wait'
-              description={<p style={{fontSize: 17, color: 'var(--tg-theme-text-color)', lineHeight: '22px', textIndent: 20 }}>
-                Сделать покупку в приложении на <strong>любую сумму</strong> до <strong>15.06.2024</strong>
-              </p>} 
-            />
-            <Step 
-              title='2'
-              status='wait'
-              description={<p style={{fontSize: 17,  color: 'var(--tg-theme-text-color)', lineHeight: '22px', textIndent: 20 }}>
-                <strong>Поставить оценку</strong> покупке и <strong>сделать скрин</strong> своей оценки
-              </p>} 
-            />
-            <Step 
-              title='3'
-              status='wait'
-              description={<p style={{fontSize: 17,  color: 'var(--tg-theme-text-color)', lineHeight: '22px', textIndent: 20 }}>
-                Разместить этот скрин у себя в соцсети с отметками <strong>@gurmag_ufa</strong> и <strong>#gurmag</strong>
-              </p>} 
-            />
-            <Step 
-              title='4'
-              status='wait'
               description={
                 <Button 
                   onClick={() => { setShowDescription(true) }}
@@ -459,6 +438,28 @@ export const WatchLotteryPopup: FC = observer(function() {
                 </Button>
               }
             />
+            <Step 
+              title='2'
+              status='wait'
+              description={<p style={{fontSize: 17, color: 'var(--tg-theme-text-color)', lineHeight: '22px', textIndent: 20 }}>
+                Сделать покупку в приложении на <strong>любую сумму</strong> до <strong>15.06.2024</strong>
+              </p>} 
+            />
+            <Step 
+              title='3'
+              status='wait'
+              description={<p style={{fontSize: 17,  color: 'var(--tg-theme-text-color)', lineHeight: '22px', textIndent: 20 }}>
+                <strong>Поставить оценку</strong> покупке и <strong>сделать скрин</strong> своей оценки
+              </p>} 
+            />
+            <Step 
+              title='4'
+              status='wait'
+              description={<p style={{fontSize: 17,  color: 'var(--tg-theme-text-color)', lineHeight: '22px', textIndent: 20 }}>
+                Разместить этот скрин у себя в соцсети с отметками <strong>@gurmag_ufa</strong> и <strong>#gurmag</strong>
+              </p>} 
+            />
+            
             <Step 
               title='5'
               status='wait'
