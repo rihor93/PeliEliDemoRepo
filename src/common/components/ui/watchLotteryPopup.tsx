@@ -434,7 +434,7 @@ export const WatchLotteryPopup: FC = observer(function() {
                   color='primary' 
                   fill='none'
                 >
-                   Примите условия розыгрыша
+                   Нажмите сюда, чтобы принять условия розыгрыша
                 </Button>
               }
             />
