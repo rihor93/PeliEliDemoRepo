@@ -1,4 +1,4 @@
-import { Popup, Steps, Button, Toast, PasscodeInput, AutoCenter, Result, PasscodeInputRef, Input, Checkbox } from "antd-mobile"
+import { Popup, Steps, Button, Toast, PasscodeInput, AutoCenter, Result, PasscodeInputRef, Input, Checkbox, Modal } from "antd-mobile"
 import { CheckCircleFill, CheckCircleOutline, ClockCircleFill, CloseCircleFill } from "antd-mobile-icons"
 import { Step } from "antd-mobile/es/components/steps/step"
 import { ToastHandler } from "antd-mobile/es/components/toast"
@@ -330,6 +330,11 @@ export const WatchLotteryPopup: FC = observer(function() {
       Toast.show('Вы не приняли условия')
       return
     }
+    if(auth.isFailed || !userId) {
+      setErroredSecretCode('Вы не зарегистрированы')
+      Toast.show('Вы не зарегистрированы')
+      return
+    }
     passCodeRef.current?.blur()
     setErroredSecretCode('')
     function onerror(text?: string) {
@@ -369,6 +374,10 @@ export const WatchLotteryPopup: FC = observer(function() {
               toastRef.current?.close()
               setErroredSecretCode(result?.Status ?? "Что-то пошло не так(")
               iPhone15Lottery.setIsEngageInLottery(false)
+              Modal.show({
+                content: <p style={{ textAlign: 'center', fontSize: 20 }}>{result?.Status ?? "Что-то пошло не так("}</p>,
+                closeOnMaskClick: true
+              })
               setPassCode('')
             }
             toastRef.current?.close()
