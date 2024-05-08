@@ -6,7 +6,7 @@ import { observer } from "mobx-react-lite"
 import { FC, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { http } from "../../features"
-import { useStore, useTelegram } from "../../hooks"
+import { useStore, useTelegram, useTheme } from "../../hooks"
 import { LotteryDescriptionPopupOld } from "./LotteryDescriptionPopup"
 
 export const WatchLotteryPopupOld: FC = observer(() => {
@@ -380,6 +380,7 @@ export const WatchLotteryPopup: FC = observer(function() {
       onerror('Вы не авторизованы')
     }
   }
+  const { theme } = useTheme()
   return(
     <Popup
       position='bottom'
@@ -433,6 +434,7 @@ export const WatchLotteryPopup: FC = observer(function() {
                   block 
                   color='primary' 
                   fill='none'
+                  style={{ fontWeight: 600, color: theme === 'light' ? "#FD7905" : "var(--gurmag-accent-color)"}}
                 >
                    Нажмите сюда, чтобы принять условия розыгрыша
                 </Button>
@@ -469,6 +471,7 @@ export const WatchLotteryPopup: FC = observer(function() {
                   block 
                   color='primary' 
                   fill='none'
+                  style={{ fontWeight: 600, color: theme === 'light' ? "#FD7905" : "var(--gurmag-accent-color)"}}
                 >
                    Нажмите сюда, чтобы получить персональный номер для участия в розыгрыше
                 </Button>
