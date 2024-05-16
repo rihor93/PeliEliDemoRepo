@@ -1,3 +1,4 @@
+import { CreditCardOutlined } from "@ant-design/icons";
 import { Toast, Modal as Modalz } from "antd-mobile";
 import { ToastHandler } from "antd-mobile/es/components/toast";
 import { flow, makeAutoObservable, toJS } from "mobx";
@@ -374,7 +375,7 @@ export class CartStore {
 
   selectedSlot: Optional<Slot> = null
   setSelectedSlot = (slot:Slot) => { this.selectedSlot = slot }
-  private slots: Slot[] = []
+  slots: Slot[] = []
 
   availbaleSlots: Slot[] = []
 
@@ -418,6 +419,8 @@ export class CartStore {
       this.selectedSlot = null
     }
   }
+
+  paymentSelector = new PaymentSelector(this)
 }
 
 function toNumb(str: string) { return Number(str) }
@@ -592,6 +595,35 @@ class DeliveryForm {
       pos: "56.099008 54.810361"
     }
   ]
+}
+
+export const PaymentWays = {
+  CASH: "CASH",
+  CARD: "CARD",
+} as const
+
+export type PaymentWay = typeof PaymentWays[keyof typeof PaymentWays];
+
+class PaymentSelector {
+  paymentWays = Object.keys(PaymentWays) as PaymentWay[]
+  paymentLabels = {
+    [PaymentWays.CARD]: 'Картой',
+    [PaymentWays.CASH]: 'Наличными',
+  }
+  iconstyle = { marginRight: '0.75rem', fontSize: 25 }
+  paymentIcons = {
+    [PaymentWays.CARD]: <CreditCardOutlined style={this.iconstyle} />,
+    [PaymentWays.CASH]: <span style={this.iconstyle}>₽</span>,
+  }
+  selectedPaymentWay:PaymentWay = PaymentWays.CASH
+  setPayementWaySelected = (way: PaymentWay) => {
+    this.selectedPaymentWay = way
+  }
+  constructor(readonly parrent: CartStore) {
+    makeAutoObservable(this)
+  }
+
+  selectWayPopup = new Modal()
 }
 
 type YandexGeocodeResponse = {

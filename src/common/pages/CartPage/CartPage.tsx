@@ -1,4 +1,4 @@
-import { Toast, Radio, Space, Skeleton, Dropdown, Input, DatePicker, Modal, Dialog, Picker } from 'antd-mobile';
+import { Toast, Radio, Space, Skeleton, Dropdown, Input, DatePicker, Modal, Dialog, Picker, List, Popup, Checkbox } from 'antd-mobile';
 import Button from 'antd-mobile/es/components/button';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
@@ -15,7 +15,6 @@ import { useNavigate } from 'react-router-dom';
 import { LocationFill } from 'antd-mobile-icons';
 import { ReceptionType } from '../../../store/stores';
 import { getFormattedNumber, useMask } from "react-phone-hooks";
-import { logger } from '../../features';
 import { FC, useState, useMemo, CSSProperties } from "react"
 import { SelectLocationPopup } from '../../components';
 import { SelectSlotPopup } from '../../components/ui/SelectSlotPopup';
@@ -96,8 +95,6 @@ export const CartPage: React.FC = observer(
       const isOnToday = moment(outputDate).isSame(new Date(), 'day')
 
       if (isNotAllowToday && isOnToday) {
-        console.log(address)
-        debugger
         // показывем диалог если только
         // сегодня чего-то нет
         // а пользователь поставил сегодня
@@ -455,6 +452,7 @@ export const CartPage: React.FC = observer(
                 setContactPhone={setContactPhone}
                 errored={errored}
               />
+              {/* <PaymentSelector />s */}
 
             </div>
           }
@@ -479,7 +477,13 @@ export const CartPage: React.FC = observer(
             <Button
               block
               size='large'
-              disabled={cart.isEmpty || Boolean(errored?.length) || (Boolean(adrErrored?.length) && cart.receptionType === 'delivery')}
+              disabled={
+                cart.isEmpty 
+                || Boolean(errored?.length) 
+                || (Boolean(adrErrored?.length) 
+                && cart.receptionType === 'delivery')
+                || !cart.selectedSlot
+              }
               style={{
                 borderRadius: '8px',
                 background: 'var(--gurmag-accent-color)',
@@ -678,119 +682,6 @@ const TimeSelector: FC<TimeSelectorProps> = props => {
       minutes
     ]
   }, [currentDate, currentTime, pickerH, pickerM, receptionType])
-  // const workrange = useMemo(() => {
-
-  //   let hours: pic[] = [];
-  //   let minutes: pic[] = [];
-  //   function fillMinutes(start: number, end: number) {
-  //     for(let i = start; i <= end; i++) {
-  //       minutes = []
-  //       const value = i < 10 ? `0${i}` : `${i}`
-  //       minutes.push({ label: value, value })
-  //     }
-  //   }
-  //   function fillHours(start: number, end: number) {
-  //     hours = []
-  //     for(let i = start; i <= end; i++) { 
-  //       const value = i < 10 ? `0${i}` : `${i}`
-  //       hours.push({ label: value, value })
-  //     }
-  //   }
-  //   const minH = receptionType === 'delivery'
-  //     ? 17 
-  //     : 9
-
-  //   const maxH = 21;
-
-  //   // если выбрана сегодняшняя дата
-  //   if(moment(currentDate).isSame(new Date(), 'day')) {
-  //     logger.log(
-  //       "если выбрана сегодняшняя дата, " + 
-  //       "сетаем только диапазон от текущего времени до конца рабочего дня",
-  //       "cart-page memo workrange"
-  //     )
-  //     // сетаем только диапазон от текущего времени до конца рабочего дня
-  //     const nowH = moment().add(15, 'minutes').hours();
-  //     const nowM = moment().minutes();
-
-  //     // если время не рабочее но дата сегодняшняя
-  //     if(
-  //       (nowH * 60 + nowM) > maxH * 60 + 30 || 
-  //       (nowH * 60 + nowM) < minH * 60 + 30
-  //     ) {
-  //       logger.log(
-  //         "если время не рабочее но дата сегодняшняя",
-  //         "cart-page memo workrange"
-  //       )
-  //       if((nowH * 60 + nowM) > maxH * 60 + 30) {
-  //         logger.log(
-  //           "если время позже 21 30 то делаем дату на завтра",
-  //           "cart-page memo workrange"
-  //         )
-  //         setDate(moment().add(1, 'day').toDate())
-  //       }
-  //       if((nowH * 60 + nowM) < minH * 60 + 30) {
-  //         logger.log(
-  //           "если время раньше 9 30 то дату не трогаем но сетаем время",
-  //           "cart-page memo workrange"
-  //         )
-  //         receptionType === 'delivery' 
-  //           ? setTime("17:00")
-  //           : setTime("09:45")
-  //       }
-  //     }
-  //     // сетаем оставшиеся раб часы
-  //     fillHours(nowH, maxH)
-  //     // если это текущий час
-  //     // то мы не должны выбрать минуты раньше чем текущие минуты
-  //     if(pickerH === hours[0]?.value) {
-  //       if(pickerH === String(maxH)) {
-  //         if(nowM <= 15) {
-  //           fillMinutes(nowM + 15, 30)
-  //         }
-  //       } else if(pickerH === String(minH)) {
-  //         if(nowM >= 15) {
-  //           fillMinutes(nowM, 59)
-  //         }
-  //       } else {
-  //         if(nowM < 45) {
-  //           fillMinutes(nowM + 15, 59)
-  //         } else {
-  //           fillMinutes(nowM + 15 - 60, 59)
-  //         }
-  //       }
-  //     } else {
-  //       if(pickerH === String(maxH)) {
-  //         fillMinutes(0, 30)
-  //         // с 8:30
-  //       } else if (pickerH === String(minH)) {
-  //         fillMinutes(30, 59)
-  //         // в остальных случаях полный час минуток
-  //       } else {
-  //         fillMinutes(0, 59)
-  //       }
-  //     }
-  //   } else {
-  //     // иначе сетаем всё время работы
-  //     // сетаем раб часы с 9 до 21
-  //     fillHours(minH, maxH);
-  //     // до 21:30
-  //     if(pickerH === String(maxH)) {
-  //       fillMinutes(0, 30)
-  //       // с 8:30
-  //     } else if (pickerH === String(minH)) {
-  //       fillMinutes(30, 59)
-  //       // в остальных случаях полный час минуток
-  //     } else {
-  //       fillMinutes(0, 59)
-  //     }
-  //   }
-
-  //   return [
-  //     hours, 
-  //     minutes 
-  //   ]
-  // }, [currentDate, currentTime, pickerH, pickerM, receptionType])
   return (
     <Picker
       columns={workrange}
@@ -1065,7 +956,9 @@ const DetailForm: FC<DetailFormProps> = observer(properties => {
           </div>
           <div style={detailFormStyle.timeslotvalue} onClick={() => { cart.selectSlotPopup.open() }}>
             {cart.selectedSlot
-              ? `${cart.getTimeString(cart.selectedSlot)} ${isToday ? 'сегодня' : moment(selectedDate).format("DD-MM-YYYY")}`
+              ? cart.selectedSlot.VCode === '-1'
+                ? "Ближайшие два часа"
+                : `${cart.getTimeString(cart.selectedSlot)} ${isToday ? 'сегодня' : moment(selectedDate).format("DD-MM-YYYY")}`
               : 'Выбрать время'
             }
           </div>
@@ -1132,3 +1025,82 @@ const AddrInput: FC<AddrInputProps> = props => {
     </Space>
   )
 }
+
+const flexHorizontal = { 
+  display: 'flex', 
+  justifyContent: 'space-between', 
+  alignItems: 'center',
+}
+const PaymentSelector: FC = observer(function() {
+  const { cartStore } = useStore()
+  const { paymentSelector } = cartStore
+  const { selectedPaymentWay, paymentLabels, selectWayPopup, paymentIcons } = paymentSelector
+
+  function watchAndSelectWay() {
+    selectWayPopup.open()
+  }
+  return <>
+    <WaySelectorPopup />
+    <p style={{ ...waitStyles.hello, margin: 17 } as CSSProperties}>
+      Способ оплаты:
+    </p>
+    <div 
+      style={{ 
+        ...flexHorizontal, 
+        width: '100%', 
+        padding: '1rem', 
+        border: "1px solid var(--adm-border-color)",
+        borderRadius: 8,
+        marginBottom: '2rem'
+      }}
+      onClick={watchAndSelectWay}
+    >
+      <div style={flexHorizontal}>
+        {toJS(paymentIcons[selectedPaymentWay])}
+        <span style={{ fontSize: 17, fontWeight: 500 }} >{paymentLabels[selectedPaymentWay]}</span>
+      </div>
+      <span style={{ color: 'var(--тихий-текст)' }}>Изменить</span>
+    </div>
+  </>
+})
+
+const WaySelectorPopup: FC = observer(() => {
+  const { cartStore } = useStore()
+  const { paymentSelector } = cartStore
+  const { 
+    selectedPaymentWay, 
+    paymentLabels, 
+    selectWayPopup, 
+    paymentWays, 
+    paymentIcons,
+    setPayementWaySelected
+  } = paymentSelector
+
+  const hide = () => selectWayPopup.close()
+  return (
+    <Popup
+      position='bottom'
+      visible={selectWayPopup.show}
+      showCloseButton
+      onClose={hide}
+      onMaskClick={hide}
+      style={{ zIndex: 5 }}
+      bodyStyle={{ width: '100vw',  borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
+    >
+      <h2 style={{ margin: '2rem 0 1rem 2rem' }}>Способ оплаты:</h2>
+      <List style={{ margin: '0 1rem' }}>
+        {paymentWays.map(way => 
+          <List.Item 
+            key={way}
+            prefix={toJS(paymentIcons[way])}
+            extra={<Checkbox checked={way === selectedPaymentWay} />}
+            onClick={() => setPayementWaySelected(way)}
+            arrow={null}
+          >
+            {paymentLabels[way]}
+          </List.Item>
+        )}
+      </List>
+    </Popup>
+  )
+})
