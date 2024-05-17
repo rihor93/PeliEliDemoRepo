@@ -452,7 +452,7 @@ export const CartPage: React.FC = observer(
                 setContactPhone={setContactPhone}
                 errored={errored}
               />
-              {/* <PaymentSelector />s */}
+              {/* <PaymentSelector /> */}
 
             </div>
           }
@@ -482,7 +482,7 @@ export const CartPage: React.FC = observer(
                 || Boolean(errored?.length) 
                 || (Boolean(adrErrored?.length) 
                 && cart.receptionType === 'delivery')
-                || !cart.selectedSlot
+                || (cart.receptionType === 'delivery' && !cart.selectedSlot)
               }
               style={{
                 borderRadius: '8px',
