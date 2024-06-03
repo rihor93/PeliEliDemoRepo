@@ -5,6 +5,7 @@ import { flow, makeAutoObservable, toJS } from "mobx";
 import moment from "moment";
 import { http, logger, setItem } from "../../common/features";
 import { isDevelopment } from "../../common/helpers";
+import { useTelegram } from "../../common/hooks";
 import { LoadStatesType, Optional, Undef } from "../../common/types";
 import { Store } from "../RootStore";
 import { Modal } from "./MainPageStore";
@@ -339,7 +340,8 @@ export class CartStore {
         order = { ...order, activeSlot: Number(this.selectedSlot?.VCode) }
       }
 
-      if(isDevelopment()) {
+      // if(isDevelopment()) {
+      if(true) {
         //@ts-ignore
         orgID = 146
       }
@@ -358,6 +360,17 @@ export class CartStore {
       this.onFailure('Не удалось оформить заказ')
     }
   })
+
+  payOrder = async (orderId: number) => {
+    type resultType = { redirectUrl: string }
+    const result: resultType = await http.post("/PayOrder", { orderId })
+    const tg = useTelegram()
+    if(tg.isInTelegram()) {
+      tg.tg.openTelegramLink(result.redirectUrl);
+    } else {
+      window.open(result.redirectUrl); 
+    }
+  }
 
   deliveryOptions = [
     {

@@ -452,7 +452,7 @@ export const CartPage: React.FC = observer(
                 setContactPhone={setContactPhone}
                 errored={errored}
               />
-              {/* <PaymentSelector /> */}
+              <PaymentSelector />
 
             </div>
           }
