@@ -354,6 +354,9 @@ export class CartStore {
         this.onSuccess('Заказ успешно оформлен')
         this.clearCart()
         this.rootStore.userStore.orderHistory.push(response[0])
+        if(this.paymentSelector.selectedPaymentWay === 'CARD') {
+          yield this.payOrder(Number(response[0].VCode))
+        }
       };
     } catch (e) {
       logger.log('Заказ блин не оформился', 'cart-store')
