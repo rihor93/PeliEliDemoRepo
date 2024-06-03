@@ -354,6 +354,8 @@ export class CartStore {
         this.onSuccess('Заказ успешно оформлен')
         this.clearCart()
         this.rootStore.userStore.orderHistory.push(response[0])
+        console.log("sdsddsdsds")
+        console.log(this.paymentSelector.selectedPaymentWay)
         if(this.paymentSelector.selectedPaymentWay === 'CARD') {
           yield this.payOrder(Number(response[0].VCode))
         }
@@ -367,12 +369,7 @@ export class CartStore {
   payOrder = async (orderId: number) => {
     type resultType = { redirectUrl: string }
     const result: resultType = await http.post("/PayOrder", { orderId })
-    const tg = useTelegram()
-    if(tg.isInTelegram()) {
-      tg.tg.openTelegramLink(result.redirectUrl);
-    } else {
-      window.open(result.redirectUrl); 
-    }
+    window.open(result.redirectUrl); 
   }
 
   deliveryOptions = [
