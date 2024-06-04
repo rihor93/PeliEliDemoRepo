@@ -268,6 +268,7 @@ export const CartPage: React.FC = observer(
 
     return (
       <Страничка>
+        <YoukassaPaymentPopup />
         <TimeSelector
           visible={visibleTime}
           setVisible={setVisibleTime}
@@ -1101,6 +1102,27 @@ const WaySelectorPopup: FC = observer(() => {
           </List.Item>
         )}
       </List>
+    </Popup>
+  )
+})
+
+const YoukassaPaymentPopup: FC = observer(() => {
+  const { cartStore } = useStore()
+  const { youkassaPopup } = cartStore
+
+  const hide = () => youkassaPopup.close()
+  return (
+    <Popup
+      position='bottom'
+      visible={youkassaPopup.show}
+      showCloseButton
+      onClose={hide}
+      onMaskClick={hide}
+      style={{ zIndex: 5 }}
+      bodyStyle={{ width: '100vw',  borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
+    >
+      <h2 style={{ margin: '2rem 0 1rem 2rem' }}>Оплата:</h2>
+      <div id="payment-form"></div>
     </Popup>
   )
 })

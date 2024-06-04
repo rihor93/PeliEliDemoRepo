@@ -1,5 +1,5 @@
 import { CreditCardOutlined } from "@ant-design/icons";
-import { Toast, Modal as Modalz } from "antd-mobile";
+import { Toast, Modal as Modalz, Dialog } from "antd-mobile";
 import { ToastHandler } from "antd-mobile/es/components/toast";
 import { flow, makeAutoObservable, toJS } from "mobx";
 import moment from "moment";
@@ -333,7 +333,7 @@ export class CartStore {
         duration: 0 // висит бесконечно
       })
       let orgID = order.currentOrg
-      if(order.orderType === 2) {
+      if (order.orderType === 2) {
         const ResultBlyat = yield this.deliveryForm.getNearestDeliveryPoint(order.fullAddress as string)
         orgID = ResultBlyat.Id
         // @ts-ignore
@@ -341,7 +341,7 @@ export class CartStore {
       }
 
       // if(isDevelopment()) {
-      if(true) {
+      if (true) {
         //@ts-ignore
         orgID = 146
       }
@@ -354,9 +354,7 @@ export class CartStore {
         this.onSuccess('Заказ успешно оформлен')
         this.clearCart()
         this.rootStore.userStore.orderHistory.push(response[0])
-        console.log("sdsddsdsds")
-        console.log(this.paymentSelector.selectedPaymentWay)
-        if(this.paymentSelector.selectedPaymentWay === 'CARD') {
+        if (this.paymentSelector.selectedPaymentWay === 'CARD') {
           yield this.payOrder(Number(response[0].VCode))
         }
       };
@@ -367,13 +365,30 @@ export class CartStore {
   })
 
   payOrder = async (orderId: number) => {
-    type resultType = { redirectUrl: string }
-    const result: resultType = await http.post("/PayOrder", { 
-      orderId, 
-      redirect_url: window.location.origin
+    this.youkassaPopup.open()
+    type resultType = {
+      confirmation: {
+        type: string,
+        confirmation_token: string
+      },
+    }
+    const result: resultType = await http.post("/PayOrder", { orderId })
+
+    const { confirmation_token } = result.confirmation;
+    //@ts-ignore
+    const checkout = new window.YooMoneyCheckoutWidget({
+      confirmation_token,
+      return_url: window.location.origin,
+      error_callback: function (error: any) {
+        Dialog.show({ content: 'Не удалось оплатить' })
+      }
     })
-    window.open(result.redirectUrl); 
+    
+    checkout.render('payment-form')
   }
+
+  youkassaPopup = new Modal()
+
 
   deliveryOptions = [
     {
@@ -390,7 +405,7 @@ export class CartStore {
   selectSlotPopup = new Modal()
 
   selectedSlot: Optional<Slot> = null
-  setSelectedSlot = (slot:Slot) => { this.selectedSlot = slot }
+  setSelectedSlot = (slot: Slot) => { this.selectedSlot = slot }
   slots: Slot[] = []
 
   availbaleSlots: Slot[] = []
@@ -405,11 +420,11 @@ export class CartStore {
       .format('HH:mm')
       .split(':')
       .map(toNumb)
-    
+
     return (nowHH * 60 + nowMM) < (eHH * 60 + eMM)
   }
 
-  getTimeString = (slot: Slot) => 
+  getTimeString = (slot: Slot) =>
     moment(slot.Start).format('HH:mm') +
     ' - ' +
     moment(slot.End).format('HH:mm')
@@ -419,7 +434,7 @@ export class CartStore {
   getSlots = async () => {
     this.slotloading = 'LOADING'
     const slots: Slot[] = await http.get('/getActiveSlots')
-    if(slots && Array.isArray(slots)) {
+    if (slots && Array.isArray(slots)) {
       this.slots = slots
       this.checkAvailableSlot()
       this.slotloading = 'COMPLETED'
@@ -431,7 +446,7 @@ export class CartStore {
   private availableSlotCheckerID: ReturnType<typeof setTimeout>
   private checkAvailableSlot = () => {
     this.availbaleSlots = this.slots.filter(this.isSlotActive)
-    if(this.selectedSlot && !this.availbaleSlots.find(slot => slot.VCode === this.selectedSlot?.VCode)) {
+    if (this.selectedSlot && !this.availbaleSlots.find(slot => slot.VCode === this.selectedSlot?.VCode)) {
       this.selectedSlot = null
     }
   }
@@ -631,7 +646,7 @@ class PaymentSelector {
     [PaymentWays.CARD]: <CreditCardOutlined style={this.iconstyle} />,
     [PaymentWays.CASH]: <span style={this.iconstyle}>₽</span>,
   }
-  selectedPaymentWay:PaymentWay = PaymentWays.CASH
+  selectedPaymentWay: PaymentWay = PaymentWays.CASH
   setPayementWaySelected = (way: PaymentWay) => {
     this.selectedPaymentWay = way
   }
