@@ -368,7 +368,10 @@ export class CartStore {
 
   payOrder = async (orderId: number) => {
     type resultType = { redirectUrl: string }
-    const result: resultType = await http.post("/PayOrder", { orderId })
+    const result: resultType = await http.post("/PayOrder", { 
+      orderId, 
+      redirect_url: window.location.origin
+    })
     window.open(result.redirectUrl); 
   }
 
