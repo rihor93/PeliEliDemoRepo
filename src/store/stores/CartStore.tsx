@@ -1,7 +1,7 @@
 import { CreditCardOutlined } from "@ant-design/icons";
 import { Toast, Modal as Modalz, Dialog } from "antd-mobile";
 import { ToastHandler } from "antd-mobile/es/components/toast";
-import { flow, makeAutoObservable, toJS } from "mobx";
+import { flow, makeAutoObservable, runInAction, toJS } from "mobx";
 import moment from "moment";
 import { http, logger, setItem } from "../../common/features";
 import { isDevelopment } from "../../common/helpers";
@@ -60,9 +60,6 @@ export class CartStore {
 
     this.availableSlotCheckerID = setInterval(this.checkAvailableSlot, 60000)
   }
-
-
-  confirmOrderModal = new Modal();
 
   items: Array<CouseInCart> = [];
   totalPrice = 0;
@@ -316,14 +313,12 @@ export class CartStore {
     )
   }
 
-  watchdetailModal = new Modal()
 
   /** апи оформления заказа */
-  postOrder = flow(function* (
-    this: CartStore,
+  postOrder = async (
     order: Order,
     handler: React.MutableRefObject<ToastHandler | undefined>
-  ) {
+  ) => {
     try {
       this.onStart()
       handler.current = Toast.show({
@@ -334,7 +329,8 @@ export class CartStore {
       })
       let orgID = order.currentOrg
       if (order.orderType === 2) {
-        const ResultBlyat = yield this.deliveryForm.getNearestDeliveryPoint(order.fullAddress as string)
+        const ResultBlyat = await this.deliveryForm.getNearestDeliveryPoint(order.fullAddress as string)
+        //@ts-ignore
         orgID = ResultBlyat.Id
         // @ts-ignore
         order = { ...order, activeSlot: Number(this.selectedSlot?.VCode) }
@@ -345,46 +341,64 @@ export class CartStore {
         //@ts-ignore
         orgID = 146
       }
-      const response: [historyOrderItem] = yield http.post('/NewOrderSlot', {
+      const response: [historyOrderItem] = await http.post('/NewOrderSlot', {
         ...order, currentOrg: orgID
       });
       if (response?.[0]) {
-        logger.log('Заказ успешно оформлен', 'cart-store')
         handler.current?.close()
+        if (this.paymentSelector.selectedPaymentWay === 'CARD') {
+          await this.payOrder(Number(response[0].VCode)) 
+        }
+        this.rootStore.userStore.orderHistory.push(response[0])
+        logger.log('Заказ успешно оформлен', 'cart-store')
+        
         this.onSuccess('Заказ успешно оформлен')
         this.clearCart()
-        this.rootStore.userStore.orderHistory.push(response[0])
-        if (this.paymentSelector.selectedPaymentWay === 'CARD') {
-          yield this.payOrder(Number(response[0].VCode))
-        }
       };
     } catch (e) {
       logger.log('Заказ блин не оформился', 'cart-store')
       this.onFailure('Не удалось оформить заказ')
     }
-  })
+  }
 
   payOrder = async (orderId: number) => {
-    this.youkassaPopup.open()
     type resultType = {
       confirmation: {
         type: string,
         confirmation_token: string
       },
     }
+    this.youkassaPopup.open()
     const result: resultType = await http.post("/PayOrder", { orderId })
-
-    const { confirmation_token } = result.confirmation;
-    //@ts-ignore
-    const checkout = new window.YooMoneyCheckoutWidget({
-      confirmation_token,
-      return_url: window.location.origin,
-      error_callback: function (error: any) {
-        Dialog.show({ content: 'Не удалось оплатить' })
-      }
-    })
-    
-    checkout.render('payment-form')
+    if (result?.confirmation) {
+      await new Promise((resolve, reject) => {
+        const { confirmation_token } = result.confirmation;
+        //@ts-ignore
+        const checkout = new window.YooMoneyCheckoutWidget({
+          confirmation_token,
+          error_callback: function (error: any) {
+            reject("Не удалось оплатить")
+            Dialog.show({ content: 'Не удалось оплатить' })
+            this.youkassaPopup.close()
+            checkout.destroy()
+          }
+        })
+        checkout.on("success", () => {
+          this.youkassaPopup.close()
+          checkout.destroy()
+          resolve("Заказ успешно оформлен")
+        })
+        checkout.on("fail", () => {
+          this.youkassaPopup.close()
+          checkout.destroy()
+          Dialog.show({ content: 'Что-то пошло не так' })
+          reject("Что-то пошло не так")
+        })
+        checkout.render('payment-form')
+      })
+    } else {
+      throw new Error("Не удалось выполнить оплату")
+    }
   }
 
   youkassaPopup = new Modal()
