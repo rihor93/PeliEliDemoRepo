@@ -345,11 +345,13 @@ export class CartStore {
         ...order, currentOrg: orgID
       });
       if (response?.[0]) {
+        const course = response[0]
         handler.current?.close()
+        this.rootStore.userStore.orderHistory.push(course)
         if (this.paymentSelector.selectedPaymentWay === 'CARD') {
-          await this.payOrder(Number(response[0].VCode)) 
+          await this.payOrder(Number(course.VCode)) 
+          await this.updateOrderInfo(Number(course.VCode))
         }
-        this.rootStore.userStore.orderHistory.push(response[0])
         logger.log('Заказ успешно оформлен', 'cart-store')
         
         this.onSuccess('Заказ успешно оформлен')
@@ -360,7 +362,7 @@ export class CartStore {
       this.onFailure('Не удалось оформить заказ')
     }
   }
-
+  checkoutWidget: any
   payOrder = async (orderId: number) => {
     type resultType = {
       confirmation: {
@@ -374,27 +376,27 @@ export class CartStore {
       await new Promise((resolve, reject) => {
         const { confirmation_token } = result.confirmation;
         //@ts-ignore
-        const checkout = new window.YooMoneyCheckoutWidget({
+        this.checkoutWidget = new window.YooMoneyCheckoutWidget({
           confirmation_token,
           error_callback: function (error: any) {
             reject("Не удалось оплатить")
             Dialog.show({ content: 'Не удалось оплатить' })
             this.youkassaPopup.close()
-            checkout.destroy()
+            this.checkoutWidget.destroy()
           }
         })
-        checkout.on("success", () => {
+        this.checkoutWidget.on("success", () => {
           this.youkassaPopup.close()
-          checkout.destroy()
+          this.checkoutWidget.destroy()
           resolve("Заказ успешно оформлен")
         })
-        checkout.on("fail", () => {
+        this.checkoutWidget.on("fail", () => {
           this.youkassaPopup.close()
-          checkout.destroy()
+          this.checkoutWidget.destroy()
           Dialog.show({ content: 'Что-то пошло не так' })
           reject("Что-то пошло не так")
         })
-        checkout.render('payment-form')
+        this.checkoutWidget.render('payment-form')
       })
     } else {
       throw new Error("Не удалось выполнить оплату")
@@ -402,6 +404,19 @@ export class CartStore {
   }
 
   youkassaPopup = new Modal()
+
+  updateOrderInfo = async (orderId: number) => {
+    /** {"PayStatus":"succeeded"} */
+    type resultType = {PayStatus:string}
+    const result: resultType = await http.post("/UpdateOrderInfo", { orderId })
+    if(result?.PayStatus === 'succeeded') {
+      const targetCourse = this.rootStore.userStore.orderHistory.find(hi => 
+        Number(hi.VCode) === orderId
+      )
+      if(targetCourse) targetCourse.PaymentStatus = 'Оплачен'
+
+    }
+  }
 
 
   deliveryOptions = [
@@ -421,6 +436,9 @@ export class CartStore {
   selectedSlot: Optional<Slot> = null
   setSelectedSlot = (slot: Slot) => { this.selectedSlot = slot }
   slots: Slot[] = []
+  setSlots(slots: Slot[]) {
+    this.slots = slots
+  }
 
   availbaleSlots: Slot[] = []
 
@@ -444,16 +462,19 @@ export class CartStore {
     moment(slot.End).format('HH:mm')
 
   slotloading: LoadStatesType = 'INITIAL'
+  setSlotLoading(slot: LoadStatesType) {
+    this.slotloading = slot
+  }
 
   getSlots = async () => {
-    this.slotloading = 'LOADING'
+    this.setSlotLoading('LOADING')
     const slots: Slot[] = await http.get('/getActiveSlots')
     if (slots && Array.isArray(slots)) {
-      this.slots = slots
+      this.setSlots(slots)
       this.checkAvailableSlot()
-      this.slotloading = 'COMPLETED'
+      this.setSlotLoading('COMPLETED')
     } else {
-      this.slotloading = 'FAILED'
+      this.setSlotLoading('FAILED')
       logger.error('Не удалось получить слоты')
     }
   }
@@ -663,6 +684,7 @@ class PaymentSelector {
   selectedPaymentWay: PaymentWay = PaymentWays.CASH
   setPayementWaySelected = (way: PaymentWay) => {
     this.selectedPaymentWay = way
+    this.selectWayPopup.close()
   }
   constructor(readonly parrent: CartStore) {
     makeAutoObservable(this)

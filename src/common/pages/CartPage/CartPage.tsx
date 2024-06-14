@@ -1108,9 +1108,12 @@ const WaySelectorPopup: FC = observer(() => {
 
 const YoukassaPaymentPopup: FC = observer(() => {
   const { cartStore } = useStore()
-  const { youkassaPopup } = cartStore
+  const { youkassaPopup, checkoutWidget } = cartStore
 
-  const hide = () => youkassaPopup.close()
+  const hide = () => {
+    checkoutWidget.destroy()
+    youkassaPopup.close()
+  }
   return (
     <Popup
       position='bottom'
@@ -1119,7 +1122,7 @@ const YoukassaPaymentPopup: FC = observer(() => {
       onClose={hide}
       onMaskClick={hide}
       style={{ zIndex: 5 }}
-      bodyStyle={{ width: '100vw',  borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
+      bodyStyle={{ width: '100vw', height: '100vh', borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
     >
       <h2 style={{ margin: '2rem 0 1rem 2rem' }}>Оплата:</h2>
       <div id="payment-form"></div>
