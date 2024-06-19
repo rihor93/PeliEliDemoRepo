@@ -22,8 +22,8 @@ import moment from "moment";
 import { ClockCircleOutline } from "antd-mobile-icons";
 import { CourseItemComponent } from "../MenuPage/sections/Categories";
 import WatchCampaignModal from "../ActionsPage/modals/WatchCampaignModal";
-import { TempBanner } from "../../components/ui/Banner";
-import { WatchLotteryPopup } from "../../components/ui/watchLotteryPopup";
+// import { TempBanner } from "../../components/ui/Banner";
+// import { WatchLotteryPopup } from "../../components/ui/watchLotteryPopup";
 import { http } from "../../features";
 
 
@@ -40,8 +40,8 @@ export const MainPage: FC = observer(() => {
       }
       <AuthRequiredButton show={auth.isFailed} />
       <br />
-      <WatchLotteryPopup />
-      <TempBanner />
+      {/* <WatchLotteryPopup />
+      <TempBanner /> */}
       {userStore.orgstate === 'COMPLETED'
         && userStore.userLoad === 'COMPLETED' 
         && userStore.needAskAdress 

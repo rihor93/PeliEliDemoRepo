@@ -7,8 +7,8 @@ import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
 import { LocationFill, MessageOutline, RedoOutline, UserCircleOutline } from 'antd-mobile-icons';
 import { EnvironmentOutlined, PhoneOutlined } from '@ant-design/icons';
-import { WatchLotteryPopup } from '../../components/ui/watchLotteryPopup';
-import { TempBanner } from '../../components/ui/Banner';
+// import { WatchLotteryPopup } from '../../components/ui/watchLotteryPopup';
+// import { TempBanner } from '../../components/ui/Banner';
 export const MorePage: React.FC = observer(() => {
   const tg = useTelegram();
   const navigate = useNavigate();
@@ -71,9 +71,9 @@ export const MorePage: React.FC = observer(() => {
         ? <div style={{height: '58px'}} />
         : null 
       }
-      <WatchLotteryPopup />
+      {/* <WatchLotteryPopup /> */}
       <ul className='moreList'>
-        <TempBanner />
+        {/* <TempBanner /> */}
         <li>
           <LocationFill { ...icoProps } />
           <span>Уфа</span>
