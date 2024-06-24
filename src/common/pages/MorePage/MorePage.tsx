@@ -12,7 +12,7 @@ import { EnvironmentOutlined, PhoneOutlined } from '@ant-design/icons';
 export const MorePage: React.FC = observer(() => {
   const tg = useTelegram();
   const navigate = useNavigate();
-  const { userStore, auth, iPhone15Lottery } = useStore();
+  const { userStore, auth } = useStore();
   const [askedAddr, setAskedAddr] = useState(0)
   return (
     <Страничка>

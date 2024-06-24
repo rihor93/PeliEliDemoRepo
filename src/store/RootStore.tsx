@@ -28,7 +28,7 @@ export class Store {
   cartStore = new CartStore(this);
   userStore = new UserInfoStore(this);
   actionsPage = new ActionsPageStore(this)
-  iPhone15Lottery = new iPhone15Lottery(this)
+  // iPhone15Lottery = new iPhone15Lottery(this)
 
   subscriptions: (() => void)[] = [];
 

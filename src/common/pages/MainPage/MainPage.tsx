@@ -28,7 +28,7 @@ import { http } from "../../features";
 
 
 export const MainPage: FC = observer(() => { 
-  const { userStore, actionsPage, mainPage, auth, iPhone15Lottery } = useStore();
+  const { userStore, actionsPage, mainPage, auth } = useStore();
   const telegram = useTelegram()
 
   const { selectedCourse, state, cookstate } = mainPage;
