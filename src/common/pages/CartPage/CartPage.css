@@ -32,11 +32,6 @@
   justify-content: space-between;
 }
 
-.cartItem>img {
-  object-fit: cover;
-  height: 160px;
-  width: 160px;
-}
 
 .asasasasasasasa > .adm-dropdown-item-title {
   width: 90vw;
