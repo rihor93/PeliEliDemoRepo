@@ -1,4 +1,4 @@
-import { useStore } from '../../../../hooks';
+import { useStore, useTheme } from '../../../../hooks';
 import React from 'react';
 import './Categories.css';
 import { observer } from 'mobx-react-lite';
@@ -221,6 +221,7 @@ export const CourseItemComponent: React.FC<{ course: CourseItem }> = observer(({
 })
 
 const CardBodyComponent: React.FC<{ course: CourseItem }> = observer(({ course }) => {
+  const { theme } = useTheme()
   const { mainPage, cartStore } = useStore()
   function addToCart(e: Evt) {
     e.stopPropagation()
@@ -257,7 +258,8 @@ const CardBodyComponent: React.FC<{ course: CourseItem }> = observer(({ course }
         className='title'
         onClick={() => mainPage.watchCourse(course)}
       >
-        {course.Name}
+        <span>{course.Name + " "}</span>
+        <span style={{ color: theme === 'dark' ? "#b3b3b3" : "#808080" }}>{course.Weigth}</span>
       </h3>
       <Space 
         align='center' 

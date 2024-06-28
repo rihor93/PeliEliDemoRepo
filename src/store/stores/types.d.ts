@@ -8,8 +8,9 @@ type CourseItem = {
   /**блюдо готовится на точке, работает без остатко */
   NoResidue: boolean,
   /** текущий остаток на точке */
-  EndingOcResidue: number
-  CourseDescription: string
+  EndingOcResidue: number,
+  CourseDescription: string,
+  Weigth: string,
 }
 
 /** Тип категории с блюдами */
