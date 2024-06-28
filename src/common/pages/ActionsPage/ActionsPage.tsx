@@ -9,7 +9,7 @@ import { replaceImgSrc } from '../../helpers';
 import WatchCampaignModal from './modals/WatchCampaignModal';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Modals } from '../MenuPage/modals';
-import { Button, Divider, Popup, Radio, Space, Toast } from 'antd-mobile';
+import { Button, Divider, Ellipsis, Popup, Radio, Space, Toast } from 'antd-mobile';
 
 export const ActionsPage: React.FC = observer(() => {
   const { actionsPage, userStore, auth, mainPage, session } = useStore();
@@ -71,63 +71,63 @@ export const ActionsPage: React.FC = observer(() => {
     }
   }, [userStore.userState.allCampaign])
 
-  
+
   const [askedAddr, setAskedAddr] = React.useState(0)
   return (
     <Страничка>
-      <div style={{height: '55px'}} />
+      <div style={{ height: '55px' }} />
       {auth.isFailed
-        ? <div style={{height: '58px'}} />
-        : null 
+        ? <div style={{ height: '58px' }} />
+        : null
       }
-      {userStore.needAskAdress 
-        ? <Popup 
-            visible={userStore.needAskAdress} 
-            onMaskClick={() => {
-              Toast.show({
-                content: 'Пожалуйста, выберите местоположение',
-                position: 'center',
-              })
-            }}
-            bodyStyle={{
-              borderTopLeftRadius: '8px',
-              borderTopRightRadius: '8px',
-              padding:'0 0.5rem 0.5rem 0.5rem'
-            }}
-          >
-            <div>
-              <Divider>Выберите вашу домашнюю кухню:</Divider>
-              <Radio.Group 
-                onChange={(e) => setAskedAddr(e as number)}
-              >
-                <Space direction='vertical' block>
-                  {userStore.organizations.map((org) => 
-                    <Radio block value={org.Id} key={org.Id}>
-                      {org.Name}
-                    </Radio>
-                  )}
-                </Space>
-              </Radio.Group>
-              <Button 
-                block 
-                color='primary' 
-                size='large'
-                className="mt-1"
-                onClick={() => {
-                  if(askedAddr == 142 || askedAddr == 0) {
-                    Toast.show({
-                      content: 'Выберите местоположение',
-                      position: 'center',
-                    })
-                  } else {
-                    userStore.currentOrg = askedAddr
-                  }
-                }}
-              >
-                Сохранить
-              </Button>
-            </div>
-          </Popup>
+      {userStore.needAskAdress
+        ? <Popup
+          visible={userStore.needAskAdress}
+          onMaskClick={() => {
+            Toast.show({
+              content: 'Пожалуйста, выберите местоположение',
+              position: 'center',
+            })
+          }}
+          bodyStyle={{
+            borderTopLeftRadius: '8px',
+            borderTopRightRadius: '8px',
+            padding: '0 0.5rem 0.5rem 0.5rem'
+          }}
+        >
+          <div>
+            <Divider>Выберите вашу домашнюю кухню:</Divider>
+            <Radio.Group
+              onChange={(e) => setAskedAddr(e as number)}
+            >
+              <Space direction='vertical' block>
+                {userStore.organizations.map((org) =>
+                  <Radio block value={org.Id} key={org.Id}>
+                    {org.Name}
+                  </Radio>
+                )}
+              </Space>
+            </Radio.Group>
+            <Button
+              block
+              color='primary'
+              size='large'
+              className="mt-1"
+              onClick={() => {
+                if (askedAddr == 142 || askedAddr == 0) {
+                  Toast.show({
+                    content: 'Выберите местоположение',
+                    position: 'center',
+                  })
+                } else {
+                  userStore.currentOrg = askedAddr
+                }
+              }}
+            >
+              Сохранить
+            </Button>
+          </div>
+        </Popup>
         : null
       }
       {selectedAction && <WatchCampaignModal campaign={selectedAction} />}
@@ -160,7 +160,7 @@ export const ActionsPage: React.FC = observer(() => {
           <p style={{ marginTop: '15px', marginBottom: '10px' }}>{`Вам доступно ${userBonuses.toFixed(2)} бонусных балов!`}</p>
         </div>
       }
-      
+
 
       <section className='page_action_types'>
         <ul className="action_types_list">
@@ -182,7 +182,7 @@ export const ActionsPage: React.FC = observer(() => {
       {!isScrolled
         ? null
         : (
-          <section className='page_action_types overlayed2' style={{ top: auth.isFailed ? "103px": "45px" }}>
+          <section className='page_action_types overlayed2' style={{ top: auth.isFailed ? "103px" : "45px" }}>
             <ul className="action_types_list">
 
               {categories.map((category, index) => {
@@ -218,11 +218,11 @@ export const ActionsPage: React.FC = observer(() => {
                   >
                     <img
                       className='action_img'
-                      src={config.apiURL 
-                        + '/api/v2/image/Disount?vcode=' 
-                        + actia.VCode 
-                        + '&compression=true' 
-                        + '&random=' 
+                      src={config.apiURL
+                        + '/api/v2/image/Disount?vcode='
+                        + actia.VCode
+                        + '&compression=true'
+                        + '&random='
                         + session
                       }
                       onError={replaceImgSrc(gurmag_big)}
@@ -231,8 +231,17 @@ export const ActionsPage: React.FC = observer(() => {
                         navigate('/actions/' + actia.VCode)
                       }}
                     />
-                    <h3>{actia.Name.replace(/ *\{[^}]*\} */g, "")}!</h3>
-                    <p>{actia.Description.replace(/ *\{[^}]*\} */g, "")}</p>
+                    <h2>{actia.Name.replace(/ *\{[^}]*\} */g, "")}!</h2>
+                    <Ellipsis
+                      direction='end'
+                      content={actia.Description.replace(/ *\{[^}]*\} */g, "")}
+                      expandText='показать'
+                      collapseText='скрыть'
+                      style={{
+                        margin: '0 10px 5px 10px',
+                        fontSize: '16px'
+                      }}
+                    />
                   </div>
                 )
               }

@@ -103,7 +103,17 @@ const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
           "--width": "calc(100% - 1rem)",
         }}
       />
-      <p style={{fontSize: '18px', fontWeight: '500'}}>{`${campaign.Description.replace(/ *\{[^}]*\} */g, "")} - ${text}`}</p>
+      <p 
+        style={{
+          fontSize: '22px', 
+          fontWeight: '400',
+          lineHeight: "26px",
+          margin: "20px",
+          textAlign: "center"
+        }}
+      >
+        {`${campaign.Description.replace(/ *\{[^}]*\} */g, "")} - ${text}`}
+      </p>
       <div
         style={{ 
           fontSize: '18px',
