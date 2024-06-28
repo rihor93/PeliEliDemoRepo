@@ -64,10 +64,10 @@ export class CartStore {
 
     this.availableSlotCheckerID = setInterval(this.checkAvailableSlot, 60000)
     reaction(() => this.isPickup, (val, preVal) => {
-      if(val !== preVal) this.paymentSelector.selectedPayMethod = null
+      if (val !== preVal) this.paymentSelector.selectedPayMethod = null
     })
     reaction(() => this.totalPrice, (val, preVal) => {
-      if(val > 1000 && this.paymentSelector.selectedPayMethod === 'CASH')
+      if (val > 1000 && this.paymentSelector.selectedPayMethod === 'CASH')
         this.paymentSelector.selectedPayMethod = null
     })
   }
@@ -353,9 +353,9 @@ export class CartStore {
         orgID = 146
       }
       const response: [historyOrderItem] = await http.post(
-        this.paymentSelector.selectedPayMethod !== 'CARD_ONLINE' 
-          ? '/NewOrderSlot' 
-          : '/NewOrderSlotPay', 
+        this.paymentSelector.selectedPayMethod !== 'CARD_ONLINE'
+          ? '/NewOrderSlot'
+          : '/NewOrderSlotPay',
         { ...order, currentOrg: orgID }
       );
       if (response?.[0]) {
@@ -387,7 +387,7 @@ export class CartStore {
     this.youkassaPopup.open()
     const userId = this.rootStore.userStore.userState.UserCode
     const result: resultType = await http.post(
-      "/PayOrderSaveCard", 
+      "/PayOrderSaveCard",
       { orderId, userId: Number(userId) }
     )
     if (result?.confirmation) {
@@ -531,14 +531,14 @@ class DeliveryForm {
   ]
 
   private getCordinatesByAddr = async (address: string) => {
-    const result: YandexGeocodeResponse = await http.get('https://geocode-maps.yandex.ru/1.x/', {
-      apikey: this.apikey,
-      geocode: address,
+    const result: NominatimGeocodeResponse = await http.get('https://nominatim.openstreetmap.org/search', {
+      q: address,
       format: 'json'
     })
-    const cord = result?.response?.GeoObjectCollection?.featureMember[0]?.GeoObject?.Point?.pos ?? undefined
-    if (cord) {
-      const [dolgota, shirota] = cord.split(' ').map(str => Number(str))
+    if (result?.[0]) {
+      const { lat, lon } = result?.[0]
+      const dolgota = Number(lon)
+      const shirota = Number(lat)
       logger.log(`Нашли кординаты d = ${dolgota} sh = ${shirota} для ${address}`)
       return { dolgota, shirota }
     } else {
@@ -701,7 +701,7 @@ class PaymentSelector {
   iconstyle = { marginRight: '0.75rem', fontSize: 25 }
 
   paymentIcons = {
-    [paymentMethods.PAY_BY_CARD_UPON_RECIEPT]:<CreditCardOutlined style={this.iconstyle} />,
+    [paymentMethods.PAY_BY_CARD_UPON_RECIEPT]: <CreditCardOutlined style={this.iconstyle} />,
     [paymentMethods.CARD_ONLINE]: <CreditCardOutlined style={this.iconstyle} />,
     [paymentMethods.CASH]: <span style={this.iconstyle}>₽</span>,
     [paymentMethods.SBER_PAY]: <img style={{ width: '50px' }} src={SberPay} />,
@@ -749,6 +749,38 @@ class PaymentSelector {
 
   selectWayPopup = new Modal()
 }
+
+type NominatimGeocodeResponse = [
+  {
+    place_id: number,
+    licence: string,
+    osm_type: string,
+    osm_id: number,
+    /** example "54.70161865" */
+    lat: string,
+    /** example "56.0027922177958" */
+    lon: string,
+    /** example "building" */
+    class: string,
+    /** example "yes" */
+    type: string,
+    place_rank: number,
+    importance: number,
+    /** example "building" */
+    addresstype: string,
+    name: string,
+    display_name: string,
+    /**
+     * [
+        "54.7010415",
+        "54.7021239",
+        "56.0022407",
+        "56.0032648",
+      ]
+     */
+    boundingbox: string[]
+  }
+]
 
 type YandexGeocodeResponse = {
   response: {
