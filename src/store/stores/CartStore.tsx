@@ -1,8 +1,9 @@
 import { CreditCardOutlined } from "@ant-design/icons";
 import { Toast, Modal as Modalz, Dialog } from "antd-mobile";
 import { ToastHandler } from "antd-mobile/es/components/toast";
-import { flow, makeAutoObservable, runInAction, toJS } from "mobx";
+import { flow, makeAutoObservable, reaction, runInAction, toJS } from "mobx";
 import moment from "moment";
+import { SberPay } from "../../assets";
 import { http, logger, setItem } from "../../common/features";
 import { isDevelopment } from "../../common/helpers";
 import { useTelegram } from "../../common/hooks";
@@ -49,6 +50,9 @@ export class CartStore {
   }
 
   receptionType: ReceptionType = 'pickup';
+  get isPickup() {
+    return this.receptionType == receptionTypes.pickup
+  }
   setReceptionType(receptionType: ReceptionType) {
     this.receptionType = receptionType
   }
@@ -59,6 +63,13 @@ export class CartStore {
     makeAutoObservable(this);
 
     this.availableSlotCheckerID = setInterval(this.checkAvailableSlot, 60000)
+    reaction(() => this.isPickup, (val, preVal) => {
+      if(val !== preVal) this.paymentSelector.selectedPayMethod = null
+    })
+    reaction(() => this.totalPrice, (val, preVal) => {
+      if(val > 1000 && this.paymentSelector.selectedPayMethod === 'CASH')
+        this.paymentSelector.selectedPayMethod = null
+    })
   }
 
   items: Array<CouseInCart> = [];
@@ -336,23 +347,27 @@ export class CartStore {
         order = { ...order, activeSlot: Number(this.selectedSlot?.VCode) }
       }
 
-      if(isDevelopment()) {
+      if (true) {
+        // if(isDevelopment()) {
         //@ts-ignore
         orgID = 146
       }
-      const response: [historyOrderItem] = await http.post('/NewOrderSlot', {
-        ...order, currentOrg: orgID
-      });
+      const response: [historyOrderItem] = await http.post(
+        this.paymentSelector.selectedPayMethod !== 'CARD_ONLINE' 
+          ? '/NewOrderSlot' 
+          : '/NewOrderSlotPay', 
+        { ...order, currentOrg: orgID }
+      );
       if (response?.[0]) {
         const course = response[0]
         handler.current?.close()
         this.rootStore.userStore.orderHistory.push(course)
-        if (this.paymentSelector.selectedPaymentWay === 'CARD') {
-          await this.payOrder(Number(course.VCode)) 
+        if (this.paymentSelector.selectedPayMethod === 'CARD_ONLINE') {
+          await this.payOrder(Number(course.VCode))
           await this.updateOrderInfo(Number(course.VCode))
         }
         logger.log('Заказ успешно оформлен', 'cart-store')
-        
+
         this.onSuccess('Заказ успешно оформлен')
         this.clearCart()
       };
@@ -370,7 +385,11 @@ export class CartStore {
       },
     }
     this.youkassaPopup.open()
-    const result: resultType = await http.post("/PayOrder", { orderId })
+    const userId = this.rootStore.userStore.userState.UserCode
+    const result: resultType = await http.post(
+      "/PayOrderSaveCard", 
+      { orderId, userId: Number(userId) }
+    )
     if (result?.confirmation) {
       await new Promise((resolve, reject) => {
         const { confirmation_token } = result.confirmation;
@@ -406,13 +425,13 @@ export class CartStore {
 
   updateOrderInfo = async (orderId: number) => {
     /** {"PayStatus":"succeeded"} */
-    type resultType = {PayStatus:string}
+    type resultType = { PayStatus: string }
     const result: resultType = await http.post("/UpdateOrderInfo", { orderId })
-    if(result?.PayStatus === 'succeeded') {
-      const targetCourse = this.rootStore.userStore.orderHistory.find(hi => 
+    if (result?.PayStatus === 'succeeded') {
+      const targetCourse = this.rootStore.userStore.orderHistory.find(hi =>
         Number(hi.VCode) === orderId
       )
-      if(targetCourse) targetCourse.PaymentStatus = 'Оплачен'
+      if (targetCourse) targetCourse.PaymentStatus = 'Оплачен'
 
     }
   }
@@ -486,6 +505,7 @@ export class CartStore {
   }
 
   paymentSelector = new PaymentSelector(this)
+
 }
 
 function toNumb(str: string) { return Number(str) }
@@ -661,29 +681,67 @@ class DeliveryForm {
     }
   ]
 }
-
-export const PaymentWays = {
+export const paymentMethods = {
+  PAY_BY_CARD_UPON_RECIEPT: "PAY_BY_CARD_UPON_RECIEPT",
+  CARD_ONLINE: "CARD_ONLINE",
+  SBER_PAY: "SBER_PAY",
   CASH: "CASH",
-  CARD: "CARD",
 } as const
-
-export type PaymentWay = typeof PaymentWays[keyof typeof PaymentWays];
+export type PaymentMethod = typeof paymentMethods[keyof typeof paymentMethods]
 
 class PaymentSelector {
-  paymentWays = Object.keys(PaymentWays) as PaymentWay[]
+
   paymentLabels = {
-    [PaymentWays.CARD]: 'Картой',
-    [PaymentWays.CASH]: 'Наличными',
+    [paymentMethods.PAY_BY_CARD_UPON_RECIEPT]: 'Оплата картой при получении',
+    [paymentMethods.CARD_ONLINE]: 'Картой онлайн',
+    [paymentMethods.SBER_PAY]: 'СберПэй',
+    [paymentMethods.CASH]: 'Наличными',
   }
+
   iconstyle = { marginRight: '0.75rem', fontSize: 25 }
+
   paymentIcons = {
-    [PaymentWays.CARD]: <CreditCardOutlined style={this.iconstyle} />,
-    [PaymentWays.CASH]: <span style={this.iconstyle}>₽</span>,
+    [paymentMethods.PAY_BY_CARD_UPON_RECIEPT]:<CreditCardOutlined style={this.iconstyle} />,
+    [paymentMethods.CARD_ONLINE]: <CreditCardOutlined style={this.iconstyle} />,
+    [paymentMethods.CASH]: <span style={this.iconstyle}>₽</span>,
+    [paymentMethods.SBER_PAY]: <img style={{ width: '50px' }} src={SberPay} />,
   }
-  selectedPaymentWay: PaymentWay = PaymentWays.CASH
-  setPayementWaySelected = (way: PaymentWay) => {
-    this.selectedPaymentWay = way
+
+  setPayementWaySelected = (way: PaymentMethod) => {
+    this.selectedPayMethod = way
     this.selectWayPopup.close()
+  }
+
+
+
+  selectedPayMethod: Optional<PaymentMethod> = null
+  availablePayMethods = {
+    // способы оплаты при заказе с доставкой
+    [receptionTypes.delivery]: {
+      /** оплата картой при получении, 
+       * покупатель оплачивает сам при получение заказа по терминалу.  
+       */
+      PAY_BY_CARD_UPON_RECIEPT: "PAY_BY_CARD_UPON_RECIEPT",
+      /** картой (добавить галочку о согласии, 
+       * «Сохранить карту для будущих заказов»)  
+       */
+      CARD_ONLINE: "CARD_ONLINE",
+      /** СберПей нужно чтоб покупателю приходили 
+       * пуш-уведомление или смс на номер телефона. 
+       */
+      SBER_PAY: "SBER_PAY",
+    },
+    // способы оплаты при заказы с самовывозом
+    [receptionTypes.pickup]: {
+      /** В пункте наличными нужно поставить ограничения, 
+       * если покупатель набрал корзину до 1000р 
+       * в этом случае покупатель видит 3 способа оплаты: наличными, оплата картой и СберПей, 
+       * если же сумма заказа свыше 1000р в этом случае оплата картой и СберПей.
+       */
+      CASH: "CASH",
+      CARD_ONLINE: "CARD_ONLINE",
+      SBER_PAY: "SBER_PAY",
+    },
   }
   constructor(readonly parrent: CartStore) {
     makeAutoObservable(this)

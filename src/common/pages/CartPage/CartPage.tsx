@@ -13,7 +13,7 @@ import { ToastHandler } from 'antd-mobile/es/components/toast';
 import { isDevelopment } from '../../helpers';
 import { useNavigate } from 'react-router-dom';
 import { LocationFill } from 'antd-mobile-icons';
-import { ReceptionType } from '../../../store/stores';
+import { PaymentMethod, ReceptionType } from '../../../store/stores';
 import { getFormattedNumber, useMask } from "react-phone-hooks";
 import { FC, useState, useMemo, CSSProperties } from "react"
 import { SelectLocationPopup } from '../../components';
@@ -479,11 +479,11 @@ export const CartPage: React.FC = observer(
               block
               size='large'
               disabled={
-                cart.isEmpty 
-                || Boolean(errored?.length) 
-                || (Boolean(adrErrored?.length) 
-                && cart.receptionType === 'delivery')
+                cart.isEmpty
+                || Boolean(errored?.length)
+                || (Boolean(adrErrored?.length) && cart.receptionType === 'delivery')
                 || (cart.receptionType === 'delivery' && !cart.selectedSlot)
+                || !Boolean(cart.paymentSelector.selectedPayMethod)
               }
               style={{
                 borderRadius: '8px',
@@ -902,7 +902,7 @@ const DetailForm: FC<DetailFormProps> = observer(properties => {
 
   return (
     <div style={detailFormStyle.gridContainer}>
-    <SelectSlotPopup orderDate={selectedDate} />
+      <SelectSlotPopup orderDate={selectedDate} />
       <div style={detailFormStyle.phoneLabel}>
         Контактный телефон
       </div>
@@ -1027,15 +1027,15 @@ const AddrInput: FC<AddrInputProps> = props => {
   )
 }
 
-const flexHorizontal = { 
-  display: 'flex', 
-  justifyContent: 'space-between', 
+const flexHorizontal = {
+  display: 'flex',
+  justifyContent: 'space-between',
   alignItems: 'center',
 }
-const PaymentSelector: FC = observer(function() {
+const PaymentSelector: FC = observer(function () {
   const { cartStore } = useStore()
   const { paymentSelector } = cartStore
-  const { selectedPaymentWay, paymentLabels, selectWayPopup, paymentIcons } = paymentSelector
+  const { selectedPayMethod, paymentLabels, selectWayPopup, paymentIcons } = paymentSelector
 
   function watchAndSelectWay() {
     selectWayPopup.open()
@@ -1045,11 +1045,11 @@ const PaymentSelector: FC = observer(function() {
     <p style={{ ...waitStyles.hello, margin: 17 } as CSSProperties}>
       Способ оплаты:
     </p>
-    <div 
-      style={{ 
-        ...flexHorizontal, 
-        width: '100%', 
-        padding: '1rem', 
+    <div
+      style={{
+        ...flexHorizontal,
+        width: '100%',
+        padding: '1rem',
         border: "1px solid var(--adm-border-color)",
         borderRadius: 8,
         marginBottom: '2rem'
@@ -1057,8 +1057,13 @@ const PaymentSelector: FC = observer(function() {
       onClick={watchAndSelectWay}
     >
       <div style={flexHorizontal}>
-        {toJS(paymentIcons[selectedPaymentWay])}
-        <span style={{ fontSize: 17, fontWeight: 500 }} >{paymentLabels[selectedPaymentWay]}</span>
+        {selectedPayMethod && toJS(paymentIcons[selectedPayMethod])}
+        <span style={{ fontSize: 17, fontWeight: 500 }}>
+          {selectedPayMethod
+            ? paymentLabels[selectedPayMethod]
+            : "Выберите способ оплаты"
+          }
+        </span>
       </div>
       <span style={{ color: 'var(--тихий-текст)' }}>Изменить</span>
     </div>
@@ -1067,17 +1072,56 @@ const PaymentSelector: FC = observer(function() {
 
 const WaySelectorPopup: FC = observer(() => {
   const { cartStore } = useStore()
-  const { paymentSelector } = cartStore
-  const { 
-    selectedPaymentWay, 
-    paymentLabels, 
-    selectWayPopup, 
-    paymentWays, 
+  const { paymentSelector, receptionType } = cartStore
+  const {
+    selectedPayMethod,
+    paymentLabels,
+    selectWayPopup,
+    availablePayMethods,
     paymentIcons,
     setPayementWaySelected
   } = paymentSelector
 
   const hide = () => selectWayPopup.close()
+
+  const Way: FC<{ way: PaymentMethod, checked: boolean }> = props =>
+    <List.Item
+      key={props.way}
+      prefix={toJS(paymentIcons[props.way])}
+      extra={<Checkbox checked={props.checked} />}
+      onClick={() => setPayementWaySelected(props.way)}
+      arrow={null}
+    >
+      {paymentLabels[props.way]}
+    </List.Item>
+
+  function renderWays() {
+    return Object.keys(availablePayMethods[receptionType]).map(way => {
+      switch (way as PaymentMethod) {
+        case 'CARD_ONLINE':
+          return <Way
+            checked={way === selectedPayMethod}
+            way={way as PaymentMethod}
+            key={way}
+          />
+        case 'CASH':
+          return receptionType === 'pickup' && cartStore.totalPrice > 1000
+            ? null
+            : <Way
+              checked={way === selectedPayMethod}
+              way={way as PaymentMethod}
+              key={way}
+            />
+
+        default:
+          return <Way
+            checked={way === selectedPayMethod}
+            way={way as PaymentMethod}
+            key={way}
+          />
+      }
+    })
+  }
   return (
     <Popup
       position='bottom'
@@ -1086,21 +1130,11 @@ const WaySelectorPopup: FC = observer(() => {
       onClose={hide}
       onMaskClick={hide}
       style={{ zIndex: 5 }}
-      bodyStyle={{ width: '100vw',  borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
+      bodyStyle={{ width: '100vw', borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
     >
       <h2 style={{ margin: '2rem 0 1rem 2rem' }}>Способ оплаты:</h2>
       <List style={{ margin: '0 1rem' }}>
-        {paymentWays.map(way => 
-          <List.Item 
-            key={way}
-            prefix={toJS(paymentIcons[way])}
-            extra={<Checkbox checked={way === selectedPaymentWay} />}
-            onClick={() => setPayementWaySelected(way)}
-            arrow={null}
-          >
-            {paymentLabels[way]}
-          </List.Item>
-        )}
+        {renderWays()}
       </List>
     </Popup>
   )

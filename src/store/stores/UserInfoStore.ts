@@ -16,6 +16,7 @@ export class UserInfoStore {
   userState: UserInfoState = {
     Phone: '',
     userName: '',
+    UserCode: '',
     userBonuses: 0,
     percentDiscounts: [],
     dishDiscounts: [],
@@ -88,6 +89,8 @@ export class UserInfoStore {
     } = response;
     const Bonuses = response?.UserInfo?.Bonuses ?? 0;
     const NAME = response?.UserInfo?.NAME ?? '';
+    /**  "1979064" numberstr */
+    const UserCode = response?.UserInfo?.UserCode ?? '';
     const COrg = response?.UserInfo?.COrg ?? 0;
     const Phone = response?.UserInfo?.Phone ?? '';
 
@@ -110,6 +113,7 @@ export class UserInfoStore {
       dishDiscounts: DishDiscount,
       allCampaign: AllDiscounts,
       dishSet: SetDishDiscount,
+      UserCode,
       Phone
     }
 

@@ -27,6 +27,9 @@ import NoImageSmall from './no_image_small.jpg'
 // @ts-ignore
 import Iphone15Banner from './IMG_9021.JPG'
 
+// @ts-ignore
+import SberPay from './SberPay.png'
+
 
 export {
   GurmagLogo,
@@ -40,5 +43,6 @@ export {
   food,
   NoImageBig,
   NoImageSmall,
-  Iphone15Banner
+  Iphone15Banner,
+  SberPay
 }

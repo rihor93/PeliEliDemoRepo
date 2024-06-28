@@ -77,6 +77,8 @@ type Organization = {
 type UserInfoState = {
   Phone: string,
   userName: string,
+  /** numberStr "182981928" */
+  UserCode: string,
   /** кол-во каких-то бонусов */
   userBonuses: number, 
   /** это детали основных акций: сидка N процентов на cумму от A до B */
