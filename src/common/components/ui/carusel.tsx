@@ -52,10 +52,8 @@ export const Carusel = observer(() => {
               placeholder={<ImagePreloader />}
               fallback={<ImageFallback watchAction={() => actionsPage.watchAction(campaign)} />}
               alt={campaign.Name} 
-              fit='contain'
               onError={() => hideBrokenCampaign(campaign)}
               style={{
-                objectFit: 'contain',
                 "--width": '100%',  
                 "--height": '210px',
                 borderRadius: '8px',
