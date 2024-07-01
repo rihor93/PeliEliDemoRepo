@@ -9,6 +9,7 @@ import {
   Result, 
   Ellipsis, 
   List,
+  Button,
 } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import React, { useEffect, useState } from "react";
@@ -34,6 +35,9 @@ export const MainPage: FC = observer(() => {
   const { selectedCourse, state, cookstate } = mainPage;
   return(
     <Page>
+      <Button onClick={e => { window.open("http://localhost:5678") }}>
+        Test
+      </Button>
       {selectedCourse 
         ? <ItemModal course={selectedCourse} />
         : null
