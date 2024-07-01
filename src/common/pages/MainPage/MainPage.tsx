@@ -35,7 +35,7 @@ export const MainPage: FC = observer(() => {
   const { selectedCourse, state, cookstate } = mainPage;
   return(
     <Page>
-      <Button onClick={e => { window.open("http://localhost:5678") }}>
+      <Button onClick={e => { window.open("sberpay://invoicing/v2?bankInvoiceId=df4207742636488a8c30b3424e40012c&operationType=Web2App") }}>
         Test
       </Button>
       {selectedCourse 
