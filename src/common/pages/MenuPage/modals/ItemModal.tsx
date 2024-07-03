@@ -1,10 +1,11 @@
 import { ShoppingCartOutlined } from "@ant-design/icons"
-import { Image, Space, SpinLoading, Toast } from "antd-mobile"
+import { Image, Space, SpinLoading, Swiper, Toast } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import React from "react"
 import { DarkMinus, DarkPlus, LightMinus, LightPlus, NoImageBig } from "../../../../assets"
 import { Modal } from "../../../components"
 import { config } from "../../../configuration"
+import { isDevelopment } from "../../../helpers"
 import { useStore, useTheme } from "../../../hooks"
 import './ItemModal.css'
 
@@ -26,7 +27,7 @@ export const ItemModal: React.FC<{
       setCount(1)
       mainPage.itemModal.close()
       Toast.show({
-        position: 'center', 
+        position: 'center',
         content: 'Добавлено'
       })
     }
@@ -36,33 +37,85 @@ export const ItemModal: React.FC<{
       show={itemModal.show}
       onHide={() => itemModal.close()}
     >
-      <Image 
-        src={`${config.apiURL}/api/v2/image/Material?vcode=${course.VCode}&random=${session}`} 
-        fallback={<img src={NoImageBig} style={{objectFit: 'cover', width: '100%', height: '33vh'}} onClick={() => mainPage.watchCourse(course)} />}
-        placeholder={
-          <Space style={{ width: '100%', height: '33vh' }} justify='center' align='center'>
-            <SpinLoading color='primary' style={{fontSize: '42px'}} />
-          </Space>
+      <Swiper
+        indicator={(total, current) => (
+          <div style={{
+            position: "absolute",
+            top: 6,
+            background: "rgba(0, 0, 0, 0.3)",
+            padding: "4px 8px",
+            color: "#ffffff",
+            borderRadius: 4,
+            userSelect: "none",
+          }}>
+            {`${current + 1} / ${total}`}
+          </div>
+        )
         }
-        fit='cover'
-        style={{
-          borderTopLeftRadius: '8px',
-          borderTopRightRadius: '8px',
-          "--height": "33vh",
-          "--width": "100%",
-        }}
-      />
+      >
+        {course.CompressImages && course.CompressImages.length
+          ? course.CompressImages.map(image =>
+            <Swiper.Item>
+              <Image
+                src={
+                  config.apiURL
+                    + "/api/v2/image/FileImage?fileId="
+                    + image
+                }
+                fallback={<img src={NoImageBig} style={{ objectFit: 'cover', width: '100%', height: '33vh' }} onClick={() => mainPage.watchCourse(course)} />}
+                placeholder={
+                  <Space style={{ width: '100%', height: '33vh' }} justify='center' align='center'>
+                    <SpinLoading color='primary' style={{ fontSize: '42px' }} />
+                  </Space>
+                }
+                fit='contain'
+                style={{
+                  borderTopLeftRadius: '8px',
+                  borderTopRightRadius: '8px',
+                  "--height": "47vh",
+                  "--width": "100%",
+                }}
+              />
+            </Swiper.Item>
+          )
+          : <Swiper.Item>
+            <Image
+              src={config.apiURL
+                + "/api/v2/image/Material?vcode="
+                + course.VCode
+                + "&random="
+                + session
+              }
+              fallback={<img src={NoImageBig} style={{ objectFit: 'cover', width: '100%', height: '33vh' }} onClick={() => mainPage.watchCourse(course)} />}
+              placeholder={
+                <Space style={{ width: '100%', height: '33vh' }} justify='center' align='center'>
+                  <SpinLoading color='primary' style={{ fontSize: '42px' }} />
+                </Space>
+              }
+              fit='contain'
+              style={{
+                borderTopLeftRadius: '8px',
+                borderTopRightRadius: '8px',
+                "--height": "47vh",
+                "--width": "100%",
+              }}
+            />
+          </Swiper.Item>
+        }
+
+      </Swiper>
+
       <div className="item_modal_body">
         <h1>{course.Name}</h1>
         <p>{course.CourseDescription}</p>
-        {course.NoResidue 
-          ? null 
+        {course.NoResidue
+          ? null
           : <>
             <span>Сейчас в наличии:</span>
-            <h2 style={{marginLeft: '1.75rem'}}>{course.EndingOcResidue}</h2>
+            <h2 style={{ marginLeft: '1.75rem' }}>{course.EndingOcResidue}</h2>
           </>
         }
-        
+
         <div className="count_and_price">
           <div className="row">
             <span>Количество:</span>
@@ -70,16 +123,16 @@ export const ItemModal: React.FC<{
           </div>
           <div className="row">
             <div className="cout">
-              <img 
-                alt="Убавить" 
-                className="minus" 
-                src={isDarkMode ? LightMinus : DarkMinus} 
-                onClick={() => setCount((prev) => (prev - 1) >= 0 ? prev - 1 : 0)} 
+              <img
+                alt="Убавить"
+                className="minus"
+                src={isDarkMode ? LightMinus : DarkMinus}
+                onClick={() => setCount((prev) => (prev - 1) >= 0 ? prev - 1 : 0)}
               />
               <span className="count">{count}</span>
-              <img 
+              <img
                 alt="Добавить"
-                className="plus" 
+                className="plus"
                 src={isDarkMode ? LightPlus : DarkPlus}
                 onClick={() => setCount((prev) => prev + 1)}
               />
@@ -96,6 +149,6 @@ export const ItemModal: React.FC<{
           <span>Добавить в корзину</span>
         </div>
       </div>
-    </Modal>
+    </Modal >
   )
 })

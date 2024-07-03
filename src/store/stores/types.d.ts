@@ -11,6 +11,8 @@ type CourseItem = {
   EndingOcResidue: number,
   CourseDescription: string,
   Weigth: string,
+  Images: undefined | string[],
+  CompressImages: undefined | string[],
 }
 
 /** Тип категории с блюдами */

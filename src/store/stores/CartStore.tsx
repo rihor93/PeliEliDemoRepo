@@ -374,6 +374,7 @@ export class CartStore {
     } catch (e) {
       logger.log('Заказ блин не оформился', 'cart-store')
       this.onFailure('Не удалось оформить заказ')
+      throw e
     }
   }
   checkoutWidget: any

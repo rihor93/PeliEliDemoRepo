@@ -1,5 +1,6 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { config } from "../configuration";
+import { isDevelopment } from "../helpers";
 
 export type QueryStringParams = string | Record<string, any> | [string, any][];
 
@@ -10,14 +11,13 @@ export interface RequestError {
 export const REFRESH_TOKEN = "REFRESH";
 
 class HttpClient {
-  // static instance: HttpClient;
-  // static inject = () => HttpClient.instance;
   private client: AxiosInstance;
 
   constructor() {
-    // HttpClient.instance = this
     this.client = axios.create({
-      baseURL: config.apiURL,
+      baseURL: isDevelopment() 
+        ? config.testApiURL 
+        : config.apiURL,
     });
   }
 
