@@ -301,7 +301,7 @@ export const CartPage: React.FC = observer(
         }
         <Страничка.Тело>
 
-          {cart.isEmpty
+          {cart.isEmpty || cart.receptionType !== 'pickup'
             ? null
             : <WaitYouInOrganization />
           }
@@ -455,6 +455,7 @@ export const CartPage: React.FC = observer(
               />
               <PaymentSelector />
 
+              {/* <PromocodeInput /> */}
             </div>
           }
 
@@ -1163,3 +1164,20 @@ const YoukassaPaymentPopup: FC = observer(() => {
     </Popup>
   )
 })
+
+// const PromocodeInput: FC = observer(() => {
+//   return (
+//     <Input
+//       value={address}
+//       onChange={val => { setAddress(val) }}
+//       placeholder='Промокод'
+//       style={{
+//         border: errored
+//           ? '1px solid var(--adm-color-danger)'
+//           : "1px solid var(--громкий-текст)",
+//         ...detailFormStyle.phoneInput,
+//         marginRight: -10
+//       }}
+//     />
+//   )
+// })
