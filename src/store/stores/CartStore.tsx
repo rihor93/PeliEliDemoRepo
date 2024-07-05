@@ -1,5 +1,5 @@
 import { CreditCardOutlined } from "@ant-design/icons";
-import { Toast, Modal as Modalz, Dialog } from "antd-mobile";
+import { Toast, Modal as Modalz, Dialog, InputRef } from "antd-mobile";
 import { ToastHandler } from "antd-mobile/es/components/toast";
 import { flow, makeAutoObservable, reaction, runInAction, toJS } from "mobx";
 import moment from "moment";
@@ -71,7 +71,32 @@ export class CartStore {
         this.paymentSelector.selectedPayMethod = null
     })
   }
+  confirmedPromocode: Optional<string> = null
+  inputPromocode = ''
+  setInputPromo = (str: string, ref: any) => {
+    this.inputPromocode = str;
 
+    const availablePromos = this.rootStore.userStore.userState.allCampaign
+      .filter(ac => ac.promocode !== null)
+      .map(ac => ac.promocode)
+
+    if (availablePromos.includes(str)) {
+      Toast.show("Промокод активирован")
+      this.confirmedPromocode = str
+      ref?.current?.blur()
+    } else {
+      this.confirmedPromocode = null
+    }
+    let { totalPrice, items, isEmpty } = this;
+    const userInfo = this.rootStore.userStore.userState;
+    this.applyDiscount(
+      { totalPrice, items, isEmpty },
+      userInfo.percentDiscounts,
+      userInfo.dishDiscounts,
+      userInfo.allCampaign,
+      userInfo.dishSet,
+    )
+  }
   items: Array<CouseInCart> = [];
   totalPrice = 0;
 
@@ -200,6 +225,18 @@ export class CartStore {
     allCampaign: AllCampaignUser[],
     dishSet: DishSetDiscount[],
   ) {
+    // проверяем промокды при каждом пересчитывании скидки
+    const availablePromocodes = allCampaign
+      .filter(ac => ac.promocode !== null)
+      .map(ac => ac.promocode)
+
+    if (availablePromocodes.includes(this.inputPromocode)) {
+      this.confirmedPromocode = this.inputPromocode
+    } else {
+      this.confirmedPromocode = null
+    }
+
+
     let promo = null;//пока заглушка, т.к. нет промо
     let new_state = { ...state }//копируем текущий стейт, для его изменения
 
@@ -251,7 +288,13 @@ export class CartStore {
         for (let j = 0; j < dishsDiscounts.length; j++) {
           let dishDiscount = dishsDiscounts[j];
           //нашли блюдо в акции
-          if (courseItem.couse.VCode == dishDiscount.dish && dishDiscount.promocode == promo) {
+          if (
+            courseItem.couse.VCode == dishDiscount.dish
+            && (
+              dishDiscount.promocode == null
+              || dishDiscount.promocode == this.confirmedPromocode
+            )
+          ) {
             //если есть процентная скидка
             if (courseItem.quantity * dishDiscount.price < courseItem.priceWithDiscount) {
               courseItem.campaign = dishDiscount.vcode;
@@ -274,7 +317,13 @@ export class CartStore {
       }
 
       for (let j = 0; j < curDishSets.length; j++) {
-        if (curDishSets[j].countInCart == curDishSets[j].dishCount && curDishSets[j].dishes[0].promocode == promo) {
+        if (
+          curDishSets[j].countInCart == curDishSets[j].dishCount
+          && (
+            curDishSets[j].dishes[0].promocode == null
+            || curDishSets[j].dishes[0].promocode == this.confirmedPromocode
+          )
+        ) {
           for (let i = 0; i < new_state.items.length; i++) {
             let courseItem = new_state.items[i];
             let dishInSet = curDishSets[j].dishes.find(a => a.dish == courseItem.couse.VCode);
@@ -347,7 +396,8 @@ export class CartStore {
         order = { ...order, activeSlot: Number(this.selectedSlot?.VCode) }
       }
 
-      if (isDevelopment()) {
+      if (true) {
+        // if(isDevelopment()) {
         //@ts-ignore
         orgID = 146
       }
@@ -684,7 +734,7 @@ class DeliveryForm {
 export const paymentMethods = {
   PAY_BY_CARD_UPON_RECIEPT: "PAY_BY_CARD_UPON_RECIEPT",
   CARD_ONLINE: "CARD_ONLINE",
-  // SBER_PAY: "SBER_PAY",
+  SBER_PAY: "SBER_PAY",
   CASH: "CASH",
 } as const
 export type PaymentMethod = typeof paymentMethods[keyof typeof paymentMethods]
@@ -694,7 +744,7 @@ class PaymentSelector {
   paymentLabels = {
     [paymentMethods.PAY_BY_CARD_UPON_RECIEPT]: 'Оплата картой при получении',
     [paymentMethods.CARD_ONLINE]: 'Картой онлайн',
-    // [paymentMethods.SBER_PAY]: 'СберПэй',
+    [paymentMethods.SBER_PAY]: 'СберПэй',
     [paymentMethods.CASH]: 'Наличными',
   }
 
@@ -704,7 +754,7 @@ class PaymentSelector {
     [paymentMethods.PAY_BY_CARD_UPON_RECIEPT]: <CreditCardOutlined style={this.iconstyle} />,
     [paymentMethods.CARD_ONLINE]: <CreditCardOutlined style={this.iconstyle} />,
     [paymentMethods.CASH]: <span style={this.iconstyle}>₽</span>,
-    // [paymentMethods.SBER_PAY]: <img style={{ width: '50px' }} src={SberPay} />,
+    [paymentMethods.SBER_PAY]: <img style={{ width: '50px' }} src={SberPay} />,
   }
 
   setPayementWaySelected = (way: PaymentMethod) => {

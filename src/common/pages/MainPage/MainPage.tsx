@@ -234,7 +234,7 @@ export const MainPage: FC = observer(() => {
                   icon={<ClockCircleOutline />}
                   status='success'
                   title='Упс'
-                  description={`Сегодня на ${userStore.currentOrganizaion?.Name} никто не готовит((`}
+                  description={`Сегодня на ${userStore.currentOrganizaion?.Name ?? "заброшенная точка"} никто не готовит((`}
                 />
                 : null
               }

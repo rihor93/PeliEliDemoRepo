@@ -1,8 +1,8 @@
-import { Toast, Radio, Space, Skeleton, Dropdown, Input, DatePicker, Modal, Dialog, Picker, List, Popup, Checkbox } from 'antd-mobile';
+import { Toast, Radio, Space, Skeleton, Dropdown, Input, DatePicker, Modal, Dialog, Picker, List, Popup, Checkbox, InputRef } from 'antd-mobile';
 import Button from 'antd-mobile/es/components/button';
 import { observer } from 'mobx-react-lite';
 import moment from 'moment';
-import React from 'react';
+import React, { Ref, useRef } from 'react';
 import Страничка from '../../components/layout/Page';
 import { useInterval, useStore, useTelegram } from '../../hooks';
 import { Optional, Undef } from '../../types';
@@ -12,7 +12,7 @@ import { toJS } from 'mobx';
 import { ToastHandler } from 'antd-mobile/es/components/toast';
 import { isDevelopment } from '../../helpers';
 import { useNavigate } from 'react-router-dom';
-import { LocationFill } from 'antd-mobile-icons';
+import { CheckOutline, LocationFill } from 'antd-mobile-icons';
 import { PaymentMethod, ReceptionType } from '../../../store/stores';
 import { getFormattedNumber, useMask } from "react-phone-hooks";
 import { FC, useState, useMemo, CSSProperties } from "react"
@@ -353,7 +353,7 @@ export const CartPage: React.FC = observer(
                     const targetDish = mainPage.getDishByID(dishDiscount.dish)
                     if (targetDish?.Name)
                       if (dishDiscount.price) {
-                        text = `Cкидка ${dishDiscount.price}руб на "${targetDish?.Name}"`
+                        text = `"${targetDish?.Name}" по цене ${dishDiscount.price} рублей`
                       }
                     // @ts-ignore
                     if (dishDiscount.discountPercent) {
@@ -455,7 +455,7 @@ export const CartPage: React.FC = observer(
               />
               <PaymentSelector />
 
-              {/* <PromocodeInput /> */}
+              <PromocodeInput />
             </div>
           }
 
@@ -780,7 +780,7 @@ const WaitYouInOrganization: FC = observer(props => {
         title={
           <div style={waitStyles.orgWrapper}>
             <span style={waitStyles.orgText}>
-              {userStore.currentOrganizaion?.Name}
+              {userStore.currentOrganizaion?.Name ?? "Заброшенная точка"}
             </span>
             <LocationFill style={waitStyles.orgIcon} />
           </div>
@@ -1165,19 +1165,40 @@ const YoukassaPaymentPopup: FC = observer(() => {
   )
 })
 
-// const PromocodeInput: FC = observer(() => {
-//   return (
-//     <Input
-//       value={address}
-//       onChange={val => { setAddress(val) }}
-//       placeholder='Промокод'
-//       style={{
-//         border: errored
-//           ? '1px solid var(--adm-color-danger)'
-//           : "1px solid var(--громкий-текст)",
-//         ...detailFormStyle.phoneInput,
-//         marginRight: -10
-//       }}
-//     />
-//   )
-// })
+const PromocodeInput: FC = observer(() => {
+  const { cartStore } = useStore()
+  const inputref = useRef()
+
+  return <React.Fragment>
+    <p style={{ ...waitStyles.hello, margin: 17 } as CSSProperties}>
+      Промокод:
+    </p>
+    <div
+      style={{
+        ...flexHorizontal,
+        width: '100%',
+        padding: '0.5rem 1rem',
+        border: cartStore.confirmedPromocode?.length
+          ? "1px solid var(--adm-color-success)"
+          : "1px solid var(--adm-border-color)",
+        borderRadius: 8,
+        marginBottom: '2rem'
+      }}
+    >
+      <Input
+        disabled={Boolean(cartStore.confirmedPromocode)}
+      // @ts-ignore
+        ref={inputref}
+        value={cartStore.inputPromocode}
+        onChange={str => { cartStore.setInputPromo(str, inputref) }}
+        placeholder='Введите промокод'
+      />
+      {!cartStore.confirmedPromocode?.length
+        ? null
+        : <CheckOutline style={{  color: "var(--adm-color-success)" }}/>
+      }
+
+    </div>
+
+  </ React.Fragment>
+})
