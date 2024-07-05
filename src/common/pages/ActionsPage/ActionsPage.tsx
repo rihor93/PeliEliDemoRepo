@@ -211,7 +211,9 @@ export const ActionsPage: React.FC = observer(() => {
                 <p style={{ marginLeft: '20px' }}>Персональных акций нет</p>
               }
               {index === 1 &&
-                allCampaign.map((actia, index) =>
+                allCampaign
+                  .filter(actia => !actia.promocode)
+                  .map((actia, index) =>
                   <div
                     className="action_item"
                     key={`${category}-${actia.VCode}-${index}`}
