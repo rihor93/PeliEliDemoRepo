@@ -347,8 +347,7 @@ export class CartStore {
         order = { ...order, activeSlot: Number(this.selectedSlot?.VCode) }
       }
 
-      if (true) {
-        // if(isDevelopment()) {
+      if (isDevelopment()) {
         //@ts-ignore
         orgID = 146
       }
