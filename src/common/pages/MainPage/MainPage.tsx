@@ -43,6 +43,21 @@ export const MainPage: FC = observer(() => {
       <br />
       {/* <WatchLotteryPopup />
       <TempBanner /> */}
+      {/* <Button onClick={async () => {
+        const addrs: string[] = [
+          "Бакалинская 64/3",
+          "Степана кувыкина 11",
+          "Аксакова 81/1",
+          "Софьи Перовской 21/3",
+          "Заки Валиди 3",
+        ]
+        for (const inputAddress of addrs) {
+          const org = await cartStore.deliveryForm.getNearestDeliveryPoint(inputAddress)
+          console.log("------------------------------------------------")
+          console.log(`ближ. точка для "${inputAddress}" это ${org.Name}`)
+          console.log("------------------------------------------------")
+        }
+      }}>Нажми меня</Button> */}
       {userStore.orgstate === 'COMPLETED'
         && userStore.userLoad === 'COMPLETED' 
         && userStore.needAskAdress 

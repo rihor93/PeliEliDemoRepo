@@ -18,6 +18,7 @@ import { getFormattedNumber, useMask } from "react-phone-hooks";
 import { FC, useState, useMemo, CSSProperties } from "react"
 import { SelectLocationPopup } from '../../components';
 import { SelectSlotPopup } from '../../components/ui/SelectSlotPopup';
+import { MyWindowPortal } from '../../components/special/Window';
 
 const defaultMask = "+7 ... ... .. .."
 const defaultPrefix = "+7"
@@ -1142,6 +1143,7 @@ const WaySelectorPopup: FC = observer(() => {
 })
 
 const YoukassaPaymentPopup: FC = observer(() => {
+  const { isInTelegram } = useTelegram()
   const { cartStore } = useStore()
   const { youkassaPopup, checkoutWidget } = cartStore
 
@@ -1149,20 +1151,39 @@ const YoukassaPaymentPopup: FC = observer(() => {
     checkoutWidget.destroy()
     youkassaPopup.close()
   }
-  return (
-    <Popup
-      position='bottom'
-      visible={youkassaPopup.show}
-      showCloseButton
-      onClose={hide}
-      onMaskClick={hide}
-      style={{ zIndex: 5 }}
-      bodyStyle={{ width: '100vw', height: '100vh', borderTopLeftRadius: 8, borderTopRightRadius: 8 }}
-    >
-      <h2 style={{ margin: '2rem 0 1rem 2rem' }}>Оплата:</h2>
-      <div id="payment-form"></div>
-    </Popup>
-  )
+  // если мы находимся в телеге то открываем не попап
+  // а новое окно
+  //
+  // if (isInTelegram()) {
+  if (1 !== 1) {
+    return youkassaPopup.show
+      ? <MyWindowPortal>
+        <h2 style={{ margin: '2rem 0 1rem 2rem' }}>Оплата:</h2>
+        <div id="payment-form"></div>
+      </MyWindowPortal>
+      : null
+
+  } else {
+    return (
+      <Popup
+        position='bottom'
+        visible={youkassaPopup.show}
+        showCloseButton
+        onClose={hide}
+        onMaskClick={hide}
+        style={{ zIndex: 5 }}
+        bodyStyle={{
+          width: '100vw',
+          height: '100vh',
+          borderTopLeftRadius: 8,
+          borderTopRightRadius: 8
+        }}
+      >
+        <h2 style={{ margin: '2rem 0 1rem 2rem' }}>Оплата:</h2>
+        <div id="payment-form"></div>
+      </Popup>
+    )
+  }
 })
 
 const PromocodeInput: FC = observer(() => {
@@ -1187,7 +1208,7 @@ const PromocodeInput: FC = observer(() => {
     >
       <Input
         disabled={Boolean(cartStore.confirmedPromocode)}
-      // @ts-ignore
+        // @ts-ignore
         ref={inputref}
         value={cartStore.inputPromocode}
         onChange={str => { cartStore.setInputPromo(str, inputref) }}
@@ -1195,7 +1216,7 @@ const PromocodeInput: FC = observer(() => {
       />
       {!cartStore.confirmedPromocode?.length
         ? null
-        : <CheckOutline style={{  color: "var(--adm-color-success)" }}/>
+        : <CheckOutline style={{ color: "var(--adm-color-success)" }} />
       }
 
     </div>
