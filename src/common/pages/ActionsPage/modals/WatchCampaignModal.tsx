@@ -5,9 +5,9 @@ import { config } from "../../../configuration";
 import { useStore } from "../../../hooks";
 import { Optional, Undef } from "../../../types";
 import './WatchCampaignModal.css';
-import { Image, Popup, Space, SpinLoading } from 'antd-mobile';
-import { toJS } from 'mobx';
+import { Image, Popup } from 'antd-mobile';
 import { useNavigate } from 'react-router-dom';
+import { Skeleton } from 'antd-mobile/es/components/skeleton/skeleton';
 interface CampaignProp { campaign: AllCampaignUser };
 const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
 
@@ -99,6 +99,18 @@ const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
   }
   const navigate = useNavigate()
 
+  const styles = {
+    header: {
+      textAlign: 'center',
+      marginTop: '1rem'
+    },
+    img: {
+      width: 'auto',
+      height: '204px',
+      borderRadius: '8px',
+    },
+  }
+
   return (
     <Popup
       position='right'
@@ -111,12 +123,7 @@ const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
         navigate(-1)
       }}
     >
-      <h3
-        style={{
-          textAlign: 'center',
-          marginTop: '1rem'
-        }}
-      >
+      <h3 style={styles.header as React.CSSProperties}>
         {`🎁 ${campaign.Name.replace(/ *\{[^}]*\} */g, "")}!!!`}
       </h3>
       <Image
@@ -127,24 +134,10 @@ const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
           + '&random='
           + session
         }
-        fallback={<img src={gurmag_big} style={{
-          width: 'calc(100%)',
-          minHeight: 'auto',
-          borderRadius: '8px'
-        }} />}
-        placeholder={
-          <Space style={{ width: 'calc(100% - 1rem)', height: '200px', margin: '0.5rem' }} justify='center' align='center'>
-            <SpinLoading color='primary' style={{ fontSize: '42px' }} />
-          </Space>
-        }
+        fallback={<img src={gurmag_big} style={styles.img} />}
+        placeholder={<Skeleton animated style={styles.img} />}
         fit='cover'
-        style={{
-          margin: '1rem 0.5rem',
-          borderTopLeftRadius: '8px',
-          borderTopRightRadius: '8px',
-          "--height": "auto",
-          "--width": "calc(100% - 1rem)",
-        }}
+        style={{...styles.img, margin: '1rem 0.5rem',}}
       />
       <p
         style={{
