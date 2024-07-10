@@ -6,6 +6,8 @@ import { useStore } from "../../../hooks";
 import { Optional, Undef } from "../../../types";
 import './WatchCampaignModal.css';
 import { Image, Popup, Space, SpinLoading } from 'antd-mobile';
+import { toJS } from 'mobx';
+import { useNavigate } from 'react-router-dom';
 interface CampaignProp { campaign: AllCampaignUser };
 const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
 
@@ -29,123 +31,160 @@ const WatchCampaignModal: React.FC<CampaignProp> = observer(({ campaign }) => {
 
   // должна найтись только одна из трех 
   let campaignDetail: Optional<DishDiscount | PercentDiscount | DishSetDiscount> = null;
-  if (dishDiscount && !percentDiscount && !setDish) campaignDetail = dishDiscount;
-  if (!dishDiscount && percentDiscount && !setDish) campaignDetail = percentDiscount;
-  if (!dishDiscount && !percentDiscount && setDish) campaignDetail = setDish;
 
-  let text = '';
+  type CampaignType = "DishDiscount" | "PercentDiscount" | "DishSetDiscount"
+  let campaignType: Optional<CampaignType> = null
+
+  if (dishDiscount && !percentDiscount && !setDish) {
+    campaignDetail = dishDiscount
+    campaignType = 'DishDiscount'
+  };
+  if (!dishDiscount && percentDiscount && !setDish) {
+    campaignDetail = percentDiscount
+    campaignType = "PercentDiscount"
+  };
+  if (!dishDiscount && !percentDiscount && setDish) {
+    campaignDetail = setDish
+    campaignType = "DishSetDiscount"
+  };
+
+  let text: React.ReactNode = '';
   let dishArr: Undef<CourseItem>[] = [];
 
   if (campaignDetail) {
-    if ('quantity' in campaignDetail) {
-      const targetDish = mainPage.getDishByID(campaignDetail.dish)
-      if (targetDish?.Name) {
-        text = `скидка ${campaignDetail.price}руб на "${targetDish?.Name}"`
+    switch (campaignType) {
+      case "DishDiscount": {
+        campaignDetail = campaignDetail as DishDiscount
+        const targetDish = mainPage.getDishByID(campaignDetail.dish)
+        if (targetDish?.Name) {
+          const NavigateToCourse = () => {
+            mainPage.watchCourse(targetDish)
+          }
+          if (campaignDetail.price) {
+            text = <>
+              <span className='dish_link' onClick={NavigateToCourse}>
+                {`👉 "${targetDish.Name}"`}
+              </span>
+              <span>{` за ${campaignDetail.price}руб`}</span>
+            </>
+          }
+          if (campaignDetail.discountPercent) {
+            text = <>
+              <span>{`Скидка ${campaignDetail.discountPercent}%  на `}</span>
+              <span className='dish_link' onClick={NavigateToCourse}>
+                {`👉 ${targetDish.Name}`}
+              </span>
+            </>
+          }
+        }
+        break;
       }
-    }
-    if ('bonusRate' in campaignDetail) {
-      const { MaxSum, MinSum, discountPercent, bonusRate } = campaignDetail;
-      text = `скидка ${discountPercent}% на сумму от ${MinSum} до ${MaxSum} руб`;
-      if (bonusRate) text = text + ` + ${bonusRate} бонусных баллов`
-    }
-    if ('dishes' in campaignDetail) {
-      text = `скидка на ${campaignDetail.dishCount} блюда из списка:`;
-      dishArr = campaignDetail.dishes.map((dishDiscount) =>
-        mainPage.getDishByID(dishDiscount.dish)
-      )
+      case "PercentDiscount": {
+        const { MaxSum, MinSum, discountPercent, bonusRate } = campaignDetail as PercentDiscount;
+        text = `скидка ${discountPercent}% на сумму от ${MinSum} до ${MaxSum} руб`;
+        if (bonusRate) text = text + ` + ${bonusRate} бонусных баллов`
+        break;
+      }
+      case "PercentDiscount": {
+        campaignDetail = campaignDetail as DishSetDiscount
+        text = `скидка на ${campaignDetail.dishCount} блюда из списка:`;
+        dishArr = campaignDetail.dishes.map((dishDiscount) =>
+          mainPage.getDishByID(dishDiscount.dish)
+        )
+        break;
+      }
+      default:
+        break;
     }
   }
-
-  // const navigate = useNavigate()
+  const navigate = useNavigate()
 
   return (
     <Popup
       position='right'
       visible={watchActionModal.show}
       showCloseButton
+      bodyStyle={{ overflow: "scroll" }}
+      style={{ zIndex: "2" }}
       onClose={() => {
         watchActionModal.close()
-        // navigate(-1)
+        navigate(-1)
       }}
     >
-      <h3 
+      <h3
         style={{
-          textAlign: 'center', 
+          textAlign: 'center',
           marginTop: '1rem'
         }}
       >
-        {`🎁${campaign.Name.replace(/ *\{[^}]*\} */g, "")}!!!`}
+        {`🎁 ${campaign.Name.replace(/ *\{[^}]*\} */g, "")}!!!`}
       </h3>
-      <Image 
-        src={config.apiURL 
-          + '/api/v2/image/Disount?vcode=' 
-          + campaign.VCode 
-          + '&compression=true'  
-          + '&random=' 
+      <Image
+        src={config.apiURL
+          + '/api/v2/image/Disount?vcode='
+          + campaign.VCode
+          + '&compression=true'
+          + '&random='
           + session
         }
         fallback={<img src={gurmag_big} style={{
-          width: 'calc(100%)', 
-          minHeight: 'auto', 
+          width: 'calc(100%)',
+          minHeight: 'auto',
           borderRadius: '8px'
         }} />}
         placeholder={
           <Space style={{ width: 'calc(100% - 1rem)', height: '200px', margin: '0.5rem' }} justify='center' align='center'>
-            <SpinLoading color='primary' style={{fontSize: '42px'}} />
+            <SpinLoading color='primary' style={{ fontSize: '42px' }} />
           </Space>
         }
         fit='cover'
-        style={{ 
+        style={{
           margin: '1rem 0.5rem',
-          borderTopLeftRadius: '8px', 
-          borderTopRightRadius: '8px', 
+          borderTopLeftRadius: '8px',
+          borderTopRightRadius: '8px',
           "--height": "auto",
           "--width": "calc(100% - 1rem)",
         }}
       />
-      <p 
+      <p
         style={{
-          fontSize: '22px', 
+          fontSize: '22px',
           fontWeight: '400',
           lineHeight: "26px",
           margin: "20px",
           textAlign: "center"
         }}
       >
-        {`${campaign.Description.replace(/ *\{[^}]*\} */g, "")} - ${text}`}
+        <span>{campaign.Description.replace(/ *\{[^}]*\} */g, "") + " "}</span>
+        {text}
       </p>
       <div
-        style={{ 
-          fontSize: '18px',
-          height: '100%',
-          overflow: 'scroll', 
-          margin: '0 0.75rem', 
+        style={{
+          fontSize: '20px',
+          margin: '0 0.75rem',
         }}
       >
-         
-          {dishArr.length ?
-              <ul>
-                {dishArr.map((dish, index) =>
-                  !dish
-                    ? <li style={{marginLeft: '20px'}} key={`no_VCode_${index}`}>блюдо сейчас нет в меню</li>
-                    : <li key={`${dish.VCode}_${dish.VCode}_${index}ds`}>
-                      {/* <NavLink to={`/menu/${dish.CatVCode}/${dish.VCode}`}>
-                        {`- ${dish.Name}`}
-                      </NavLink> */}
-                      <p onClick={() => {
-                        const course = mainPage.getDishByID(dish.VCode)
-                        if (course) {
-                          mainPage.watchCourse(course)
-                          actionsPage.selectedAction = null;
-                        }
-                      }} className='dish_link'>
-                        {`👉 ${dish.Name}`}
-                      </p>
-                    </li>
-                )}
-              </ul>
-              : null
-            }
+
+        {dishArr.length ?
+          <ul>
+            {dishArr.map((dish, index) =>
+              !dish
+                ? <li style={{ marginLeft: '20px' }} key={`no_VCode_${index}`}>блюдо сейчас нет в меню</li>
+                : <li key={`${dish.VCode}_${dish.VCode}_${index}ds`}>
+                  <p onClick={() => {
+                    const course = mainPage.getDishByID(dish.VCode)
+                    if (course) {
+                      mainPage.watchCourse(course)
+                      actionsPage.selectedAction = null;
+                    }
+                  }} className='dish_link'>
+                    {`👉 ${dish.Name}`}
+                  </p>
+                </li>
+            )}
+          </ul>
+          : null
+        }
       </div>
     </Popup>
   )
