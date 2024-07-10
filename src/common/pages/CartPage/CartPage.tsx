@@ -398,7 +398,8 @@ export const CartPage: React.FC = observer(
                     height: '100%',
                     display: 'flex',
                     justifyContent: 'center',
-                    marginTop: '1rem'
+                    marginTop: '1rem',
+                    fontSize: 20
                   }}>
                   <p>Корзина пуста 🛒</p>
                 </div>
