@@ -5,14 +5,14 @@ import { useStore } from '../../hooks';
 import { food, gurmag_big } from '../../../assets';
 import { observer } from 'mobx-react-lite';
 import { config } from '../../configuration';
-import { replaceImgSrc } from '../../helpers';
 import WatchCampaignModal from './modals/WatchCampaignModal';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Modals } from '../MenuPage/modals';
-import { Button, Divider, Ellipsis, Popup, Radio, Space, Toast } from 'antd-mobile';
+import { Ellipsis, Image, Skeleton } from 'antd-mobile';
+import { SelectLocationPopup } from '../../components';
 
 export const ActionsPage: React.FC = observer(() => {
-  const { actionsPage, userStore, auth, mainPage, session } = useStore();
+  const { actionsPage, userStore, auth, mainPage } = useStore();
   const { categories, visibleCategory, selectedAction, watchAction } = actionsPage;
 
   const { selectedCourse } = mainPage;
@@ -60,8 +60,6 @@ export const ActionsPage: React.FC = observer(() => {
     window.addEventListener('scroll', listener)
     return () => window.removeEventListener('scroll', listener)
   }, [visibleCategory])
-
-  const navigate = useNavigate();
   const params = useParams<{ VCode: string }>();
 
   React.useEffect(() => {
@@ -71,8 +69,6 @@ export const ActionsPage: React.FC = observer(() => {
     }
   }, [userStore.userState.allCampaign])
 
-
-  const [askedAddr, setAskedAddr] = React.useState(0)
   return (
     <Страничка>
       <div style={{ height: '55px' }} />
@@ -80,59 +76,17 @@ export const ActionsPage: React.FC = observer(() => {
         ? <div style={{ height: '58px' }} />
         : null
       }
-      {userStore.needAskAdress
-        ? <Popup
-          visible={userStore.needAskAdress}
-          onMaskClick={() => {
-            Toast.show({
-              content: 'Пожалуйста, выберите местоположение',
-              position: 'center',
-            })
-          }}
-          bodyStyle={{
-            borderTopLeftRadius: '8px',
-            borderTopRightRadius: '8px',
-            padding: '0 0.5rem 0.5rem 0.5rem'
-          }}
-        >
-          <div>
-            <Divider>Выберите вашу домашнюю кухню:</Divider>
-            <Radio.Group
-              onChange={(e) => setAskedAddr(e as number)}
-            >
-              <Space direction='vertical' block>
-                {userStore.organizations.map((org) =>
-                  <Radio block value={org.Id} key={org.Id}>
-                    {org.Name}
-                  </Radio>
-                )}
-              </Space>
-            </Radio.Group>
-            <Button
-              block
-              color='primary'
-              size='large'
-              className="mt-1"
-              onClick={() => {
-                if (askedAddr == 142 || askedAddr == 0) {
-                  Toast.show({
-                    content: 'Выберите местоположение',
-                    position: 'center',
-                  })
-                } else {
-                  userStore.currentOrg = askedAddr
-                }
-              }}
-            >
-              Сохранить
-            </Button>
-          </div>
-        </Popup>
+      {userStore.orgstate === 'COMPLETED'
+        && userStore.userLoad === 'COMPLETED'
+        && userStore.needAskAdress
+        ? <SelectLocationPopup />
         : null
       }
       {selectedAction && <WatchCampaignModal campaign={selectedAction} />}
       {selectedCourse && <Modals.course course={selectedCourse} />}
-      {!userName.length
+      {userStore.orgstate === 'COMPLETED'
+        && userStore.userLoad === 'COMPLETED'
+        && !userName.length
         ? <div
           className='hello_costumer'
           style={{
@@ -213,39 +167,7 @@ export const ActionsPage: React.FC = observer(() => {
               {index === 1 &&
                 allCampaign
                   .filter(actia => !actia.promocode)
-                  .map((actia, index) =>
-                  <div
-                    className="action_item"
-                    key={`${category}-${actia.VCode}-${index}`}
-                  >
-                    <img
-                      className='action_img'
-                      src={config.apiURL
-                        + '/api/v2/image/Disount?vcode='
-                        + actia.VCode
-                        + '&compression=true'
-                        + '&random='
-                        + session
-                      }
-                      onError={replaceImgSrc(gurmag_big)}
-                      onClick={() => {
-                        watchAction(actia)
-                        navigate('/actions/' + actia.VCode)
-                      }}
-                    />
-                    <h2>{actia.Name.replace(/ *\{[^}]*\} */g, "")}!</h2>
-                    <Ellipsis
-                      direction='end'
-                      content={actia.Description.replace(/ *\{[^}]*\} */g, "")}
-                      expandText='показать'
-                      collapseText='скрыть'
-                      style={{
-                        margin: '0 10px 5px 10px',
-                        fontSize: '16px'
-                      }}
-                    />
-                  </div>
-                )
+                  .map((actia, index) => <ActiaItem key={index} actia={actia} />)
               }
             </div>
           </div>
@@ -282,3 +204,47 @@ function NavigateTo(categoryID: string) {
     })
   }
 }
+
+interface ActiaProps { actia: AllCampaignUser }
+const ActiaItem: React.FC<ActiaProps> = observer(({ actia }) => {
+  const { session, actionsPage } = useStore()
+  const navigate = useNavigate()
+  function WatchCampaign() {
+    actionsPage.watchAction(actia)
+    navigate('/actions/' + actia.VCode)
+  }
+  const styles = {
+    img: {
+      height: "204px",
+      width: 'auto'
+    }
+  }
+  return (
+    <div className="action_item">
+      <Image
+        className='action_img'
+        fallback={<img src={gurmag_big} style={styles.img} onClick={WatchCampaign} />}
+        placeholder={<Skeleton style={styles.img} animated />}
+        src={config.apiURL
+          + '/api/v2/image/Disount?vcode='
+          + actia.VCode
+          + '&compression=true'
+          + '&random='
+          + session
+        }
+        onClick={WatchCampaign}
+      />
+      <h2>{actia.Name.replace(/ *\{[^}]*\} */g, "")}!</h2>
+      <Ellipsis
+        direction='end'
+        content={actia.Description.replace(/ *\{[^}]*\} */g, "")}
+        expandText='показать'
+        collapseText='скрыть'
+        style={{
+          margin: '0 10px 5px 10px',
+          fontSize: '16px'
+        }}
+      />
+    </div>
+  )
+})
