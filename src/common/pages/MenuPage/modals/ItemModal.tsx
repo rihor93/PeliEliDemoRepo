@@ -55,7 +55,7 @@ export const ItemModal: React.FC<{
       >
         {course.CompressImages && course.CompressImages.length
           ? course.CompressImages.map(image =>
-            <Swiper.Item>
+            <Swiper.Item key={image}>
               <Image
                 src={
                   config.apiURL
