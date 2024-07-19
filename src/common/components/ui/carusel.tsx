@@ -39,7 +39,7 @@ export const Carusel = observer(() => {
   return (
     <Swiper loop autoplay style={swiperStyle}>
       {userStore.userLoad === 'COMPLETED' 
-        ? campaigns.map((campaign, index) => 
+        ? campaigns.filter(al => !al.promocode).map((campaign, index) => 
           <Swiper.Item key={index}>
             <Image 
               src={config.apiURL 

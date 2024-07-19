@@ -213,7 +213,9 @@ const Bottom: FC = observer(() => {
 
   const setRouteActive = (value: string) => {navigate(value)}
 
-  const isHaveActions = userStore.userState.allCampaign.length
+  const isHaveActions = userStore.userState.allCampaign
+    .filter(al => !al.promocode)
+    .length
 
   const bottom = [
     {
