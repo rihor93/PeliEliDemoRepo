@@ -397,7 +397,7 @@ export class CartStore {
       }
 
       // if (true) {
-        if(isDevelopment()) {
+      if (isDevelopment()) {
         //@ts-ignore
         orgID = 146
       }
@@ -736,7 +736,7 @@ class DeliveryForm {
 export const paymentMethods = {
   PAY_BY_CARD_UPON_RECIEPT: "PAY_BY_CARD_UPON_RECIEPT",
   CARD_ONLINE: "CARD_ONLINE",
-  // SBER_PAY: "SBER_PAY",
+  SBER_PAY: "SBER_PAY",
   CASH: "CASH",
 } as const
 export type PaymentMethod = typeof paymentMethods[keyof typeof paymentMethods]
@@ -746,7 +746,7 @@ class PaymentSelector {
   paymentLabels = {
     [paymentMethods.PAY_BY_CARD_UPON_RECIEPT]: 'Оплата картой при получении',
     [paymentMethods.CARD_ONLINE]: 'Картой онлайн',
-    // [paymentMethods.SBER_PAY]: 'СберПэй',
+    [paymentMethods.SBER_PAY]: 'СберПэй',
     [paymentMethods.CASH]: 'Наличными',
   }
 
@@ -756,7 +756,7 @@ class PaymentSelector {
     [paymentMethods.PAY_BY_CARD_UPON_RECIEPT]: <CreditCardOutlined style={this.iconstyle} />,
     [paymentMethods.CARD_ONLINE]: <CreditCardOutlined style={this.iconstyle} />,
     [paymentMethods.CASH]: <span style={this.iconstyle}>₽</span>,
-    // [paymentMethods.SBER_PAY]: <img style={{ width: '50px' }} src={SberPay} />,
+    [paymentMethods.SBER_PAY]: <img style={{ width: '50px' }} src={SberPay} />,
   }
 
   setPayementWaySelected = (way: PaymentMethod) => {

@@ -42,6 +42,7 @@ type PercentDiscount = {
 }
 
 type DishDiscount = {
+  discountPercent: number,
   vcode: number,
   isset: number,
   quantity: number,

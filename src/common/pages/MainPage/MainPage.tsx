@@ -29,7 +29,7 @@ import { http } from "../../features";
 
 
 export const MainPage: FC = observer(() => { 
-  const { userStore, actionsPage, mainPage, auth } = useStore();
+  const { userStore, actionsPage, mainPage, auth, cartStore } = useStore();
   const telegram = useTelegram()
 
   const { selectedCourse, state, cookstate } = mainPage;
@@ -45,11 +45,9 @@ export const MainPage: FC = observer(() => {
       <TempBanner /> */}
       {/* <Button onClick={async () => {
         const addrs: string[] = [
-          "Бакалинская 64/3",
-          "Степана кувыкина 11",
-          "Аксакова 81/1",
-          "Софьи Перовской 21/3",
-          "Заки Валиди 3",
+          "Степана Кувыкина, 10, кв 68, 9 этаж",
+          "Г. Уфа. Ул. Бакалинская д. 64/3 кв. 319",
+          "Бакалинская 68/2-61"
         ]
         for (const inputAddress of addrs) {
           const org = await cartStore.deliveryForm.getNearestDeliveryPoint(inputAddress)

@@ -46,69 +46,6 @@ export const MenuPage: React.FC = observer(() => {
         : null 
       }
       <div style={{height: '46px'}} />
-      {/* <section className='categories'> 
-        <OtziviPopup />
-        {dishSearcher.isSearching 
-          ? (
-            <div key='результаты-поиска' id='searching_result'>
-              {dishSearcher.result.length 
-                ? (
-                  <Divider contentPosition='left' style={{fontSize: '22px'}}>
-                      {`Найдено ${dishSearcher.result.length} блюд`}
-                  </Divider>
-                ) : (
-                  <Result
-                    icon={<SmileOutline />}
-                    status='success'
-                    title='Сегодня такого блюда в меню нет((('
-                    description='В ближающее время блюдо появится в меню'
-                  />
-                )
-              }
-              {
-                dishSearcher.result.length
-                  ? (
-                    <div className="courses_list">
-                      {dishSearcher.result.map((course, index) =>
-                        <CourseItemComponent 
-                          key={`popular-${course.Name}-${index}`}
-                          course={course}
-                        />
-                      )}
-                  </div>
-                  ) : null
-              }
-              
-            </div>
-          ) : (
-            <CapsuleTabs defaultActiveKey={categories[0].VCode + '-' + 0}>
-              {categories.map((category, index) => 
-                <CapsuleTabs.Tab 
-                  title={category.Name} 
-                  key={category.VCode + '-' + index}
-                >
-                  <div key={category.VCode + '-' + index} id={String(category.VCode)}>
-                    <Divider 
-                      contentPosition="left" 
-                      style={{fontSize: '22px'}} 
-                    >
-                      {category.Name}
-                    </Divider>
-                    <div className="courses_list">
-                      {category.CourseList.map((course, index) =>
-                        <CourseItemComponent 
-                          key={`${category.Name}-${course.Name}-${index}`}
-                          course={course}
-                        />
-                      )}
-                    </div>
-                  </div>
-                </CapsuleTabs.Tab>
-              )}
-            </CapsuleTabs>
-          )
-        }
-      </section> */}
       {actionsPage.selectedAction && <WatchCampaignModal campaign={actionsPage.selectedAction} />}
       <Carusel />
       <Sections.filter />

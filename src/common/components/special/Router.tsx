@@ -6,13 +6,13 @@ import {
 import { Checker } from './AuthChecker';
 import { 
   ActionsPage, 
-  CartPage, 
   MainPage, 
   MenuPage, 
   MorePage, 
   OrdersPage, 
   ProfilePage, 
-  AuthPage
+  AuthPage,
+  CartPage
 } from '../../pages';
 import { CSSProperties, FC } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
