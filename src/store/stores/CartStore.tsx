@@ -62,7 +62,7 @@ export class CartStore {
     this.rootStore = rootStore;
     makeAutoObservable(this);
 
-    this.availableSlotCheckerID = setInterval(this.checkAvailableSlot, 60000)
+    this.availableSlotCheckerID = setInterval(this.checkAvailableSlot, 500)
     reaction(() => this.isPickup, (val, preVal) => {
       if (val !== preVal) this.paymentSelector.selectedPayMethod = null
     })
@@ -546,11 +546,20 @@ export class CartStore {
       logger.error('Не удалось получить слоты')
     }
   }
+
+  date = new Date()
+  setDate = (date: Date) => { this.date = date }
+
   private availableSlotCheckerID: ReturnType<typeof setTimeout>
   private checkAvailableSlot = () => {
-    this.availbaleSlots = this.slots.filter(this.isSlotActive)
-    if (this.selectedSlot && !this.availbaleSlots.find(slot => slot.VCode === this.selectedSlot?.VCode)) {
-      this.selectedSlot = null
+    const isToday = moment(this.date).isSame(new Date(), 'day')
+    if (isToday) {
+      this.availbaleSlots = this.slots.filter(this.isSlotActive)
+      if (this.selectedSlot && !this.availbaleSlots.find(slot => slot.VCode === this.selectedSlot?.VCode)) {
+        this.selectedSlot = null
+      }
+    } else {
+      this.availbaleSlots = this.slots
     }
   }
 

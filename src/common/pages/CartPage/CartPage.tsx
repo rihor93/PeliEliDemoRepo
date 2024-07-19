@@ -27,7 +27,6 @@ const phoneRegex = /^((\+8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/
 
 export const CartPage: React.FC = observer(
   () => {
-    const now = new Date()
     const after15min = moment().add(15, 'minutes')
 
     /** тост с загрузкой */
@@ -35,14 +34,12 @@ export const CartPage: React.FC = observer(
     const { userId } = useTelegram();
     const navigate = useNavigate();
     const { cartStore: cart, userStore, mainPage, auth } = useStore();
+    const { date, setDate } = cart
 
     /** Показывать ли датапикер для ввода даты */
     const [visibleDate, setVisibleDate] = useState(false);
     /** Показывать ли датапикер для ввода времени */
     const [visibleTime, setVisibleTime] = useState(false);
-
-    /** сама дата */
-    const [date, setDate] = useState(now);
 
     /** время заказа сразу + 15мин к текущему времени */
     const [time, setTime] = useState(after15min.format('HH:mm'));

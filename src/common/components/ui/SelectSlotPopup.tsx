@@ -51,6 +51,11 @@ export const SelectSlotPopup: FC<{ orderDate: Date }> = observer(function({ orde
               {`${getTimeString(slot)} сегодня`}
             </List.Item>
           )}
+
+        {!availbaleSlots.length
+          ? <List.Item>Сегодня уже нет доступных слотов</List.Item>
+          : null
+        }
       </>
     } else {
       return availbaleSlots.map(slot => 
