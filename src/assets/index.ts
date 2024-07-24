@@ -30,6 +30,9 @@ import Iphone15Banner from './IMG_9021.JPG'
 // @ts-ignore
 import SberPay from './SberPay.png'
 
+// @ts-ignore
+import Pizza from './Pizza.png'
+
 
 export {
   GurmagLogo,
@@ -44,5 +47,6 @@ export {
   NoImageBig,
   NoImageSmall,
   Iphone15Banner,
-  SberPay
+  SberPay,
+  Pizza
 }

@@ -234,10 +234,10 @@ const ActiaItem: React.FC<ActiaProps> = observer(({ actia }) => {
         }
         onClick={WatchCampaign}
       />
-      <h2>{actia.Name.replace(/ *\{[^}]*\} */g, "")}!</h2>
+      <h2>{actia.Name?.replace(/ *\{[^}]*\} */g, "")}!</h2>
       <Ellipsis
         direction='end'
-        content={actia.Description.replace(/ *\{[^}]*\} */g, "")}
+        content={actia.Description?.replace(/ *\{[^}]*\} */g, "")}
         expandText='показать'
         collapseText='скрыть'
         style={{

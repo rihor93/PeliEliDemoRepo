@@ -1,7 +1,8 @@
 import { InfoOutlined } from "@ant-design/icons";
-import { Dialog } from "antd-mobile";
+import { Dialog, Image } from "antd-mobile";
 import { ExclamationCircleFill, GiftOutline } from "antd-mobile-icons";
 import { makeAutoObservable } from "mobx";
+import { Pizza } from "../../assets";
 import { http, logger } from "../../common/features";
 import { useTelegram } from "../../common/hooks";
 import { Optional } from "../../common/types";
@@ -180,7 +181,11 @@ export class AuthStore {
         this.setState('AUTHORIZED')
         this.setCurrentStage('authorized_successfully')
         Dialog.alert({
-          header: (<GiftOutline style={{ fontSize: 64, color: 'var(--adm-color-success)' }}/>),
+          header: (<Image 
+            src={Pizza}
+            width='300px'
+            height='auto'
+          />),
           title: 'Вы зарегестрированы',
           content: <p>{result?.Message}</p>,
           confirmText: 'Отлично',
@@ -237,7 +242,11 @@ export class AuthStore {
       this.setState('AUTHORIZED')
       this.setCurrentStage('authorized_successfully')
       Dialog.alert({
-        header: (<GiftOutline style={{ fontSize: 64, color: 'var(--adm-color-success)' }}/>),
+        header: (<Image 
+          src={Pizza}
+          width='300px'
+          height='auto'
+        />),
         title: 'Вы зарегестрированы',
         content: <p>{result?.Message}</p>,
         confirmText: 'Отлично',
