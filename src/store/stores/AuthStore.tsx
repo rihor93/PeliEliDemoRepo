@@ -186,9 +186,9 @@ export class AuthStore {
             width='300px'
             height='auto'
           />),
-          title: 'Вы зарегестрированы',
+          title: 'Ну, наконец-то, познакомились!',
           content: <p>{result?.Message}</p>,
-          confirmText: 'Отлично',
+          confirmText: 'Отлично!',
         })
         const COrg = this.rootStore.userStore.currentOrg
         this.rootStore.auth.authorize()
@@ -247,9 +247,9 @@ export class AuthStore {
           width='300px'
           height='auto'
         />),
-        title: 'Вы зарегестрированы',
+        title: 'Ну, наконец-то, познакомились!',
         content: <p>{result?.Message}</p>,
-        confirmText: 'Отлично',
+        confirmText: 'Отлично!',
       })
       const COrg = this.rootStore.userStore.currentOrg
       this.rootStore.auth.authorize()
