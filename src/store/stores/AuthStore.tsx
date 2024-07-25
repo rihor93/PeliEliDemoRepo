@@ -233,7 +233,6 @@ export class AuthStore {
       {
         userId, 
         regname: data.name, 
-        gender: data.gender, 
         birthday: data.birthday, 
         random_code: this.checkCode
       }
@@ -326,8 +325,7 @@ export type loginStage = {
 
 export type SignInPayload = {
   name: string,
-  birthday: string,
-  gender: string
+  birthday: string
 }
 
 type clientStateType = 'no_client' | 'old_user' | 'new_user'

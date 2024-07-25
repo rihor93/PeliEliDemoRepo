@@ -157,23 +157,21 @@ const RegistrationFormComponent: FC = observer(() => {
   const { auth } = useStore()
   const [name, setName] = useState('')
   const [birthday, setBirthDay] = useState('')
-  const [gender, setGender] = useState('')
   const [isDisabled, setIsDisabled] = useState(true)
 
   const [showBirthdayInput, setShowBirthdayInput] = useState(false)
 
   React.useEffect(() => {
-    name.length && birthday.length && gender.length
+    name.length && birthday.length
       ? setIsDisabled(false)
       : setIsDisabled(true)
-  }, [name, birthday, gender])
+  }, [name, birthday])
 
   function submit() {
     const preparedBirthday = moment(birthday).format('YYYYMMDD')
     auth.registration({
       name, 
-      birthday: preparedBirthday, 
-      gender,
+      birthday: preparedBirthday
     })
   }
 
@@ -213,26 +211,6 @@ const RegistrationFormComponent: FC = observer(() => {
         : 'ДД-ММ-ГГГГ'
       }
     </p>
-    <p style={style.label as React.CSSProperties}>
-      Ваш пол:
-    </p>
-    <Dropdown style={{ ...style.input, padding: '0.25rem' }}>
-      {/* @ts-ignore */}
-      <Dropdown.Item key='sorter' title={genderLabels[gender] || 'Выберите пол'}>
-        <div style={{ padding: 12 }}>
-          <Radio.Group defaultValue='default' onChange={val => { setGender(val.toString()) }}>
-            <Space direction='vertical' block>
-              <Radio block value='муж'>
-                Мужской
-              </Radio>
-              <Radio block value='жен'>
-                Женский
-              </Radio>
-            </Space>
-          </Radio.Group>
-        </div>
-      </Dropdown.Item>
-    </Dropdown>
     <Button 
       disabled={isDisabled}
       color='primary' 
