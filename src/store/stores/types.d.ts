@@ -140,6 +140,7 @@ type Order = {
 
   fullAddress: string | null
   orderType: number | null
+  promocode: string
 }
 
 type CourseOtzyv = {

@@ -119,7 +119,8 @@ export const CartPage: React.FC = observer(
                     contactPhone,
                     orderDate: fixedDate.toISOString(),
                     fullAddress: null,
-                    orderType: 1
+                    orderType: 1,
+                    promocode: cart.confirmedPromocode || ''
                   }, handler)
                     .then(() => {
                       Modal.confirm({
@@ -167,7 +168,8 @@ export const CartPage: React.FC = observer(
                     contactPhone,
                     orderDate: fixedDate.toISOString(),
                     fullAddress: address,
-                    orderType: 2
+                    orderType: 2,
+                    promocode: cart.confirmedPromocode || ''
                   }, handler)
                     .then(() => {
                       Modal.confirm({
@@ -206,7 +208,8 @@ export const CartPage: React.FC = observer(
               contactPhone: contactPhone.replace(/\D/g, ''),
               orderDate: outputDate,
               fullAddress: null,
-              orderType: 1
+              orderType: 1,
+              promocode: cart.confirmedPromocode || ''
             }, handler)
               .then(() => {
                 Modal.confirm({
@@ -226,7 +229,8 @@ export const CartPage: React.FC = observer(
               contactPhone: contactPhone.replace(/\D/g, ''),
               orderDate: outputDate,
               orderType: 2,
-              fullAddress: address
+              fullAddress: address,
+              promocode: cart.confirmedPromocode || ''
             }, handler)
               .then(() => {
                 Modal.confirm({
