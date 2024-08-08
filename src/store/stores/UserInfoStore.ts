@@ -66,6 +66,9 @@ export class UserInfoStore {
     return this.organizations.find((org) => org.Id == this.selectedOrganizationID) as Organization
   }
 
+  ID: Optional<string> = null
+  setID(id: string) { this.ID = id }
+
 
   rootStore: Store;
   constructor(rootStore: Store) {
@@ -96,13 +99,13 @@ export class UserInfoStore {
 
     if(response?.UserInfo) {
       this.rootStore.auth.setState('AUTHORIZED')
-      this.rootStore.auth.setCurrentStage('authorized_successfully')
+      this.rootStore.auth.setStage('COMPLETED')
       logger.log("Мы авторизованы в Гурмаге", "GET /loadUserInfo")
       this.rootStore.auth.tg_user_ID = userId
     } else {
       logger.log('Похоже пользователь не зареган в ГУРМАГ', 'GET /loadUserInfo')
       logger.log("Мы не авторизованы в Гурмаге", "GET /loadUserInfo")
-      this.rootStore.auth.setCurrentStage('input_tel_number')
+      this.rootStore.auth.setStage('INPUT_TELEPHONE')
       this.rootStore.auth.setState('NOT_AUTHORIZED')
     }
 

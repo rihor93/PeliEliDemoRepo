@@ -46,15 +46,15 @@ export const AuthPage: FC = observer(() => {
   const navigate = useNavigate()
   const { auth } = useStore()
   function getContent() {
-    switch (auth.currentStage) {
-      case 'authorized_successfully':
+    switch (auth.stage) {
+      case 'COMPLETED':
         navigate(-1)
         return null
-      case 'input_tel_number':
+      case 'INPUT_TELEPHONE':
         return <InputNumberComponent />
-      case 'input_sms_code':
+      case 'INPUT_SMS_CODE':
         return <InputSmsCodeComponent />
-      case 'fill_form': 
+      case 'REGISTRATION': 
         return <RegistrationFormComponent />
       default:
         return <Space 
@@ -89,7 +89,7 @@ const InputNumberComponent: FC = observer(() => {
 
   function submit() {
     const clearNumber = number.replace(/\D/g, '')
-    auth.login(clearNumber)
+    auth.authorize(clearNumber)
   }
 
   React.useEffect(function() {

@@ -129,16 +129,36 @@ export class Store {
     this.subscriptions.push(disposeToFailedAuth);
     this.subscriptions.push(whenAllReady);
     this.subscriptions.push(whenUsersOrgHasBeenSaved);
-    this.afterLoaded()
+    this.bootstrap()
   }
 
-  // Загружаются общие данные, главные страницы и т.д.
-  async afterLoaded() {
-    logger.log('страница загружена', "root-store: afterLoaded")
+  bootstrap = async () => {
+    this.whereWeAre()
     await this.userStore.loadOrganizations();
-    logger.log('организации загружены', "root-store: afterLoaded")
-    await this.auth.authorize();
+    await this.auth.check()
+    
+    if(this.auth.isFailed) {
+      const orgId = this.userStore.currentOrg
+      this.mainPage.loadCooks(orgId)
+      this.mainPage.loadMenu(orgId)
+    }
   }
+
+  whereWeAre = () => {
+    const { isInTelegram } = useTelegram()
+    if(isInTelegram()) {
+      logger.log('мы в телеге', 'root')
+      this.appType = 'TG_BROWSER'
+    } else {
+      logger.log('мы в браузере', 'root')
+      this.appType = 'WEB_BROWSER'
+    }
+  }
+  instance: AppInstance = 'UNKNOWN'
+  set appType(type: AppInstance) {
+    this.instance = type
+  }
+
 
   onDestroy() {
     for (const unsubscribe of this.subscriptions) {
@@ -146,6 +166,15 @@ export class Store {
     }
   }
 }
+
+
+export const AppInstances = {
+  UNKNOWN: "UNKNOWN",
+  // MOBILE: "MOBILE",
+  WEB_BROWSER: "WEB_BROWSER",
+  TG_BROWSER: "TG_BROWSER",
+} as const;
+export type AppInstance = typeof AppInstances[keyof typeof AppInstances];
 const empty = null as unknown as Store
 export const StoreContext = React.createContext<Store>(empty);
 

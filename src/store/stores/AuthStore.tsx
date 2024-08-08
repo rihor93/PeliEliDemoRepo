@@ -50,29 +50,92 @@ export class AuthStore {
     this.state = state;
   }
 
-  /** тут мы авторизуемся */
-  async authorize() {
-    this.setState('AUTHORIZING')
-    const { userId } = useTelegram();
-    if(!userId) {
-      logger.log("Мы в браузере", "auth-store")
-      logger.log("Мы не авторизованы", "auth-store")
-      this.setCurrentStage('input_tel_number')
+  /** тут мы проверяем авторизацию */
+  async check() {
+    this.setState('CHECKING_AUTH')
+    const orgId = this.rootStore.userStore.currentOrg
+    switch (this.rootStore.instance) {
+      case 'TG_BROWSER': {
+        const { userId: tgId } = useTelegram() // eslint-disable-line
+        const result = tgId
+          ? await this.rootStore.userStore.loadUserInfo(orgId, tgId)
+          : await this.rootStore.userStore.loadUserInfo(orgId, 0)
+
+        result?.UserInfo
+          ? this.setState('AUTHORIZED')
+          : this.setState('NOT_AUTHORIZED')
+
+        if (tgId) this.rootStore.userStore.setID(tgId)
+        break;
+      }
+      case 'WEB_BROWSER':
+        const webId = localStorage.getItem('webId')
+        const result = webId
+          ? await this.rootStore.userStore.loadUserInfo(orgId, webId)
+          : await this.rootStore.userStore.loadUserInfo(orgId, 0)
+
+        result?.UserInfo
+          ? this.setState('AUTHORIZED')
+          : this.setState('NOT_AUTHORIZED')
+
+        if (webId) this.rootStore.userStore.setID(webId)
+        break;
+    }
+    logger.log(this.state, 'auth-store')
+  }
+
+  authorize = async (phone: string) => {
+    try {
+      let state: resultType
+
+      switch (this.rootStore.instance) {
+        case 'TG_BROWSER': {
+          const { userId } = useTelegram()
+          const result = await http.post<any, resultType>(
+            '/checkUserPhone',
+            { phone, userId }
+          )
+          if (result?.length) state = result
+          break
+        }
+        case 'WEB_BROWSER': {
+          const result = await http.post<any, resultType2>(
+            '/checkUserPhoneWeb',
+            { phone } // todo UTM
+          )
+          if (result.State && result.UserId) {
+            localStorage.setItem('webId', result.UserId)
+            this.rootStore.userStore.setID(result.UserId)
+            state = result.State
+          }
+          break
+        }
+      }
+      //@ts-ignore
+      if(state && state !== 'no_client') {
+        this.setStage('INPUT_SMS_CODE')
+        this.setClientState(state)
+        this.setPhoneNumber(phone)
+      }
+      
+    } catch (err) {
+      logger.error(err)
       this.setState('NOT_AUTHORIZED')
-    } else {
-      logger.log("Мы в телеграме", "auth-store")
-      logger.log("Делаем первый loadUserInfo с точкой 0 и userId " + userId, "auth-store")
-      await this.rootStore.userStore.loadUserInfo(0, userId)
+      this.setStage('INPUT_TELEPHONE')
     }
   }
 
+  clientState: resultType | null = null
+  setClientState(s: resultType) { this.clientState = s }
+
+  
+  stage: AuthStage = 'INPUT_TELEPHONE'
+  setStage(stage: AuthStage) {
+    this.stage = stage
+  }
   checkCode = ''
   setCheckCode(code: string) {
     this.checkCode = code
-  }
-  clientState: Optional<clientStateType> = null
-  setClientState(state: clientStateType) {
-    this.clientState = state
   }
 
   phoneNumber = ''
@@ -80,106 +143,20 @@ export class AuthStore {
     this.phoneNumber = phone
   }
 
-  /**
-   * checkUserPhone - первый запрос
-   * принимает всё те же userId и phone, 
-   * т.е. данные по пользователю тг и его номер телефона, 
-   * @param phone 
-   * @param userId 
-   */
-  login = async (phone: string) => {
-    logger.log("Ввели следующий номер " + phone, "Auth-Store: login()")
-    const { userId } = useTelegram()
-    if(!userId) {
-      this.onlyTelegramAlert()
-      return;
-    }
-    this.setCurrentStage('verify_number')
-    /**
-     * может вернуть 3 варианта: 
-     *    no_client - значит надо что бы человек сделал start в боте
-     *    old_user - значит пользователь уже был, 
-     * мы выслали код смс на его номер, что бы подтвердить что он это он
-     *    new_user - номер в базе не найден, 
-     * будем заводить карту, так же отправили смс
-     */
-    this.setPhoneNumber(phone)
-    logger.log("call /checkUserPhone with " + phone + " & userId " + userId, "Auth-Store: login()")
-    const result = await http.post<any, clientStateType>(
-      '/checkUserPhone', 
-      { phone, userId }
-    )
-    logger.log("result: " + result, "POST /checkUserPhone")
-    switch (result) {
-      case 'no_client':
-        this.setClientState(result)
-        logger.error('прилетел NO_CLIENT', "auth-store")
-        const src = 'https://t.me/Gurmagbot?start=start'
-        Dialog.alert({
-          header: (<InfoOutlined  style={{ fontSize: 64, color: 'var(--adm-color-warning)' }}/>),
-          title: 'Упс... Кажется вы забыли запустить GURMAG бот?',
-          content: <>
-            <p>Вам нужно зайти в <a href={src}>@Gurmagbot</a> и нажать кнопку "Запустить"</p>
-          </>,
-          confirmText: 'Перейти и запустить',
-          onConfirm: () => {
-            const tg = useTelegram()
-            if(tg.isInTelegram()) {
-              tg.tg.openTelegramLink(src);
-              tg.tg.close()
-            } else {
-              window.open(src); 
-            }
-            this.setCurrentStage('input_tel_number')
-          },
-        })
-        break;
-      /**
-       * ну и regNewUser, если был статус new_user
-       * там есть поля имя, пол, др
-       * мол может быть только два варианта муж и жен
-       * др только в таком формате, т.е. ггггммдд
-       * ну и код из смс
-       * вернёт опять таки статус, если complite, то всё ок
-       */
-      case 'new_user':
-        logger.log('прилетел Status new_user', "auth-store")
-        this.setCurrentStage('input_sms_code')
-        this.setClientState(result)
-        break;
-      /**
-       * если был статус old_user, 
-       * то выводим окно ввода кода из смс и выполняем regOldUser, 
-       * там всё те же userid и телефон, 
-       * но добавляется random_code, 
-       * это как раз код из смс сообщения, 
-       * вернёт Status, если complite, то всё ок
-       */
-      case 'old_user':
-        logger.log('прилетел Status old_user', "auth-store")
-        this.setCurrentStage('input_sms_code')
-        this.setClientState(result)
-        break;
-    }
-  }
 
   inputSmsCode = async (code: string) => {
-    const { userId } = useTelegram()
-    if(!userId) {
-      this.onlyTelegramAlert()
-      return;
-    }
     this.setCheckCode(code)
     if(this.clientState === 'new_user') {
-      this.setCurrentStage('fill_form')
+      this.setStage('REGISTRATION')
     } else if(this.clientState === 'old_user') {
+      const userId = this.rootStore.userStore.ID
       const result = await http.post<any, any>(
         '/regOldUser', 
         { userId, phone: this.phoneNumber, random_code: code }
       )
       if(result?.Status === 'complite') {
         this.setState('AUTHORIZED')
-        this.setCurrentStage('authorized_successfully')
+        this.setStage('COMPLETED')
         Dialog.alert({
           header: (<Image 
             src={Pizza}
@@ -191,7 +168,6 @@ export class AuthStore {
           confirmText: 'Отлично!',
         })
         const COrg = this.rootStore.userStore.currentOrg
-        this.rootStore.auth.authorize()
         this.rootStore.userStore.loadUserInfo(COrg, userId)
       } else {
         Dialog.alert({
@@ -199,7 +175,7 @@ export class AuthStore {
           title: 'Не удалось зарегестрироваться',
           confirmText: 'Понятно',
         })
-        this.setCurrentStage('input_tel_number') 
+        this.setStage('INPUT_TELEPHONE') 
         throw new Error("Не удалось зарегестрироваться")
       }
     }
@@ -222,12 +198,7 @@ export class AuthStore {
 
 
   registration = async (data: SignInPayload) => {
-    const { userId } = useTelegram()
-    if(!userId) {
-      this.onlyTelegramAlert()
-      return;
-    }
-    this.setCurrentStage('verify_number')
+    const userId = this.rootStore.userStore.ID
     const result = await http.post<any, any>(
       '/regNewUser', 
       {
@@ -239,7 +210,7 @@ export class AuthStore {
     ).catch(console.error)
     if(result?.Status === 'complite') {
       this.setState('AUTHORIZED')
-      this.setCurrentStage('authorized_successfully')
+      this.setStage('COMPLETED')
       Dialog.alert({
         header: (<Image 
           src={Pizza}
@@ -251,7 +222,6 @@ export class AuthStore {
         confirmText: 'Отлично!',
       })
       const COrg = this.rootStore.userStore.currentOrg
-      this.rootStore.auth.authorize()
       this.rootStore.userStore.loadUserInfo(COrg, userId)
     } else {
       Dialog.alert({
@@ -259,68 +229,10 @@ export class AuthStore {
         title: 'Не удалось зарегестрироваться',
         confirmText: 'Понятно',
       })
-      this.setCurrentStage('input_tel_number') 
+      this.setStage('INPUT_TELEPHONE')
       throw new Error("Не удалось зарегестрироваться")
     }
   }
-
-  currentStage: RegistrationStageType | LoginStageType = 'input_tel_number'
-  setCurrentStage(stage: RegistrationStageType | LoginStageType) {
-    this.currentStage = stage
-  }
-  loginSchemaTree: loginStage = {
-    process: "input_tel_number",
-    then: {
-      process: "verify_number",
-      then: [
-        {
-          process: "registration",
-          then: {
-            process: "input_sms_code",
-            then: {
-              process: "fill_form", 
-              then: { 
-                process: "login", 
-                then: {
-                  process: "authorized_successfully", 
-                  then: []
-                } 
-              }
-            }
-          }
-        }, 
-        {
-          process: "login",
-          then: {
-            process: "authorized_successfully",
-            then: []
-          }
-        }
-      ]
-    }
-  }
-}
-
-export const LoginStages = {
-  input_tel_number: "input_tel_number", 
-  verify_number: "verify_number", 
-  registration: "registration", 
-  login: "login", 
-  authorized_successfully: "authorized_successfully"
-} as const
-export type LoginStageType = 
-  typeof LoginStages[keyof typeof LoginStages];
-
-export const RegistrationStages = {
-  input_sms_code: "input_sms_code", 
-  fill_form: "fill_form", 
-} as const
-export type RegistrationStageType = 
-  typeof RegistrationStages[keyof typeof RegistrationStages];
-
-export type loginStage = {
-  process: RegistrationStageType | LoginStageType
-  then: loginStage | Array<loginStage>
 }
 
 export type SignInPayload = {
@@ -328,4 +240,22 @@ export type SignInPayload = {
   birthday: string
 }
 
-type clientStateType = 'no_client' | 'old_user' | 'new_user'
+
+type resultType = 'no_client' | 'old_user' | 'new_user'
+type resultType2 = {
+  State: resultType
+  UserId: string
+}
+
+
+export const AuthStages = {
+  /** 1) первая по счету - ввод номера */
+  INPUT_TELEPHONE: "INPUT_TELEPHONE",
+  /** 2) после ввода номера прилетит код */
+  INPUT_SMS_CODE: "INPUT_SMS_CODE",
+  /** 3) если пользователь не зареган то должен пройти рег-цию */
+  REGISTRATION: "REGISTRATION",
+  /** 3 или 4) если пользователь зареган, то он успешно зайдет */
+  COMPLETED: "COMPLETED",
+} as const;
+export type AuthStage = typeof AuthStages[keyof typeof AuthStages];
