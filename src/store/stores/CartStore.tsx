@@ -10,6 +10,7 @@ import { useTelegram } from "../../common/hooks";
 import { LoadStatesType, Optional, Undef } from "../../common/types";
 import { Store } from "../RootStore";
 import { Modal } from "./MainPageStore";
+import Metrics from "./Metriks";
 
 export const receptionTypes = {
   pickup: 'pickup',
@@ -130,6 +131,7 @@ export class CartStore {
     let isCourseAdded: Undef<CouseInCart>;
 
     isCourseAdded = this.findItem(couse.VCode);
+    Metrics.addToCart(couse.VCode, couse.Price)
 
     if (isCourseAdded) {
       // если блюдо уже есть 
@@ -418,6 +420,7 @@ export class CartStore {
         logger.log('Заказ успешно оформлен', 'cart-store')
 
         this.onSuccess('Заказ успешно оформлен')
+        Metrics.buy(this.totalPrice, order.itemsInCart.map(i => i.couse.VCode))
         this.clearCart()
       };
     } catch (e) {

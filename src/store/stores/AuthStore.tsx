@@ -7,6 +7,7 @@ import { http, logger } from "../../common/features";
 import { useTelegram } from "../../common/hooks";
 import { Optional } from "../../common/types";
 import { Store } from "../RootStore";
+import Metrics from "./Metriks";
 
 export const AuthStates = {
   CHECKING_AUTH: "CHECKING_AUTH",
@@ -169,6 +170,7 @@ export class AuthStore {
         })
         const COrg = this.rootStore.userStore.currentOrg
         this.rootStore.userStore.loadUserInfo(COrg, userId)
+        Metrics.registration()
       } else {
         Dialog.alert({
           header: (<ExclamationCircleFill style={{ fontSize: 64, color: 'var(--adm-color-warning)' }}/>),
@@ -223,6 +225,7 @@ export class AuthStore {
       })
       const COrg = this.rootStore.userStore.currentOrg
       this.rootStore.userStore.loadUserInfo(COrg, userId)
+      Metrics.registration()
     } else {
       Dialog.alert({
         header: (<ExclamationCircleFill style={{ fontSize: 64, color: 'var(--adm-color-warning)' }}/>),
