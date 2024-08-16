@@ -37,6 +37,8 @@ abstract class Metrics {
     });
   }
   static addToCart(product_id: number, price: number) {
+    console.log('addtobasket event vk pixel')
+    console.log(_tmr)
     _tmr.push({ 
       type: 'reachGoal', 
       id: this.pixelID, 
