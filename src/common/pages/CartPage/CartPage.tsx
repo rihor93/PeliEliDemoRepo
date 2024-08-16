@@ -19,6 +19,7 @@ import { FC, useState, useMemo, CSSProperties } from "react"
 import { SelectLocationPopup } from '../../components';
 import { SelectSlotPopup } from '../../components/ui/SelectSlotPopup';
 import { MyWindowPortal } from '../../components/special/Window';
+import Metrics from '../../../store/stores/Metriks';
 
 const defaultMask = "+7 ... ... .. .."
 const defaultPrefix = "+7"
@@ -386,7 +387,10 @@ export const CartPage: React.FC = observer(
                     <CartItem
                       key={`cart_item_${index}`}
                       courseInCart={item}
-                      add={() => cart.addCourseToCart(item.couse)}
+                      add={() => {
+                        cart.addCourseToCart(item.couse)
+                        Metrics.addToCart(item.couse.VCode, item.couse.Price)
+                      }}
                       remove={() => cart.removeFromCart(item.couse.VCode)}
                       campaignAllInfo={campaignAllInfo}
                       text={text}

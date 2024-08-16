@@ -8,6 +8,7 @@ import { config } from "../../../configuration"
 import { isDevelopment } from "../../../helpers"
 import { useStore, useTheme } from "../../../hooks"
 import './ItemModal.css'
+import Metrics from "../../../../store/stores/Metriks"
 
 export const ItemModal: React.FC<{
   course: CourseItem
@@ -23,6 +24,7 @@ export const ItemModal: React.FC<{
     if (count > 0) {
       for (let i = 0; i < count; i++) {
         cartStore.addCourseToCart(course)
+        Metrics.addToCart(course.VCode, course.Price)
       }
       setCount(1)
       mainPage.itemModal.close()

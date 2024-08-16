@@ -131,7 +131,6 @@ export class CartStore {
     let isCourseAdded: Undef<CouseInCart>;
 
     isCourseAdded = this.findItem(couse.VCode);
-    Metrics.addToCart(couse.VCode, couse.Price)
 
     if (isCourseAdded) {
       // если блюдо уже есть 

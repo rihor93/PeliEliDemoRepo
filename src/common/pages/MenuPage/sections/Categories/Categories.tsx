@@ -8,6 +8,7 @@ import { Avatar, Divider, Image, List, Popup, Rate, Result, Skeleton, Space, Tag
 import { SmileOutline } from 'antd-mobile-icons';
 import moment from 'moment';
 import { CheckOutlined, PlusOutlined } from '@ant-design/icons';
+import Metrics from '../../../../../store/stores/Metriks';
 
 
 export const Categories: React.FC = observer(() => {
@@ -226,6 +227,7 @@ const CardBodyComponent: React.FC<{ course: CourseItem }> = observer(({ course }
   function addToCart(e: Evt) {
     e.stopPropagation()
     cartStore.addCourseToCart(course)
+    Metrics.addToCart(course.VCode, course.Price)
     Toast.show({
       position: 'center', 
       content: 'Добавлено'
