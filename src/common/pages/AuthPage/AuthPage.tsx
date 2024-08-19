@@ -89,7 +89,8 @@ const InputNumberComponent: FC = observer(() => {
 
   function submit() {
     const clearNumber = number.replace(/\D/g, '')
-    auth.authorize(clearNumber)
+    let utm = auth.UTM || '';
+    auth.authorize(clearNumber, utm)
   }
 
   React.useEffect(function() {

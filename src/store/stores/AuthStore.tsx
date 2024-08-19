@@ -21,12 +21,19 @@ export class AuthStore {
   rootStore: Store;
   state: AuthStateType = AuthStates.CHECKING_AUTH;
   tg_user_ID: Optional<number> = null;
+  utm: string = '';
 
   constructor(rootStore: Store) {
     this.rootStore = rootStore; 
     makeAutoObservable(this) 
   }
 
+  get UTM() {
+    return this.utm
+  }
+  set UTM(state: string) {
+    this.utm = state;
+  }
   
   get isCheckingAuth() {
     return this.state === AuthStates.CHECKING_AUTH;
@@ -85,7 +92,7 @@ export class AuthStore {
     logger.log(this.state, 'auth-store')
   }
 
-  authorize = async (phone: string) => {
+  authorize = async (phone: string, utm: string) => {
     try {
       let state: resultType
 
@@ -102,7 +109,7 @@ export class AuthStore {
         case 'WEB_BROWSER': {
           const result = await http.post<any, resultType2>(
             '/checkUserPhoneWeb',
-            { phone } // todo UTM
+            { phone, utm }
           )
           if (result.State && result.UserId) {
             localStorage.setItem('webId', result.UserId)

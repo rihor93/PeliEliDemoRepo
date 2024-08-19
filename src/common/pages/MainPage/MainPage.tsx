@@ -27,12 +27,25 @@ import WatchCampaignModal from "../ActionsPage/modals/WatchCampaignModal";
 // import { WatchLotteryPopup } from "../../components/ui/watchLotteryPopup";
 import { http } from "../../features";
 
+import { useSearchParams } from 'react-router-dom'
 
 export const MainPage: FC = observer(() => { 
   const { userStore, actionsPage, mainPage, auth, cartStore } = useStore();
   const telegram = useTelegram()
 
   const { selectedCourse, state, cookstate } = mainPage;
+  const [searchParams, setSearchParams] = useSearchParams();
+  React.useEffect(() => {
+    let utm_source = searchParams.get("utm_source") || '';
+    let utm_medium = searchParams.get("utm_medium") || '';
+    let utm_campaign = searchParams.get("utm_campaign") || '';
+    let utm_content = searchParams.get("utm_content") || '';
+    let utm_term = searchParams.get("utm_term") || '';
+    
+    let utm = JSON.stringify({utm_source, utm_medium, utm_campaign, utm_content, utm_term});
+    auth.UTM = utm;
+  }, [])
+
   return(
     <Page>
       {selectedCourse 
