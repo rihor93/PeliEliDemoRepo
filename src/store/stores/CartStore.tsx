@@ -573,12 +573,15 @@ export class CartStore {
 function toNumb(str: string) { return Number(str) }
 
 class DeliveryForm {
+  cartStore: CartStore;
   constructor(readonly parrent: CartStore) {
-    makeAutoObservable(this)
+    makeAutoObservable(this);
+    this.cartStore = parrent;
   }
   /**
    * точки с которых ведется доставка
    */
+  /*
   deliveryPoints: Array<Organization> = [
     {
       Id: 2,
@@ -591,6 +594,7 @@ class DeliveryForm {
       isCK: false
     }
   ]
+ */
 
   private getCordinatesByAddr = async (address: string) => {
     // console.log(`[getCordinatesByAddr]: address - ${address}`)
@@ -624,7 +628,8 @@ class DeliveryForm {
     let minDistance
     // потом пробегаемся по всех доступным организациям 
     // и ищем ту орг, которая ближе всех
-    for (const org of this.deliveryPoints) {
+    let deliveryPoints: Array<Organization> = JSON.parse(JSON.stringify(this.cartStore.rootStore.userStore.organizations));
+    for (const org of deliveryPoints) {
       // console.log(`/////////////: ${org.Name} in loop`)
 
       // для каждой организации захардкодил кординаты 
