@@ -7,3 +7,4 @@ export * from './ui/carusel';
 export * from './ui/selectLocationPopup';
 export * from './ui/changeLocation';
 export * from "./ui/authRecuredBtn";
+export * from './ui/changeLocationModal';

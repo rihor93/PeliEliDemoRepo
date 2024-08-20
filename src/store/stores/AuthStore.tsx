@@ -151,6 +151,12 @@ export class AuthStore {
     this.phoneNumber = phone
   }
 
+  /** Modal с выбором кухни */
+  isShowChangeLocationModal = false
+  /** показываем или скрываем Modal с выбором кухни */
+  setShowChangeLocationModal(val: boolean) {
+    this.isShowChangeLocationModal = val;
+  }
 
   inputSmsCode = async (code: string) => {
     this.setCheckCode(code)
@@ -175,6 +181,7 @@ export class AuthStore {
           content: <p>{result?.Message}</p>,
           confirmText: 'Отлично!',
         })
+        this.setShowChangeLocationModal(true);
         const COrg = this.rootStore.userStore.currentOrg
         this.rootStore.userStore.loadUserInfo(COrg, userId)
         Metrics.registration()
@@ -230,6 +237,7 @@ export class AuthStore {
         content: <p>{result?.Message}</p>,
         confirmText: 'Отлично!',
       })
+      this.setShowChangeLocationModal(true);
       const COrg = this.rootStore.userStore.currentOrg
       this.rootStore.userStore.loadUserInfo(COrg, userId)
       Metrics.registration()

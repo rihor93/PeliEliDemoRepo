@@ -13,7 +13,7 @@ import {
 } from "antd-mobile"
 import { observer } from "mobx-react-lite"
 import React, { useEffect, useState } from "react";
-import { AuthRequiredButton, Carusel, ChangeLocation, Page, SelectLocationPopup } from "../../components";
+import { AuthRequiredButton, Carusel, ChangeLocation, Page, SelectLocationPopup, ChangeLocationModal } from "../../components";
 import { config } from '../../configuration';
 import { useStore, useTelegram } from '../../hooks';
 import { ItemModal } from "../MenuPage/modals/ItemModal";
@@ -74,6 +74,9 @@ export const MainPage: FC = observer(() => {
         && userStore.needAskAdress 
         ? <SelectLocationPopup />
         : <ChangeLocation />
+      }
+      {
+        auth.isShowChangeLocationModal ? <ChangeLocationModal /> : null
       }
       {actionsPage.selectedAction 
         && <WatchCampaignModal campaign={actionsPage.selectedAction} />
