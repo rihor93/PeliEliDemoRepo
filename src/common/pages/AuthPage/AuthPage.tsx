@@ -48,7 +48,7 @@ export const AuthPage: FC = observer(() => {
   function getContent() {
     switch (auth.stage) {
       case 'COMPLETED':
-        navigate(-1)
+        navigate("/")
         return null
       case 'INPUT_TELEPHONE':
         return <InputNumberComponent />
