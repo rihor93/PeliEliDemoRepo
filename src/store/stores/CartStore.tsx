@@ -390,13 +390,14 @@ export class CartStore {
         duration: 0 // висит бесконечно
       })
       let orgID = order.currentOrg
-      if (order.orderType === 2) {
+      /* Отключили подбор кухни для доставки */
+      /* if (order.orderType === 2) {
         const ResultBlyat = await this.deliveryForm.getNearestDeliveryPoint(order.fullAddress as string)
         //@ts-ignore
         orgID = ResultBlyat.Id
         // @ts-ignore
         order = { ...order, activeSlot: Number(this.selectedSlot?.VCode) }
-      }
+      } */
 
       // if (true) {
       if (isDevelopment()) { 
