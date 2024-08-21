@@ -65,7 +65,7 @@ export class CartStore {
 
     this.availableSlotCheckerID = setInterval(this.checkAvailableSlot, 500)
     reaction(() => this.isPickup, (val, preVal) => {
-      if (val !== preVal) this.paymentSelector.selectedPayMethod = null
+      if (val !== preVal) this.paymentSelector.selectedPayMethod = (paymentMethods.CARD_ONLINE || null)
     })
     reaction(() => this.totalPrice, (val, preVal) => {
       if (val > 1000 && this.paymentSelector.selectedPayMethod === 'CASH')
@@ -781,14 +781,17 @@ class PaymentSelector {
 
 
 
-  selectedPayMethod: Optional<PaymentMethod> = null
+  selectedPayMethod: Optional<PaymentMethod> = (paymentMethods.CARD_ONLINE || null);
   availablePayMethods = {
     // способы оплаты при заказе с доставкой
     [receptionTypes.delivery]: {
       /** оплата картой при получении, 
        * покупатель оплачивает сам при получение заказа по терминалу.  
        */
-      PAY_BY_CARD_UPON_RECIEPT: "PAY_BY_CARD_UPON_RECIEPT",
+
+      /* Отключили возможность оплаты картой при получении */
+      /* PAY_BY_CARD_UPON_RECIEPT: "PAY_BY_CARD_UPON_RECIEPT", */
+
       /** картой (добавить галочку о согласии, 
        * «Сохранить карту для будущих заказов»)  
        */
