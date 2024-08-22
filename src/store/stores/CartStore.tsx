@@ -559,7 +559,13 @@ export class CartStore {
     const isToday = moment(this.date).isSame(new Date(), 'day')
     if (isToday) {
       this.availbaleSlots = this.slots.filter(this.isSlotActive)
-      if (this.selectedSlot && !this.availbaleSlots.find(slot => slot.VCode === this.selectedSlot?.VCode)) {
+      if (
+        this.selectedSlot 
+        && (
+          !this.availbaleSlots.find(slot => slot.VCode === this.selectedSlot?.VCode)
+          && this.selectedSlot?.VCode !== '-1'
+        )
+      ) {
         this.selectedSlot = null
       }
     } else {
