@@ -24,13 +24,15 @@ export function useTelegram() {
       return tg.CloudStorage.getItem(key) as string
     },
   }
+
+  const webId = localStorage.getItem('webId')
   return {
     tg, 
     colors,
     user: tg?.initDataUnsafe?.user, 
     // userId: tg?.initDataUnsafe?.user?.id ?? '545380588', 
     // userId: tg?.initDataUnsafe?.user?.id ?? '5780004797', 
-    userId: tg?.initDataUnsafe?.user?.id, 
+    userId: tg?.initDataUnsafe?.user?.id || webId, 
     queryId: tg?.initDataUnsafe?.query_id, 
     isInTelegram, 
     colorScheme: tg?.colorScheme,

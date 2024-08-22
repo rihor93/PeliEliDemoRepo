@@ -69,7 +69,7 @@ export class AuthStore {
           ? await this.rootStore.userStore.loadUserInfo(orgId, tgId)
           : await this.rootStore.userStore.loadUserInfo(orgId, 0)
 
-        result?.UserInfo
+        result
           ? this.setState('AUTHORIZED')
           : this.setState('NOT_AUTHORIZED')
 
@@ -82,7 +82,7 @@ export class AuthStore {
           ? await this.rootStore.userStore.loadUserInfo(orgId, webId)
           : await this.rootStore.userStore.loadUserInfo(orgId, 0)
 
-        result?.UserInfo
+        result
           ? this.setState('AUTHORIZED')
           : this.setState('NOT_AUTHORIZED')
 
