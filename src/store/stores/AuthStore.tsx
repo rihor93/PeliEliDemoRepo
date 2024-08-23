@@ -181,7 +181,6 @@ export class AuthStore {
           content: <p>{result?.Message}</p>,
           confirmText: 'Отлично!',
         })
-        this.setShowChangeLocationModal(true);
         const COrg = this.rootStore.userStore.currentOrg
         this.rootStore.userStore.loadUserInfo(COrg, userId)
         Metrics.registration()
@@ -237,7 +236,6 @@ export class AuthStore {
         content: <p>{result?.Message}</p>,
         confirmText: 'Отлично!',
       })
-      this.setShowChangeLocationModal(true);
       const COrg = this.rootStore.userStore.currentOrg
       this.rootStore.userStore.loadUserInfo(COrg, userId)
       Metrics.registration()

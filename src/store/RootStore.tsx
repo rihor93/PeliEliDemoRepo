@@ -43,6 +43,8 @@ export class Store {
           logger.log("Сработала подписка на авторизацию", "Root-store: dispose to auth")
           const { userId } = useTelegram()
           this.userStore.loadOrdersHistory(userId)
+          
+          this.auth.setShowChangeLocationModal(true);
         }
       }
     );
