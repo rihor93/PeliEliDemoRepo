@@ -141,6 +141,10 @@ type Order = {
   fullAddress: string | null
   orderType: number | null
   promocode: string
+  street: string
+  house: string
+  apartment: string
+  description: string
 }
 
 type CourseOtzyv = {

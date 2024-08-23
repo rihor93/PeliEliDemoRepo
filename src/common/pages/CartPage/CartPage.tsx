@@ -63,19 +63,33 @@ export const CartPage: React.FC = observer(
       setContactPhone
     ] = useState<string>(userStore.userState.Phone ?? defaultPrefix);
 
-    const [address, setAddress] = useState('')
-
     const errored = useMemo(() => {
       if (!contactPhone.length) return 'Введите номер телефона'
       if (!phoneRegex.test(contactPhone)) return 'Номер телефона указан неверно!'
       return null
     }, [contactPhone.length])
 
-    const adrErrored = useMemo(() => {
-      if (!address.length) return 'Введите адрес'
+    const [street, setStreet] = useState('')
+    const [house, setHouse] = useState('')
+    const [apartment, setApartment] = useState('')
+    
+    const [description, setDescription] = useState('')
+    const streetErrored = useMemo(() => {
+      if (!street.length) return 'Введите улицу'
       return null
-    }, [address.length])
-
+    }, [street.length])
+    const houseErrored = useMemo(() => {
+      if (!house.length) return 'Введите номер дома'
+      return null
+    }, [house.length])
+    const apartmentErrored = useMemo(() => {
+      if (!apartment.length) return 'Введите номер квартиры'
+      return null
+    }, [apartment.length])
+    const descriptionErrored = useMemo(() => {
+      /* if (!description.length) return 'Введите примечание' */
+      return null
+    }, [description.length])
 
     function postOrder() {
       // при оформлении заказа надо убедится чтобы 
@@ -121,7 +135,11 @@ export const CartPage: React.FC = observer(
                     orderDate: fixedDate.toISOString(),
                     fullAddress: null,
                     orderType: 1,
-                    promocode: cart.confirmedPromocode || ''
+                    promocode: cart.confirmedPromocode || '',
+                    description,
+                    street,
+                    house, 
+                    apartment
                   }, handler)
                     .then(() => {
                       Modal.confirm({
@@ -168,9 +186,13 @@ export const CartPage: React.FC = observer(
                     currentOrg: String(isDevelopment() ? 146 : userStore.currentOrg),
                     contactPhone,
                     orderDate: fixedDate.toISOString(),
-                    fullAddress: address,
+                    fullAddress: `${street} ${house}, ${apartment}`,
                     orderType: 2,
-                    promocode: cart.confirmedPromocode || ''
+                    promocode: cart.confirmedPromocode || '',
+                    description,
+                    street,
+                    house, 
+                    apartment
                   }, handler)
                     .then(() => {
                       Modal.confirm({
@@ -210,7 +232,11 @@ export const CartPage: React.FC = observer(
               orderDate: outputDate,
               fullAddress: null,
               orderType: 1,
-              promocode: cart.confirmedPromocode || ''
+              promocode: cart.confirmedPromocode || '',
+              description,
+              street,
+              house, 
+              apartment
             }, handler)
               .then(() => {
                 Modal.confirm({
@@ -230,8 +256,12 @@ export const CartPage: React.FC = observer(
               contactPhone: contactPhone.replace(/\D/g, ''),
               orderDate: outputDate,
               orderType: 2,
-              fullAddress: address,
-              promocode: cart.confirmedPromocode || ''
+              fullAddress: `${street} ${house}, ${apartment}`,
+              promocode: cart.confirmedPromocode || '',
+              description,
+              street,
+              house, 
+              apartment
             }, handler)
               .then(() => {
                 Modal.confirm({
@@ -443,14 +473,49 @@ export const CartPage: React.FC = observer(
                     <p style={{ marginTop: '8px' }}>Доставка работает в тестовом режиме, возможны заминки</p>
                     <p style={{ marginTop: '8px' }}>Но мы улучшаем работу каждый день.</p>
                   </Alert>
+                  <p
+                    style={{
+                      fontFamily: 'Roboto',
+                      fontSize: '18px',
+                      fontWeight: '700',
+                      lineHeight: '21px',
+                      letterSpacing: '0em',
+                      textAlign: 'left',
+                      margin: '17px 17px 0px 17px'
+                    }}
+                  >
+                    Адрес доставки
+                  </p>
                   <AddrInput
-                    errored={adrErrored}
-                    setAddress={setAddress}
-                    address={address}
+                    errored={streetErrored}
+                    setValue={setStreet}
+                    value={street}
+                    label={'Улица'}
+                    placeholder={'Улица'}
+                  />
+                  <AddrInput
+                    errored={houseErrored}
+                    setValue={setHouse}
+                    value={house}
+                    label={'Дом'}
+                    placeholder={'Дом'}
+                  />
+                  <AddrInput
+                    errored={apartmentErrored}
+                    setValue={setApartment}
+                    value={apartment}
+                    label={'Квартира'}
+                    placeholder={'Квартира'}
                   />
                 </>
               }
-
+              <FullInput 
+                errored={descriptionErrored}
+                setValue={setDescription}
+                value={description}
+                placeholder ={'Введите примечание к заказу'}
+                label={'Примечание к заказу:'}
+              />
               <DetailForm
                 showDateSelector={setVisibleDate}
                 showTimeSelector={setVisibleTime}
@@ -489,7 +554,7 @@ export const CartPage: React.FC = observer(
               disabled={
                 cart.isEmpty
                 || Boolean(errored?.length)
-                || (Boolean(adrErrored?.length) && cart.receptionType === 'delivery')
+                || (cart.receptionType === 'delivery' && Boolean(streetErrored?.length) && Boolean(houseErrored?.length) && Boolean(apartmentErrored?.length))
                 || (cart.receptionType === 'delivery' && !cart.selectedSlot)
                 || !Boolean(cart.paymentSelector.selectedPayMethod)
               }
@@ -996,12 +1061,14 @@ const Alert: FC<WithChildren> = props =>
 
 
 interface AddrInputProps {
-  address: string
-  setAddress: (addr: string) => void
+  value: string
+  setValue: (addr: string) => void
   errored: Optional<string>
+  label: string
+  placeholder: string
 }
 const AddrInput: FC<AddrInputProps> = props => {
-  const { errored, address, setAddress } = props
+  const { errored, value, setValue, label, placeholder } = props
   return (
     <Space
       style={{
@@ -1011,12 +1078,12 @@ const AddrInput: FC<AddrInputProps> = props => {
       justify='between'
       align='center'
     >
-      <span style={detailFormStyle.phoneLabel}>Адрес доставки</span>
+      <span style={detailFormStyle.phoneLabel}>{label}</span>
       <Space direction='vertical'>
         <Input
-          value={address}
-          onChange={val => { setAddress(val) }}
-          placeholder='Куда доставить?'
+          value={value}
+          onChange={val => { setValue(val) }}
+          placeholder={placeholder}
           style={{
             border: errored
               ? '1px solid var(--adm-color-danger)'
@@ -1229,3 +1296,42 @@ const PromocodeInput: FC = observer(() => {
 
   </ React.Fragment>
 })
+
+interface FullInputProps {
+  value: string
+  setValue: (addr: string) => void
+  errored: Optional<string>
+  label: string
+  placeholder: string
+}
+const FullInput: FC<FullInputProps> = props => {
+  const { errored, value, setValue, label, placeholder } = props
+  return (
+    <React.Fragment>
+      <p style={{ ...waitStyles.hello, margin: 17 } as CSSProperties}>
+        {label}
+      </p>
+      <div
+        style={{
+          ...flexHorizontal,
+          width: '100%',
+          padding: '0.5rem 1rem',
+          border: "1px solid var(--adm-border-color)",
+          borderRadius: 8,
+          marginBottom: '2rem'
+        }}
+      >
+        <Input
+          value={value}
+          onChange={setValue}
+          placeholder={placeholder}
+        />
+      </div>
+      {errored &&
+        <span style={detailFormStyle.errSpan}>
+          {errored}
+        </span>
+      }
+    </ React.Fragment>
+ )
+}
