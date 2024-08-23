@@ -391,13 +391,14 @@ export class CartStore {
       })
       let orgID = order.currentOrg
       /* Отключили подбор кухни для доставки */
-      /* if (order.orderType === 2) {
-        const ResultBlyat = await this.deliveryForm.getNearestDeliveryPoint(order.fullAddress as string)
+      if (order.orderType === 2) {
+        /* const ResultBlyat = await this.deliveryForm.getNearestDeliveryPoint(order.fullAddress as string)
         //@ts-ignore
-        orgID = ResultBlyat.Id
+        orgID = ResultBlyat.Id */
+
         // @ts-ignore
         order = { ...order, activeSlot: Number(this.selectedSlot?.VCode) }
-      } */
+      }
 
       // if (true) {
       if (isDevelopment()) { 
