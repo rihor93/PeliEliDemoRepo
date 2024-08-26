@@ -395,15 +395,17 @@ export class CartStore {
         /* Подбор кухни для доставки */
         // сначала находим кординаты адреса для доставки
         const { dolgota, shirota } = await this.deliveryForm.getCordinatesByAddr(`Уфа, ${order.street} ${order.house}`);
+        let incorrectAddr: boolean = false;
         if (!dolgota || !shirota) {
-          throw new Error("Не удалось получить координаты")
+          /* throw new Error("Не удалось получить координаты") */
+          incorrectAddr = true;
         }
         const nearestDeliveryPoint = await this.deliveryForm.getNearestDeliveryPoint(dolgota, shirota)
         //@ts-ignore
         orgID = nearestDeliveryPoint.Id
 
         // @ts-ignore
-        order = { ...order, activeSlot: Number(this.selectedSlot?.VCode) }
+        order = { ...order, activeSlot: Number(this.selectedSlot?.VCode), incorrectAddr }
       }
 
       // if (true) {
