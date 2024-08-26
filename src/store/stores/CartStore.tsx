@@ -390,11 +390,17 @@ export class CartStore {
         duration: 0 // висит бесконечно
       })
       let orgID = order.currentOrg
-      /* Отключили подбор кухни для доставки */
+
       if (order.orderType === 2) {
-        /* const ResultBlyat = await this.deliveryForm.getNearestDeliveryPoint(order.fullAddress as string)
+        /* Подбор кухни для доставки */
+        // сначала находим кординаты адреса для доставки
+        const { dolgota, shirota } = await this.deliveryForm.getCordinatesByAddr(`Уфа, ${order.street} ${order.house}`);
+        if (!dolgota || !shirota) {
+          throw new Error("Не удалось получить координаты")
+        }
+        const nearestDeliveryPoint = await this.deliveryForm.getNearestDeliveryPoint(dolgota, shirota)
         //@ts-ignore
-        orgID = ResultBlyat.Id */
+        orgID = nearestDeliveryPoint.Id
 
         // @ts-ignore
         order = { ...order, activeSlot: Number(this.selectedSlot?.VCode) }
@@ -426,8 +432,13 @@ export class CartStore {
         this.clearCart()
       };
     } catch (e) {
-      logger.log('Заказ блин не оформился', 'cart-store')
-      this.onFailure('Не удалось оформить заказ')
+      logger.log('Заказ не оформился', 'cart-store')
+      let errorMessage = (e as Error).message;
+      if (errorMessage === "Не удалось получить координаты") {
+        this.onFailure('Не удалось найти дом')
+      } else {
+        this.onFailure('Не удалось оформить заказ')
+      }
       throw e
     }
   }
@@ -604,8 +615,8 @@ class DeliveryForm {
   ]
  */
 
-  private getCordinatesByAddr = async (address: string) => {
-    // console.log(`[getCordinatesByAddr]: address - ${address}`)
+  getCordinatesByAddr = async (address: string) => {
+    console.log(`[getCordinatesByAddr]: address - ${address}`)
     const result: NominatimGeocodeResponse = await http.get('https://nominatim.openstreetmap.org/search', {
       q: address,
       format: 'json'
@@ -624,11 +635,10 @@ class DeliveryForm {
   }
 
   getNearestDeliveryPoint = async (
-    inputAddress: string
+    dolgota: number | undefined,
+    shirota: number | undefined
   ) => {
-    // console.log(`[getNearestDeliveryPoint]: inputAddress - ${inputAddress}`)
-    // сначала находим кординаты адреса для доставки
-    const { dolgota, shirota } = await this.getCordinatesByAddr('Уфа, ' + inputAddress)
+    // console.log(`[getNearestDeliveryPoint]: inputAddress - ${inputAddress}`)   
     // console.log(`///////////// - input addr dolgota and shirota: ${dolgota} & ${shirota}`)
 
 
